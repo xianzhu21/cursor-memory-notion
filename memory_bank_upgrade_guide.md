@@ -115,19 +115,19 @@ graph LR
         VAN["VAN MODE<br>Initialization"]
         PLAN["PLAN MODE<br>Task Planning"]
         CREATIVE["CREATIVE MODE<br>Design Decisions"]
-        IMPLEMENT["IMPLEMENT MODE<br>Code Implementation"]
+        BUILD["BUILD MODE<br>Code Implementation"]
         QA["QA MODE<br>Validation"]
     end
     
     VAN --> PLAN
     PLAN --> CREATIVE
-    CREATIVE --> IMPLEMENT
-    IMPLEMENT --> QA
+    CREATIVE --> BUILD
+    BUILD --> QA
     
     style VAN fill:#80bfff,stroke:#4da6ff,color:black
     style PLAN fill:#80ffaa,stroke:#4dbb5f,color:black
     style CREATIVE fill:#d9b3ff,stroke:#b366ff,color:black
-    style IMPLEMENT fill:#ffcc80,stroke:#ffaa33,color:black
+    style BUILD fill:#ffcc80,stroke:#ffaa33,color:black
     style QA fill:#ff8080,stroke:#ff5555,color:black
 ```
 
@@ -138,7 +138,7 @@ Each mode loads only its required rule set, optimizing context usage and providi
 | VAN | Initialization | Platform detection, file verification, complexity determination |
 | PLAN | Task Planning | Requirements analysis, component identification, implementation strategy |
 | CREATIVE | Design Decisions | Multiple options exploration, pros/cons analysis, design recommendations |
-| IMPLEMENT | Code Implementation | Systematic building, command execution, testing |
+| BUILD | Code Implementation | Systematic building, command execution, testing |
 | QA | Technical Validation | Dependency verification, configuration validation, build testing |
 
 ### Beyond Cursor's Standard Custom Modes Implementation
@@ -168,7 +168,7 @@ graph TD
         MB1["VAN Mode<br>Dynamic Rules"]
         MB2["PLAN Mode<br>Dynamic Rules"]
         MB3["CREATIVE Mode<br>Dynamic Rules"]
-        MB4["IMPLEMENT Mode<br>Dynamic Rules"]
+        MB4["BUILD Mode<br>Dynamic Rules"]
         MB5["QA Mode<br>Dynamic Rules"]
         
         MB1 -->|"Passes Context"| MB2
@@ -204,7 +204,7 @@ Memory Bank transforms custom modes into a comprehensive, interconnected system:
    - Visual process maps guide users through the appropriate sequence
 
 2. **Workflow Integration**: 
-   - Modes form a cohesive development process (VAN → PLAN → CREATIVE → IMPLEMENT → QA)
+   - Modes form a cohesive development process (VAN → PLAN → CREATIVE → BUILD → QA)
    - Each mode is aware of preceding and subsequent modes
    - Transitions between modes are formalized with specific entry/exit criteria
 
@@ -315,7 +315,7 @@ To activate different modes in the new system:
 VAN - Initialize project and determine complexity
 PLAN - Create detailed implementation plan
 CREATIVE - Explore design options for complex components
-IMPLEMENT - Systematically build planned components
+BUILD - Systematically build planned components
 QA - Validate technical implementation
 ```
 
@@ -324,11 +324,11 @@ QA - Validate technical implementation
 1. Begin with `VAN` to initialize the project and determine complexity
 2. For Level 2-4 tasks, transition to `PLAN` to create a comprehensive implementation plan
 3. For components requiring design decisions, use `CREATIVE` to explore options
-4. Implement the planned changes with `IMPLEMENT`
+4. Implement the planned changes with `BUILD`
 5. Validate the implementation with `QA` before completing
 
 The complexity level (1-4) determined during the VAN mode will significantly influence your path through the workflow:
-- **Level 1 tasks** may proceed directly to IMPLEMENT after VAN
+- **Level 1 tasks** may proceed directly to BUILD after VAN
 - **Level 2-4 tasks** follow the full workflow with increasingly comprehensive planning and documentation
 
 ## Deep Dive: The Technical Architecture
@@ -345,23 +345,23 @@ graph TD
         VanMap["van-mode-map.mdc"]
         PlanMap["plan-mode-map.mdc"]
         CreativeMap["creative-mode-map.mdc"]
-        ImplementMap["implement-mode-map.mdc"]
+        BuildMap["build-mode-map.mdc"]
         QAMap["qa-mode-map.mdc"]
     end
     
-    Main --> VanMap & PlanMap & CreativeMap & ImplementMap & QAMap
+    Main --> VanMap & PlanMap & CreativeMap & BuildMap & QAMap
     
     VanMap --> VanFiles["Platform Detection<br>File Verification<br>Complexity Determination"]
     PlanMap --> PlanFiles["Task Tracking<br>Planning Process<br>Component Identification"]
     CreativeMap --> CreativeFiles["Design Patterns<br>Creative Phase Enforcement<br>Options Analysis"]
-    ImplementMap --> ImplementFiles["Command Execution<br>Implementation Guide<br>Testing Strategy"]
+    BuildMap --> BuildFiles["Command Execution<br>Implementation Guide<br>Testing Strategy"]
     QAMap --> QAFiles["Dependency Verification<br>Configuration Validation<br>Build Testing"]
     
     style Main fill:#f8d486,stroke:#e8b84d,stroke-width:2px,color:black
     style VanMap fill:#80bfff,stroke:#4da6ff,stroke-width:2px,color:black
     style PlanMap fill:#80ffaa,stroke:#4dbb5f,stroke-width:2px,color:black
     style CreativeMap fill:#d9b3ff,stroke:#b366ff,stroke-width:2px,color:black
-    style ImplementMap fill:#ffcc80,stroke:#ffaa33,stroke-width:2px,color:black
+    style BuildMap fill:#ffcc80,stroke:#ffaa33,stroke-width:2px,color:black
     style QAMap fill:#ff8080,stroke:#ff5555,stroke-width:2px,color:black
 ```
 
@@ -381,7 +381,7 @@ graph LR
     VAN["VAN MODE"] -.-> Tasks & Active
     PLAN["PLAN MODE"] -.-> Tasks & Active
     CREATIVE["CREATIVE MODE"] -.-> Tasks & Creative
-    IMPLEMENT["IMPLEMENT MODE"] -.-> Tasks & Progress
+    BUILD["BUILD MODE"] -.-> Tasks & Progress
     QA["QA MODE"] -.-> Tasks & Progress
     
     style Tasks fill:#f9d77e,stroke:#d9b95c,stroke-width:3px,color:black
@@ -403,7 +403,7 @@ Here's how I used the new system to develop a complex Todo application:
 1. **VAN Mode**: Analyzed requirements, set up project structure, determined Level 3 complexity
 2. **PLAN Mode**: Created comprehensive component hierarchy, identified dependencies, flagged components for creative exploration
 3. **CREATIVE Mode**: Explored multiple options for state management and filtering implementation, documented pros/cons
-4. **IMPLEMENT Mode**: Built components in logical sequence following the plan, with integrated QA validation
+4. **BUILD Mode**: Built components in logical sequence following the plan, with integrated QA validation
 5. **Results**: More disciplined development process, better documentation, and higher quality final product
 
 ## Future Plans and Development Roadmap

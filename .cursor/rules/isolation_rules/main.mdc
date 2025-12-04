@@ -26,20 +26,20 @@ graph TD
         VAN["VAN<br>Initialization"]
         PLAN["PLAN<br>Planning"]
         CREATIVE["CREATIVE<br>Design"]
-        IMPLEMENT["IMPLEMENT<br>Building"]
+        BUILD["BUILD<br>Building"]
         REFLECT["REFLECT<br>Review"]
         ARCHIVE["ARCHIVE<br>Documentation"]
     end
     
-    Context --> VAN & PLAN & CREATIVE & IMPLEMENT & REFLECT & ARCHIVE
-    Rules --> VAN & PLAN & CREATIVE & IMPLEMENT & REFLECT & ARCHIVE
-    FileIO --> VAN & PLAN & CREATIVE & IMPLEMENT & REFLECT & ARCHIVE
-    Transition --> VAN & PLAN & CREATIVE & IMPLEMENT & REFLECT & ARCHIVE
+    Context --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
+    Rules --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
+    FileIO --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
+    Transition --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
     
     VAN --> PLAN
     PLAN --> CREATIVE
-    CREATIVE --> IMPLEMENT
-    IMPLEMENT --> REFLECT
+    CREATIVE --> BUILD
+    BUILD --> REFLECT
     REFLECT --> ARCHIVE
     
     style Context fill:#4da6ff,stroke:#0066cc,color:white
@@ -59,10 +59,10 @@ graph TD
     Complexity -->|"Level 3<br>Feature"| L3["5-Phase<br>Comprehensive Process"]
     Complexity -->|"Level 4<br>Enterprise"| L4["6-Phase<br>Governance Process"]
     
-    L1 --> L1_Process["VAN → IMPLEMENT → REFLECT"]
-    L2 --> L2_Process["VAN → PLAN → IMPLEMENT → REFLECT"]
-    L3 --> L3_Process["VAN → PLAN → CREATIVE → IMPLEMENT → REFLECT"]
-    L4 --> L4_Process["VAN → PLAN → CREATIVE → IMPLEMENT → REFLECT → ARCHIVE"]
+    L1 --> L1_Process["VAN → BUILD → REFLECT"]
+    L2 --> L2_Process["VAN → PLAN → BUILD → REFLECT"]
+    L3 --> L3_Process["VAN → PLAN → CREATIVE → BUILD → REFLECT"]
+    L4 --> L4_Process["VAN → PLAN → CREATIVE → BUILD → REFLECT → ARCHIVE"]
     
     style Complexity fill:#d94dbb,stroke:#a3378a,color:white
     style L1 fill:#4dbb5f,stroke:#36873f,color:white
@@ -91,7 +91,7 @@ graph TD
     Phase --> VAN_Rules["VAN Mode<br>Rules"]
     Phase --> PLAN_Rules["PLAN Mode<br>Rules"]
     Phase --> CREATIVE_Rules["CREATIVE Mode<br>Rules"]
-    Phase --> IMPLEMENT_Rules["IMPLEMENT Mode<br>Rules"]
+    Phase --> BUILD_Rules["BUILD Mode<br>Rules"]
     Phase --> REFLECT_Rules["REFLECT Mode<br>Rules"]
     Phase --> ARCHIVE_Rules["ARCHIVE Mode<br>Rules"]
     
@@ -212,7 +212,7 @@ Each mode's visual process map is optimized for token efficiency:
 - @VAN Mode Map (Optimized)
 - @PLAN Mode Map (Optimized)
 - @CREATIVE Mode Map (Optimized)
-- @IMPLEMENT Mode Map (Optimized)
+- @BUILD Mode Map (Optimized)
 - @REFLECT Mode Map (Optimized)
 - @ARCHIVE Mode Map (Optimized)
 

@@ -137,7 +137,7 @@ These commands replace the previous custom modes:
 - **VAN Mode** → `/van` command
 - **PLAN Mode** → `/plan` command
 - **CREATIVE Mode** → `/creative` command
-- **IMPLEMENT Mode** → `/build` command
+- **BUILD Mode** → `/build` command
 - **REFLECT Mode** → `/reflect` command
 - **ARCHIVE Mode** → `/archive` command
 

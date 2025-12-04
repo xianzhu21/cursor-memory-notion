@@ -25,7 +25,7 @@ The Memory Bank system previously used Cursor's custom modes feature, which has 
 | VAN Mode | `/van` | Initialization & entry point |
 | PLAN Mode | `/plan` | Task planning |
 | CREATIVE Mode | `/creative` | Design decisions |
-| IMPLEMENT Mode | `/build` | Code implementation |
+| BUILD Mode | `/build` | Code implementation |
 | REFLECT Mode | `/reflect` | Task reflection |
 | ARCHIVE Mode | `/archive` | Task archiving |
 

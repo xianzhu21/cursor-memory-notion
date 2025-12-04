@@ -1,6 +1,6 @@
 # BUILD Command - Code Implementation
 
-This command implements the planned changes following the implementation plan and creative phase decisions.
+This command implements the planned changes following the implementation plan and creative phase decisions. It enforces a test-driven approach where tests are written for all success criteria and must pass before completing each phase.
 
 ## Memory Bank Integration
 
@@ -10,8 +10,8 @@ Reads from:
 - `memory-bank/activeContext.md` - Current project context
 
 Updates:
-- `memory-bank/tasks.md` - Implementation progress and status
-- `memory-bank/progress.md` - Build status and observations
+- `memory-bank/tasks.md` - Implementation progress, test results, and status
+- `memory-bank/progress.md` - Build status, test outcomes, and observations
 
 ## Progressive Rule Loading
 
@@ -64,32 +64,46 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - Review bug report
    - Examine relevant code
    - Implement targeted fix
-   - Test fix
+   - Write test(s) validating the fix
+   - Run tests and ensure they pass
    - Update `memory-bank/tasks.md`
 
    **Level 2 (Simple Enhancement):**
    - Review build plan
    - Examine relevant code areas
    - Implement changes sequentially
-   - Test changes
+   - Write tests for each success criterion
+   - Run all tests and ensure they pass
    - Update `memory-bank/tasks.md`
 
    **Level 3-4 (Feature/System):**
    - Review plan and creative decisions
    - Create directory structure
    - Build in planned phases
-   - Test each phase
+   - **For each phase:**
+     - Write tests for all phase success criteria
+     - Run tests and ensure they pass
+     - Do NOT proceed to next phase until all tests pass
    - Integration testing
    - Document implementation
    - Update `memory-bank/tasks.md` and `memory-bank/progress.md`
 
-4. **Command Execution**
+4. **Test-Driven Phase Completion**
+   - Extract success criteria from current phase in `memory-bank/tasks.md`
+   - Write test cases covering each success criterion
+   - Execute all tests
+   - **Gate:** All tests MUST pass before phase completion
+   - Document test results in `memory-bank/tasks.md`
+   - If tests fail: fix implementation, re-run tests, repeat until all pass
+
+5. **Command Execution**
    - Document all commands executed
    - Document results and observations
    - Follow platform-specific command guidelines
 
-5. **Verification**
+6. **Verification**
    - Verify all build steps completed
+   - Verify all success criteria tests pass
    - Verify changes meet requirements
    - Update `memory-bank/tasks.md` with completion status
 

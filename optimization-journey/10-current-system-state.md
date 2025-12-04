@@ -59,7 +59,7 @@ graph TD
     Phase --> VAN_Rules["VAN Mode<br>Rules"]
     Phase --> PLAN_Rules["PLAN Mode<br>Rules"]
     Phase --> CREATIVE_Rules["CREATIVE Mode<br>Rules"]
-    Phase --> IMPLEMENT_Rules["IMPLEMENT Mode<br>Rules"]
+    Phase --> BUILD_Rules["BUILD Mode<br>Rules"]
     Phase --> REFLECT_Rules["REFLECT Mode<br>Rules"]
     Phase --> ARCHIVE_Rules["ARCHIVE Mode<br>Rules"]
     
@@ -86,7 +86,7 @@ graph TD
    - "Detail-on-demand" approach for creative exploration
    - Efficient option analysis templates
 
-4. **IMPLEMENT Mode**
+4. **BUILD Mode**
    - Streamlined implementation guidance
    - Level-appropriate verification processes
    - Consolidated status tracking

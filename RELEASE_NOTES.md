@@ -119,7 +119,7 @@
 - **VAN Mode**: Efficient complexity determination with minimal overhead
 - **PLAN Mode**: Complexity-appropriate planning templates
 - **CREATIVE Mode**: Progressive documentation with tabular comparisons
-- **IMPLEMENT Mode**: Streamlined implementation guidance
+- **BUILD Mode**: Streamlined implementation guidance
 - **REFLECT Mode**: Context-aware review mechanisms
 - **ARCHIVE Mode**: Efficient knowledge preservation
 
