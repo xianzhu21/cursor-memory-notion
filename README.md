@@ -1,6 +1,6 @@
 # Memory Bank System v0.8
 
-A token-optimized, hierarchical task management system that uses Cursor 2.0 commands for efficient development workflows.
+A token-optimized, hierarchical task management system that uses Cursor 2.0 commands for efficient development workflows. **This fork adds Notion as the Memory Bank backend** – tasks, plans, and context live in your Notion workspace.
 
 ```mermaid
 graph TD
@@ -8,7 +8,7 @@ graph TD
     Main --> Rules["Hierarchical Rule Loading"]
     Main --> Visual["Visual Process Maps"]
     Main --> Token["Token Optimization"]
-    Main --> Memory["Memory Bank Files"]
+    Main --> Memory["Memory Bank<br>Notion or Files"]
     
     Commands --> VAN["/van: Initialization"]
     Commands --> PLAN["/plan: Task Planning"]
@@ -48,7 +48,7 @@ Version 0.8 moves from cursor custom modes to cursor commands.  Memory Bank oper
 5. **`/reflect`** - Reviews completed work and documents lessons learned
 6. **`/archive`** - Creates comprehensive documentation and updates Memory Bank
 
-Each command reads from and updates a shared **Memory Bank** directory (`memory-bank/`), maintaining persistent context across the entire workflow.
+Each command reads from and updates a shared **Memory Bank** – either Notion pages (this fork) or local `memory-bank/` files – maintaining persistent context across the entire workflow.
 
 ### Token-Optimized Architecture
 
@@ -68,7 +68,7 @@ Memory Bank transforms development into a structured, phase-based process:
 
 - **Graph-Based Command Integration**: Commands are interconnected nodes in a development workflow
 - **Workflow Progression**: Commands transition from one to another in a logical sequence (`/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive`)
-- **Shared Memory**: Persistent state maintained across command transitions via Memory Bank files
+- **Shared Memory**: Persistent state maintained across command transitions via Memory Bank (Notion or files)
 - **Adaptive Behavior**: Each command adjusts its recommendations based on project complexity level
 - **Progressive Rule Loading**: Commands load only necessary rules, reducing context window usage
 
@@ -94,28 +94,50 @@ For a detailed explanation of how Memory Bank implements these principles, see t
 - **Command-Specific Visual Maps**: Clear visual representations for each development phase
 - **Level-Specific Workflows**: Adapted processes based on complexity (Levels 1-4)
 - **Platform-Aware Commands**: Automatically adapts commands to your operating system
-- **Memory Bank Integration**: All commands read from and update shared Memory Bank files
+- **Memory Bank Integration**: All commands read from and update shared Memory Bank (Notion or files)
+- **Notion Backend**: Tasks, plans, and context in your Notion workspace
 
-## Notion Integration (Optional)
+## Notion Integration
 
-This project supports **Notion** as the Memory Bank backend instead of local files. When configured, all Memory Bank operations use Notion MCP (`notion-fetch`, `notion-update-page`, `notion-create-pages`).
+**This fork uses Notion as the default Memory Bank backend.** All operations use Notion MCP (`notion-fetch`, `notion-update-page`, `notion-create-pages`).
 
-See **[NOTION_SETUP.md](NOTION_SETUP.md)** for setup instructions and mapping details.
+**Setup:** Copy `.cursor/notion-memory-bank.json.example` to `.cursor/notion-memory-bank.json`, then configure your `projectId`, `taskId`, and data source URLs. See **[NOTION_SETUP.md](NOTION_SETUP.md)** for details.
+
+### Notion Backend
+
+The Notion backend stores Memory Bank data in your Notion workspace:
+
+- **Projects database** – Holds project pages (brief, active context, progress subpages)
+- **Tasks database** – Holds task pages (plan, checklist, creative/reflection/archive subpages)
+- **Relation** – Tasks link to Projects via a bidirectional relation
+
+**Identifier convention:** `PROJECT-123` and `TASK-588` are resolved via `notion-search` against the respective databases. Add an `ID` property to your databases for reliable lookup.
+
+**Config keys** (in `.cursor/notion-memory-bank.json`):
+- `projectId`, `taskId` – Current project and task
+- `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database collection URLs
+- `activeContextPageId`, `progressPageId` – Optional subpage IDs under Project
+- `creativePageId`, `reflectionPageId`, `archivePageId` – Optional subpage IDs under Task
+
+**Create a new task:** Use `/create-task <title>` to add a task to the Tasks database and associate it with the current project. The command returns the new `TASK-ID` and can update `taskId` in config.
 
 ## Installation Instructions
 
 ### Prerequisites
 
-- **Cursor Editor**: Version 2.0 or higher is required (commands feature)
-- **AI Model**: Claude 4 Sonnet or Claude 4 Opus is recommended for best results, especially for `/creative` command's "Think" tool methodology
+- **Cursor Editor**: Version 2.0 or higher (commands feature)
+- **Notion MCP**: Required for this fork – install and configure `plugin-notion-workspace-notion`
+- **AI Model**: Claude 4 Sonnet or Claude 4 Opus recommended, especially for `/creative`
 
 ### Step 1: Get the Files
 
-Simply clone this repository into your project directory:
+Clone this repository into your project directory:
 
 ```bash
-git clone https://github.com/vanzan01/cursor-memory-bank.git
+git clone https://github.com/xianzhu21/cursor-memory-notion.git
 ```
+
+*Based on [vanzan01/cursor-memory-bank](https://github.com/vanzan01/cursor-memory-bank) with Notion integration.*
 
 #### Alternative (Manual)
 
@@ -126,9 +148,15 @@ After extracting it from the ZIP file:
 
 **Note**: Other documents are not necessary for Memory Bank operation - they are explanatory documents. You can copy them to a folder like `memory_bank_documents` if desired.
 
-### Step 2: Using Commands
+### Step 2: Configure Notion (Required for this fork)
 
-**Commands are ready to use immediately!** No additional setup required.
+```bash
+cp .cursor/notion-memory-bank.json.example .cursor/notion-memory-bank.json
+```
+
+Edit `.cursor/notion-memory-bank.json` with your Notion project/task IDs and data source URLs. See [NOTION_SETUP.md](NOTION_SETUP.md).
+
+### Step 3: Using Commands
 
 1. **Type `/` in the Cursor chat** to see available commands:
    - `/van` - Initialization & entry point
@@ -179,6 +207,8 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 
 ### Command Reference
 
+*When using Notion, "tasks.md" and similar refer to Notion pages (Task page body, subpages). See [NOTION_SETUP.md](NOTION_SETUP.md).*
+
 #### `/van` - Initialization & Entry Point
 **Purpose:** Initialize Memory Bank, detect platform, determine task complexity, route to workflows.
 
@@ -189,10 +219,10 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 
 **What it does:**
 - Detects your operating system and adapts commands
-- Verifies or creates Memory Bank structure
+- Verifies or creates Memory Bank (Notion pages or `memory-bank/`)
 - Analyzes task requirements
 - Determines complexity level (1-4)
-- Updates `memory-bank/tasks.md` with initial task information
+- Updates Task page or `memory-bank/tasks.md`
 
 **Next steps:**
 - Level 1 → `/build`
@@ -207,7 +237,7 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 ```
 
 **What it does:**
-- Reads task requirements from `memory-bank/tasks.md`
+- Reads task requirements from Task page or `memory-bank/tasks.md`
 - Reviews codebase structure
 - Creates implementation plan (complexity-appropriate)
 - Performs technology validation (Level 2-4)
@@ -227,7 +257,7 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 ```
 
 **What it does:**
-- Reads components flagged for creative work from `memory-bank/tasks.md`
+- Reads components flagged for creative work from Task page or `memory-bank/tasks.md`
 - For each component, explores multiple design options
 - Analyzes pros/cons of each approach
 - Selects and documents recommended approach
@@ -246,7 +276,7 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 ```
 
 **What it does:**
-- Reads implementation plan from `memory-bank/tasks.md`
+- Reads implementation plan from Task page or `memory-bank/tasks.md`
 - Reads creative phase documents (Level 3-4)
 - Implements changes systematically
 - Tests implementation
@@ -323,7 +353,9 @@ Here's a complete example workflow for a Level 3 feature:
 
 ## Memory Bank Structure
 
-All Memory Bank files are stored in the `memory-bank/` directory:
+**Notion (this fork):** Task page body, Project brief, and subpages (Active Context, Progress, Creative, Reflection, Archive) under your Notion Project/Task. See [NOTION_SETUP.md](NOTION_SETUP.md) for mapping.
+
+All Memory Bank files are stored in the `memory-bank/` directory (file-based mode):
 
 ```mermaid
 graph LR
@@ -368,7 +400,8 @@ Each command implements progressive rule loading to optimize context usage:
 
 1. **Core Rules** - Always loaded first
    - `main.mdc` - System foundation
-   - `memory-bank-paths.mdc` - File path definitions
+   - `memory-bank-paths.mdc` - Notion / file path definitions
+   - `notion-verification.mdc` - Notion structure verification (when using Notion)
 
 2. **Command-Specific Rules** - Loaded based on command
    - Visual process maps (e.g., `van-mode-map.mdc`)
@@ -421,8 +454,9 @@ Memory Bank adapts its workflow based on task complexity:
 
 ### Command Not Working Correctly
 
-- **Check Memory Bank**: Verify `memory-bank/` directory exists
-- **Verify task status**: Check `memory-bank/tasks.md` for current task state
+- **Notion**: Verify `.cursor/notion-memory-bank.json` exists and has valid `projectId`, `taskId`, data source URLs. Run `/van` to create missing subpages.
+- **File-based**: Verify `memory-bank/` directory exists
+- **Verify task status**: Check Task page or `memory-bank/tasks.md` for current task state
 - **Review command order**: Ensure you're following the correct workflow sequence
 - **Check rules**: Verify `.cursor/rules/isolation_rules/` directory exists
 
@@ -434,8 +468,9 @@ Memory Bank adapts its workflow based on task complexity:
 
 ### Memory Bank Issues
 
-- **Missing files**: Run `/van` to initialize Memory Bank structure
-- **Corrupted state**: Check `memory-bank/tasks.md` for task status
+- **Notion**: Run `/van` to create missing activeContext/Progress subpages. Check `notion-memory-bank.json` for correct IDs.
+- **File-based**: Run `/van` to initialize Memory Bank structure
+- **Corrupted state**: Check Task page or `memory-bank/tasks.md` for task status
 - **File conflicts**: Review recent changes to Memory Bank files
 
 ## Legacy Custom Modes (Deprecated)
@@ -459,6 +494,7 @@ The Memory Bank system is actively being developed and improved. Key points to u
 
 ## Resources
 
+- [NOTION_SETUP.md](NOTION_SETUP.md) - Notion configuration and mapping
 - [Commands Documentation](.cursor/commands/README.md) - Detailed command usage guide
 - [Commands Migration Guide](COMMANDS_MIGRATION.md) - Migration from custom modes to commands
 - [Memory Bank Optimizations](MEMORY_BANK_OPTIMIZATIONS.md) - Detailed overview of token efficiency improvements
