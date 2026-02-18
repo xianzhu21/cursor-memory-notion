@@ -1,0 +1,51 @@
+---
+description: Instructions for reading/writing Memory Bank via Notion MCP. Load with memory-bank-paths when using Notion backend.
+globs: notion-memory-bank-ops.mdc
+alwaysApply: false
+---
+
+# NOTION MEMORY BANK - READ/WRITE OPERATIONS
+
+Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → Projects database; **TASK-** prefix → Tasks database.
+
+## Resolve Identifier to Page
+
+1. **PROJECT-X**: `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `PROJECT-X` or `X`. Use page URL from first result.
+2. **TASK-Y**: `notion-search` with `data_source_url` = `tasksDataSourceUrl`, `query` = `TASK-Y` or `Y`. Use page URL from first result.
+3. Then `notion-fetch` with the resolved page URL/ID.
+
+## Read Tasks (plan, checklist)
+
+- Resolve `taskId` (e.g. TASK-588) → `notion-fetch` the Task page – content lives in page body
+
+## Read ProjectBrief / ActiveContext / Progress
+
+- projectBrief: Resolve `projectId` → `notion-fetch` (page body)
+- activeContext: If `activeContextPageId` set → `notion-fetch`. If null → **create first** (see Create Missing Subpages), then fetch.
+- progress: If `progressPageId` set → `notion-fetch`. If null → **create first** (see Create Missing Subpages), then fetch.
+
+## Create Missing Subpages (MANDATORY when config IDs are null)
+
+**Project subpages** (activeContext, progress): Resolve `projectId` → get Project page ID. For each null ID:
+1. `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context" } }]` or `{ title: "Progress" }`
+2. Extract created page ID from tool response
+3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageId` or `progressPageId`
+
+**Task subpages** (creative, reflection, archive): Resolve `taskId` → get Task page ID. For each null ID:
+1. `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative" } }]` or `"Reflection"` or `"Archive"`
+2. Extract created page ID from tool response
+3. **Update** `.cursor/notion-memory-bank.json` with the new `creativePageId`, `reflectionPageId`, or `archivePageId`
+
+## Write Tasks / ActiveContext / Progress
+
+- `notion-update-page` with `command: "replace_content"` and `new_str` = full Markdown content
+- Use the resolved page ID from the identifier
+
+## Task Subpages (Creative, Reflection, Archive)
+
+- Use `creativePageId`, `reflectionPageId`, `archivePageId` if set
+- If null: Follow **Create Missing Subpages** above (Task subpages). Config update is REQUIRED.
+
+## Update Task Status
+
+- `notion-update-page` with `command: "update_properties"` on the Task page (e.g. Status = "Complete")

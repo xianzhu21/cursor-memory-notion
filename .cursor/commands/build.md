@@ -2,16 +2,16 @@
 
 This command implements the planned changes following the implementation plan and creative phase decisions. It enforces a test-driven approach where tests are written for all success criteria and must pass before completing each phase.
 
-## Memory Bank Integration
+## Memory Bank Integration (Notion)
 
-Reads from:
-- `memory-bank/tasks.md` - Implementation plan and checklists
-- `memory-bank/creative/creative-*.md` - Design decisions (Level 3-4)
-- `memory-bank/activeContext.md` - Current project context
+Reads from (resolve TASK- via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. TASK-588) - Implementation plan and checklists
+- creative page (`creativePageId`) - Design decisions (Level 3-4)
+- activeContext page (`activeContextPageId`) - Current project context
 
-Updates:
-- `memory-bank/tasks.md` - Implementation progress, test results, and status
-- `memory-bank/progress.md` - Build status, test outcomes, and observations
+Updates (notion-update-page):
+- Task page (`taskId`) - Implementation progress, test results, status
+- progress page (`progressPageId`) - Build status, test outcomes, observations
 
 ## Progressive Rule Loading
 
@@ -28,7 +28,7 @@ Load: .cursor/rules/isolation_rules/visual-maps/build-mode-map.mdc
 ```
 
 ### Step 3: Load Complexity-Specific Implementation Rules
-Based on complexity level from `memory-bank/tasks.md`:
+Based on complexity level from Task page:
 
 **Level 1:**
 ```
@@ -50,12 +50,12 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
 ## Workflow
 
 1. **Verify Prerequisites**
-   - Check `memory-bank/tasks.md` for planning completion
+   - notion-fetch Task page for planning completion
    - For Level 3-4: Verify creative phase documents exist
    - Review implementation plan
 
 2. **Determine Complexity Level**
-   - Read complexity level from `memory-bank/tasks.md`
+   - Read complexity level from Task page
    - Load appropriate workflow rules
 
 3. **Execute Implementation**
@@ -66,7 +66,7 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - Implement targeted fix
    - Write test(s) validating the fix
    - Run tests and ensure they pass
-   - Update `memory-bank/tasks.md`
+   - notion-update-page Task page
 
    **Level 2 (Simple Enhancement):**
    - Review build plan
@@ -74,7 +74,7 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - Implement changes sequentially
    - Write tests for each success criterion
    - Run all tests and ensure they pass
-   - Update `memory-bank/tasks.md`
+   - notion-update-page Task page
 
    **Level 3-4 (Feature/System):**
    - Review plan and creative decisions
@@ -86,14 +86,14 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
      - Do NOT proceed to next phase until all tests pass
    - Integration testing
    - Document implementation
-   - Update `memory-bank/tasks.md` and `memory-bank/progress.md`
+   - notion-update-page Task and progress pages
 
 4. **Test-Driven Phase Completion**
-   - Extract success criteria from current phase in `memory-bank/tasks.md`
+   - Extract success criteria from current phase in Task page
    - Write test cases covering each success criterion
    - Execute all tests
    - **Gate:** All tests MUST pass before phase completion
-   - Document test results in `memory-bank/tasks.md`
+   - Document test results in Task page
    - If tests fail: fix implementation, re-run tests, repeat until all pass
 
 5. **Command Execution**
@@ -105,11 +105,11 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - Verify all build steps completed
    - Verify all success criteria tests pass
    - Verify changes meet requirements
-   - Update `memory-bank/tasks.md` with completion status
+   - notion-update-page Task page with completion status
 
 ## Usage
 
-Type `/build` to start implementation based on the plan in `memory-bank/tasks.md`.
+Type `/build` to start implementation based on the plan in Notion Task page.
 
 ## Next Steps
 

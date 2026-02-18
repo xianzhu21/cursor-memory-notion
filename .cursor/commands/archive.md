@@ -2,21 +2,21 @@
 
 This command creates comprehensive archive documentation and updates the Memory Bank for future reference.
 
-## Memory Bank Integration
+## Memory Bank Integration (Notion)
 
-Reads from:
-- `memory-bank/tasks.md` - Complete task details and checklists
-- `memory-bank/reflection/reflection-[task_id].md` - Reflection document
-- `memory-bank/progress.md` - Implementation status
-- `memory-bank/creative/creative-*.md` - Creative phase documents (Level 3-4)
+Reads from (resolve TASK- via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. TASK-588) - Complete task details and checklists
+- reflection page (`reflectionPageId`) - Reflection document
+- progress page (`progressPageId`) - Implementation status
+- creative page (`creativePageId`) - Creative phase documents (Level 3-4)
 
-Creates:
-- `memory-bank/archive/archive-[task_id].md` - Archive document
+Creates (notion-create-pages):
+- archive page under Task (`archivePageId` or create under resolved Task)
 
-Updates:
-- `memory-bank/tasks.md` - Mark task as COMPLETE
-- `memory-bank/progress.md` - Add archive reference
-- `memory-bank/activeContext.md` - Reset for next task
+Updates (notion-update-page):
+- Task page (`taskId`) - Mark task COMPLETE
+- progress page (`progressPageId`) - Add archive reference
+- activeContext page (`activeContextPageId`) - Reset for next task
 
 ## Progressive Rule Loading
 
@@ -32,7 +32,7 @@ Load: .cursor/rules/isolation_rules/visual-maps/archive-mode-map.mdc
 ```
 
 ### Step 3: Load Complexity-Specific Archive Rules
-Based on complexity level from `memory-bank/tasks.md`:
+Based on complexity level from Task page:
 
 **Level 1:**
 ```
@@ -57,7 +57,7 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
 ## Workflow
 
 1. **Verify Reflection Complete**
-   - Check that `memory-bank/reflection/reflection-[task_id].md` exists
+   - notion-fetch reflection page (`reflectionPageId`)
    - Verify reflection is complete
    - If not complete, return to `/reflect` command
 
@@ -108,11 +108,11 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
    ```
 
 4. **Update Memory Bank**
-   - Create `memory-bank/archive/archive-[task_id].md`
-   - Mark task as COMPLETE in `memory-bank/tasks.md`
-   - Update `memory-bank/progress.md` with archive reference
-   - Reset `memory-bank/activeContext.md` for next task
-   - Clear completed task details from `memory-bank/tasks.md` (keep structure)
+   - notion-create-pages: archive page under Task (or use `archivePageId`)
+   - notion-update-page Task page: mark COMPLETE
+   - notion-update-page progress page: add archive reference
+   - notion-update-page activeContext page: reset for next task
+   - Clear completed task details from Task page (keep structure)
 
 ## Usage
 

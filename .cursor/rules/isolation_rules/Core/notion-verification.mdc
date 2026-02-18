@@ -1,0 +1,24 @@
+---
+description: Verify and create Notion Memory Bank structure. Use when project uses Notion backend.
+globs: notion-verification.mdc
+alwaysApply: false
+---
+
+# NOTION MEMORY BANK VERIFICATION
+
+When using Notion as Memory Bank, **MANDATORY** steps. Do NOT skip subpage creation.
+
+## Verification Steps (Execute in Order)
+
+1. **Read config**: Get `projectId`, `taskId`, `activeContextPageId`, `progressPageId` from `.cursor/notion-memory-bank.json`
+2. **Resolve identifiers**: PROJECT- → notion-search in Projects; TASK- → notion-search in Tasks. Get page IDs from results.
+3. **Fetch pages**: `notion-fetch` Project and Task pages by resolved URLs
+4. **Project subpages (MANDATORY if null)**:
+   - If `activeContextPageId` is null: `notion-create-pages` with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Active Context" } }]`. Extract new page ID from response.
+   - If `progressPageId` is null: `notion-create-pages` with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Progress" } }]`. Extract new page ID from response.
+   - **Update config**: Write the new page IDs into `.cursor/notion-memory-bank.json` for `activeContextPageId` and/or `progressPageId`. This step is REQUIRED after creation.
+5. **Report**: Confirm Project, Task, activeContext, and progress pages are accessible
+
+## Skip File Verification
+
+Do NOT run mkdir/touch for memory-bank/ when using Notion.

@@ -70,7 +70,8 @@ pids
 *.pid.lock
 
 # Cursor specific
-.cursor/workspace/ 
+.cursor/workspace/
+.cursor/notion-memory-bank.json 
 
 #claude.code specific
 .claude/

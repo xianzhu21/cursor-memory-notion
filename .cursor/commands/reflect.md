@@ -2,18 +2,18 @@
 
 This command facilitates structured reflection on completed implementation, documenting lessons learned and process improvements.
 
-## Memory Bank Integration
+## Memory Bank Integration (Notion)
 
-Reads from:
-- `memory-bank/tasks.md` - Completed implementation details
-- `memory-bank/progress.md` - Implementation status and observations
-- `memory-bank/creative/creative-*.md` - Design decisions (Level 3-4)
+Reads from (resolve TASK- via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. TASK-588) - Completed implementation details
+- progress page (`progressPageId`) - Implementation status and observations
+- creative page (`creativePageId`) - Design decisions (Level 3-4)
 
-Creates:
-- `memory-bank/reflection/reflection-[task_id].md` - Reflection document
+Creates (notion-create-pages):
+- reflection page under Task (`reflectionPageId` or create under resolved Task)
 
-Updates:
-- `memory-bank/tasks.md` - Reflection status
+Updates (notion-update-page):
+- Task page (`taskId`) - Reflection status
 
 ## Progressive Rule Loading
 
@@ -29,7 +29,7 @@ Load: .cursor/rules/isolation_rules/visual-maps/reflect-mode-map.mdc
 ```
 
 ### Step 3: Load Complexity-Specific Reflection Rules
-Based on complexity level from `memory-bank/tasks.md`:
+Based on complexity level from Task page:
 
 **Level 1:**
 ```
@@ -54,7 +54,7 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
 ## Workflow
 
 1. **Verify Implementation Complete**
-   - Check `memory-bank/tasks.md` for implementation completion
+   - notion-fetch Task page for implementation completion
    - If not complete, return to `/build` command
 
 2. **Review Implementation**
@@ -84,11 +84,11 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
    - Document technical improvements
 
 4. **Create Reflection Document**
-   - Create `memory-bank/reflection/reflection-[task_id].md`
+   - notion-create-pages: reflection page under Task (or use `reflectionPageId`)
    - Structure: Summary, What Went Well, Challenges, Lessons Learned, Process Improvements, Technical Improvements, Next Steps
 
 5. **Update Memory Bank**
-   - Update `memory-bank/tasks.md` with reflection status
+   - notion-update-page Task page with reflection status
    - Mark reflection phase as complete
 
 ## Usage

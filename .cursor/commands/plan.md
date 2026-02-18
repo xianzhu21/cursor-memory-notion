@@ -2,15 +2,15 @@
 
 This command creates detailed implementation plans based on complexity level determined in VAN mode.
 
-## Memory Bank Integration
+## Memory Bank Integration (Notion)
 
-Reads from:
-- `memory-bank/tasks.md` - Task requirements and complexity level
-- `memory-bank/activeContext.md` - Current project context
-- `memory-bank/projectbrief.md` - Project foundation (if exists)
+Reads from (resolve PROJECT-/TASK- via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. TASK-588) - Task requirements and complexity level
+- activeContext page (`activeContextPageId`) - Current project context
+- Project page body (`projectId`, e.g. PROJECT-123) - projectBrief (if exists)
 
-Updates:
-- `memory-bank/tasks.md` - Adds detailed implementation plan
+Updates (via notion-update-page):
+- Task page (`taskId`) - Adds detailed implementation plan
 
 ## Progressive Rule Loading
 
@@ -26,7 +26,7 @@ Load: .cursor/rules/isolation_rules/visual-maps/plan-mode-map.mdc
 ```
 
 ### Step 3: Load Complexity-Specific Planning Rules
-Based on complexity level from `memory-bank/tasks.md`:
+Based on complexity level from Task page:
 
 **Level 2:**
 ```
@@ -51,8 +51,8 @@ Load: .cursor/rules/isolation_rules/Level4/workflow-level4.mdc
 ## Workflow
 
 1. **Read Task Context**
-   - Read `memory-bank/tasks.md` to get complexity level
-   - Read `memory-bank/activeContext.md` for current context
+   - notion-fetch Task page (resolve `taskId`) for complexity level
+   - notion-fetch activeContext page (`activeContextPageId`) for current context
    - Review codebase structure
 
 2. **Create Implementation Plan**
@@ -70,12 +70,12 @@ Load: .cursor/rules/isolation_rules/Level4/workflow-level4.mdc
    - Document which components need creative exploration
 
 5. **Update Memory Bank**
-   - Update `memory-bank/tasks.md` with complete plan
+   - notion-update-page on Task page with complete plan
    - Mark planning phase as complete
 
 ## Usage
 
-Type `/plan` to start planning based on the task in `memory-bank/tasks.md`.
+Type `/plan` to start planning based on the task in Notion (Task page by ID).
 
 ## Next Steps
 

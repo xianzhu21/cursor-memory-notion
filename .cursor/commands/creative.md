@@ -2,17 +2,17 @@
 
 This command performs structured design exploration for components flagged during planning.
 
-## Memory Bank Integration
+## Memory Bank Integration (Notion)
 
-Reads from:
-- `memory-bank/tasks.md` - Components requiring creative phases
-- `memory-bank/activeContext.md` - Current project context
+Reads from (resolve TASK- via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. TASK-588) - Components requiring creative phases
+- activeContext page (`activeContextPageId`) - Current project context
 
-Creates:
-- `memory-bank/creative/creative-[feature_name].md` - Design decision documents
+Creates (notion-create-pages):
+- creative page under Task (`creativePageId` or create under resolved Task)
 
-Updates:
-- `memory-bank/tasks.md` - Records design decisions
+Updates (notion-update-page):
+- Task page (`taskId`) - Records design decisions
 
 ## Progressive Rule Loading
 
@@ -54,12 +54,12 @@ Load: .cursor/rules/isolation_rules/Phases/CreativePhase/creative-phase-algorith
 ## Workflow
 
 1. **Verify Planning Complete**
-   - Check `memory-bank/tasks.md` for planning completion
+   - notion-fetch Task page for planning completion
    - Verify creative phases are identified
    - If not complete, return to `/plan` command
 
 2. **Identify Creative Phases**
-   - Read components flagged for creative work from `memory-bank/tasks.md`
+   - Read components flagged for creative work from Task page
    - Prioritize components for design exploration
 
 3. **Execute Creative Phase**
@@ -74,12 +74,12 @@ Load: .cursor/rules/isolation_rules/Phases/CreativePhase/creative-phase-algorith
    - **🎨🎨🎨 EXITING CREATIVE PHASE**
 
 4. **Document Decisions**
-   - Create `memory-bank/creative/creative-[feature_name].md`
-   - Update `memory-bank/tasks.md` with design decisions
+   - notion-create-pages: creative page under Task (or use `creativePageId`)
+   - notion-update-page: Task page with design decisions
 
 5. **Verify Completion**
    - Ensure all flagged components have completed creative phases
-   - Mark creative phase as complete in `memory-bank/tasks.md`
+   - Mark creative phase complete in Task page
 
 ## Usage
 

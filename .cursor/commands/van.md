@@ -2,13 +2,15 @@
 
 This command initializes the Memory Bank system, performs platform detection, determines task complexity, and routes to appropriate workflows.
 
-## Memory Bank Integration
+## Memory Bank Integration (Notion)
 
-**CRITICAL:** All Memory Bank files are located in `memory-bank/` directory:
-- `memory-bank/tasks.md` - Source of truth for task tracking
-- `memory-bank/activeContext.md` - Current focus
-- `memory-bank/progress.md` - Implementation status
-- `memory-bank/projectbrief.md` - Project foundation
+**CRITICAL:** This project uses **Notion** as Memory Bank. Use page IDs from `.cursor/notion-memory-bank.json`:
+- **tasks** - Task page body (`taskId`, e.g. TASK-588 → search Tasks database)
+- **activeContext** - activeContext page (`activeContextPageId`)
+- **progress** - progress page (`progressPageId`)
+- **projectBrief** - Project page body (`projectId`, e.g. PROJECT-123 → search Projects database)
+
+Use `notion-search` to resolve PROJECT-/TASK- identifiers, then `notion-fetch`/`notion-update-page`/`notion-create-pages`.
 
 ## Progressive Rule Loading
 
@@ -19,8 +21,9 @@ This command loads rules progressively to optimize context usage:
 Load: .cursor/rules/isolation_rules/main.mdc
 Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
 Load: .cursor/rules/isolation_rules/Core/platform-awareness.mdc
-Load: .cursor/rules/isolation_rules/Core/file-verification.mdc
+Load: .cursor/rules/isolation_rules/Core/notion-verification.mdc
 ```
+(Notion backend: use notion-verification; skip file-verification)
 
 ### Step 2: Load VAN Mode Map
 ```
@@ -39,13 +42,14 @@ After determining complexity level, load:
    - Adapt commands for platform
    - Set path separators
 
-2. **Memory Bank Verification**
-   - Check if `memory-bank/` directory exists
-   - If not, create Memory Bank structure
-   - Verify essential files exist
+2. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
+   - [ ] Read config: projectId, taskId, activeContextPageId, progressPageId
+   - [ ] Resolve PROJECT-/TASK- via notion-search; notion-fetch Project and Task pages
+   - [ ] If activeContextPageId or progressPageId is null: notion-create-pages under Project (title: "Active Context" / "Progress"), then update .cursor/notion-memory-bank.json with new IDs
+   - [ ] Confirm all Project, Task, activeContext, progress pages are accessible
 
 3. **Task Analysis**
-   - Read `memory-bank/tasks.md` if exists
+   - notion-fetch Task page (resolve `taskId` via notion-search) for plan/checklist
    - Analyze task requirements
    - Determine complexity level (1-4)
 
@@ -54,8 +58,8 @@ After determining complexity level, load:
    - **Level 2-4:** Transition to `/plan` command
 
 5. **Update Memory Bank**
-   - Update `memory-bank/tasks.md` with complexity determination
-   - Update `memory-bank/activeContext.md` with current focus
+   - notion-update-page on Task page (complexity)
+   - notion-update-page on activeContext page (current focus)
 
 ## Usage
 

@@ -96,6 +96,12 @@ For a detailed explanation of how Memory Bank implements these principles, see t
 - **Platform-Aware Commands**: Automatically adapts commands to your operating system
 - **Memory Bank Integration**: All commands read from and update shared Memory Bank files
 
+## Notion Integration (Optional)
+
+This project supports **Notion** as the Memory Bank backend instead of local files. When configured, all Memory Bank operations use Notion MCP (`notion-fetch`, `notion-update-page`, `notion-create-pages`).
+
+See **[NOTION_SETUP.md](NOTION_SETUP.md)** for setup instructions and mapping details.
+
 ## Installation Instructions
 
 ### Prerequisites

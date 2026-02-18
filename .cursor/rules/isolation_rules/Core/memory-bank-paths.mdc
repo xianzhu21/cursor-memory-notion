@@ -1,23 +1,61 @@
 ---
-description: Defines canonical paths for core Memory Bank files.
+description: Defines Notion page locations for Memory Bank. Uses PROJECT- and TASK- identifiers.
 globs: memory-bank-paths.mdc
 alwaysApply: true
 ---
 
-# CORE MEMORY BANK FILE LOCATIONS
+# NOTION MEMORY BANK - PAGE LOCATIONS
 
-**CRITICAL:** All core Memory Bank files reside within the `memory-bank/` directory at the project root. Do NOT create or modify these files outside this directory unless explicitly instructed for archiving purposes.
+**CRITICAL:** This project uses **Notion** as the Memory Bank backend. All read/write operations MUST use Notion MCP tools (`notion-fetch`, `notion-update-page`, `notion-create-pages`), NOT local file operations.
 
-* **Tasks File:** `memory-bank/tasks.md` - This file is used for active, in-progress task tracking, detailing steps, checklists, and component lists. Its content, particularly the detailed checklists, is merged into the main archive document for the task upon completion. After archival, `tasks.md` is cleared to be ready for the next task. It is an ephemeral working document during a task's lifecycle, with its persistent record captured in the task's archive file.
-* **Active Context File:** `memory-bank/activeContext.md`
-* **Progress File:** `memory-bank/progress.md`
-* **Project Brief File:** `memory-bank/projectbrief.md`
-* **Product Context File:** `memory-bank/productContext.md`
-* **System Patterns File:** `memory-bank/systemPatterns.md`
-* **Tech Context File:** `memory-bank/techContext.md`
-* **Style Guide File:** `memory-bank/style-guide.md`
-* **Creative Phase Docs:** `memory-bank/creative/creative-[feature_name].md`
-* **Reflection Docs:** `memory-bank/reflection/reflection-[task_id].md`
-* **Archive Directory:** `memory-bank/archive/archive-[task_id].md`
+## Identifier Convention
 
-**Verification Mandate:** Before any `create_file` or `edit_file` operation on these core files, verify the path starts with `memory-bank/`. If attempting to create a new core file (e.g., `tasks.md` at the start of a project), ensure it is created at `memory-bank/tasks.md`.
+- **PROJECT-** prefix: Look up in **Projects** database
+- **TASK-** prefix: Look up in **Tasks** database
+
+Example: `PROJECT-123` → search Projects database; `TASK-588` → search Tasks database.
+
+## Configuration
+
+Read `.cursor/notion-memory-bank.json`:
+
+| Key | Required | Description |
+|-----|----------|-------------|
+| projectId | Yes | e.g. `PROJECT-123` – current Project |
+| taskId | Yes | e.g. `TASK-588` – current Task |
+| projectsDataSourceUrl | Yes | Projects data source (collection://...) – from fetch of Projects database |
+| tasksDataSourceUrl | Yes | Tasks data source (collection://...) – from fetch of Tasks database |
+| activeContextPageId | No | activeContext subpage ID; if null, create under Project |
+| progressPageId | No | progress subpage ID; if null, create under Project |
+| creativePageId | No | Creative subpage ID; if null, create under Task (title: "Creative") |
+| reflectionPageId | No | Reflection subpage ID; if null, create under Task (title: "Reflection") |
+| archivePageId | No | Archive subpage ID; if null, create under Task (title: "Archive") |
+
+## Resolving Page IDs
+
+1. **PROJECT-X**: Use `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `PROJECT-X` or `X`. Get page URL from first result; use `notion-fetch` with that URL.
+2. **TASK-Y**: Use `notion-search` with `data_source_url` = `tasksDataSourceUrl`, `query` = `TASK-Y` or `Y`. Get page URL from first result; use `notion-fetch` with that URL.
+3. **Subpages**: Use explicit page IDs if set; otherwise create under Project or Task with `notion-create-pages`.
+
+## Mapping: cursor-memory-bank → Notion
+
+| Memory Bank Concept | Notion Location | Config Key |
+|---------------------|-----------------|------------|
+| tasks.md | Current Task page body | taskId (TASK-588) |
+| projectbrief.md | Project page body | projectId (PROJECT-123) |
+| activeContext.md | activeContext subpage under Project | activeContextPageId |
+| progress.md | progress subpage under Project | progressPageId |
+| creative/creative-[name].md | Creative subpage under Task | creativePageId |
+| reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageId |
+| archive/archive-[id].md | Archive subpage under Task | archivePageId |
+
+## MCP Tool Usage
+
+- **Read**: Resolve identifier → `notion-fetch` with page ID or URL.
+- **Update content**: `notion-update-page` with `command: "replace_content"` or `replace_content_range` or `insert_content_after`.
+- **Create page**: `notion-create-pages` with `parent: { page_id: "..." }` and `properties: { title: "..." }`, `content: "..."`.
+
+## Token Optimization
+
+- **Read**: Only when user mentions project name, says "continue", "load context", or at command start. Fetch once per session when possible.
+- **Write**: Only when user explicitly triggers (e.g. "update memory bank", "save progress") or at end of /van, /plan, /creative, /build, /reflect, /archive.
