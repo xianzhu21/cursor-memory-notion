@@ -16,7 +16,10 @@ Example: `PROJECT-123` → search Projects database; `TASK-588` → search Tasks
 
 ## 3. Configure Identifiers
 
-Copy the example and create your config:
+Create or preserve your config:
+
+- **If `.cursor/notion-memory-bank.json` already exists** (e.g. you copied `.cursor` from another project): Use it as-is. It may already contain your `projectId`, `taskId`, or data source URLs. Do not overwrite with the example.
+- **If the file does not exist**: Copy from the example:
 
 ```bash
 cp .cursor/notion-memory-bank.json.example .cursor/notion-memory-bank.json

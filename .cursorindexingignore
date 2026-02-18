@@ -1,3 +1,6 @@
 
 # Don't index SpecStory auto-save files, but allow explicit context inclusion via @ references
 .specstory/**
+
+# Sensitive config: avoid indexing into AI context; still @ referenceable when needed
+.cursor/notion-memory-bank.json
