@@ -109,8 +109,9 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - notion-update-page Task page with completion status
 
 7. **Update Task Page Workflow Sections**
-   - Replace "## 7. Creative Phases" line if it says "Proceed to `/build`" → "Proceeded to `/build`. Completed."
-   - Replace "## 8. Next Steps" → "Run `/reflect` for task review."
+   - Use `notion-update-page` with `command: "replace_content_range"` and `selection_with_ellipsis` matching the section.
+   - If a section like "## 7. Creative Phases" or "## Creative Phases" contains "Proceed to `/build`", replace that line with "Proceeded to `/build`. Completed." (Level 1/2 may not have this section; skip if absent.)
+   - Replace "## 8. Next Steps" or "## Next Steps" content with "Run `/reflect` for task review."
 
 ## Usage
 

@@ -110,7 +110,7 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
 4. **Update Memory Bank**
    - notion-create-pages: archive page under Task (or use `archivePageId`)
    - notion-update-page Task page: mark COMPLETE
-   - Replace "## 8. Next Steps" → "Run `/van` for next task."
+   - Use `replace_content_range` to replace "## 8. Next Steps" or "## Next Steps" content with "Run `/van` for next task."
    - notion-update-page progress page: add archive reference
    - notion-update-page activeContext page: reset for next task
    - Clear completed task details from Task page (keep structure)
