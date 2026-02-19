@@ -20,8 +20,9 @@ graph TD
     CheckPath --> AdaptCmds["Adapt Commands if Needed"]
     AdaptCmds --> PlatformCP["⛔ PLATFORM CHECKPOINT"]
     
-    %% Add Critical Memory Bank Checkpoint
-    PlatformCP --> MemoryBankCheck{"Memory Bank<br>Exists?"}
+    %% Notion: Task Creation / Task Validation (MANDATORY before Memory Bank)
+    PlatformCP --> TaskValidation["TASK CREATION /<br>TASK VALIDATION<br>(Notion: see section below)"]
+    TaskValidation --> MemoryBankCheck{"Memory Bank<br>Exists?"}
     MemoryBankCheck -->|"No"| CreateMemoryBank["CREATE MEMORY BANK<br>[CRITICAL STEP]"]
     MemoryBankCheck -->|"Yes"| BasicFileVerify["BASIC FILE VERIFICATION"]
     CreateMemoryBank --> MemoryBankCP["⛔ MEMORY BANK VERIFICATION [REQUIRED]"]
@@ -69,6 +70,37 @@ graph TD
     style QACheck fill:#4da6ff,stroke:#0066cc,color:white
     style FixIssues fill:#ff5555,stroke:#dd3333,color:white
 ```
+
+## 📋 TASK CREATION / TASK VALIDATION (Notion Backend – MANDATORY)
+
+**When using Notion as Memory Bank**, execute this step **before** Memory Bank Verification. See `van.md` Step 2.
+
+```mermaid
+graph TD
+    TaskStart["Read config:<br>projectId, taskId"] --> TaskIdCheck{"taskId<br>null/empty?"}
+    TaskIdCheck -->|"Yes"| NeedDesc{"User provided<br>description?"}
+    NeedDesc -->|"No"| AskDesc["Ask: Please provide task description,<br>e.g. /van Add user authentication feature"]
+    NeedDesc -->|"Yes"| CreateTask["Follow task-creation-notion.mdc<br>Create task, update config"]
+    
+    TaskIdCheck -->|"No"| HasDesc{"User provided<br>description?"}
+    HasDesc -->|"No"| ContinueTask["Continue with existing task"]
+    HasDesc -->|"Yes"| FetchTask["notion-fetch current Task page"]
+    FetchTask --> CompareTitle["Compare Task title with<br>user's van description"]
+    CompareTitle --> Differs{"Description clearly<br>differs?<br>different topic/intent"}
+    Differs -->|"No"| ContinueTask
+    Differs -->|"Yes"| AskNew["Ask: Current task (TASK-xxx: title) doesn't match your description.<br>Is this a new task? Should I create it?"]
+    AskNew --> UserConfirm{"User confirms<br>new task?"}
+    UserConfirm -->|"Yes"| CreateTask
+    UserConfirm -->|"No"| ContinueTask
+    
+    CreateTask --> TaskValidationCP["⛔ TASK VALIDATION CHECKPOINT"]
+    ContinueTask --> TaskValidationCP
+    
+    style TaskValidationCP fill:#f55,stroke:#d44,color:white
+    style AskNew fill:#ffd700,stroke:#b8860b,color:black
+```
+
+**Summary:** If taskId exists and user provided a description that clearly differs from current task title → **MUST ask** before creating. Do not skip this step.
 
 ## 🌐 PLATFORM DETECTION PROCESS
 

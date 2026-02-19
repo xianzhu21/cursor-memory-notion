@@ -191,9 +191,7 @@ graph TD
 - [Future enhancement 2]
 
 ## References
-- [Link to reflection document]
-- [Link to creative phase documents]
-- [Other relevant references]
+Use `<mention-page url="[URL]">[Title]</mention-page>` for page links (NOT `<page url="...">` which moves pages)
 ```
 
 ## 📋 ARCHIVE LOCATION AND NAMING
@@ -218,6 +216,14 @@ graph TD
         Systems --> System["system-name-YYYYMMDD.md"]
     end
 ```
+
+## 📊 TASK PAGE UPDATE (Notion)
+
+When marking task COMPLETE:
+
+1. **Properties** (`update_properties`): **Status** = "Done"; **Dates**: fetch first, if start exists → keep as start, set end = today; if empty → start = today, end = today. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).
+2. **Content**: Replace "## 8. Next Steps" with "Run `/van` for next task."
+3. **Content**: Replace "# Reflection" with "# Reflection & Archive" (heading only; keep child pages with `<page url="...">` to preserve structure).
 
 ## 📊 TASKS.MD FINAL UPDATE
 

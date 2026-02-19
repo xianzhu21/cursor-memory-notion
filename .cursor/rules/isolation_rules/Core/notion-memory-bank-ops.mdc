@@ -8,7 +8,18 @@ alwaysApply: false
 
 Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → Projects database; **TASK-** prefix → Tasks database.
 
+**Config updates (MANDATORY):** Before writing `.cursor/notion-memory-bank.json`:
+1. **Read** the current file.
+2. For each field you intend to update, compare new value with current value.
+3. **If all values are unchanged** → do NOT write the file (skip entirely).
+4. **If at least one value differs** → write only the changed fields, merge with existing content.
+Never write the file when no field value actually changes.
+
+**Format:** Write `.cursor/notion-memory-bank.json` as formatted JSON (2-space indentation, one key per line).
+
 **Language:** All content written to Notion (page body, properties) MUST be in **English**.
+
+**Page links:** To reference an existing page (e.g. References, progress): use `<mention-page url="[URL]">[Title]</mention-page>`. Use `<page url="...">` only when preserving child pages during replace_content_range (keeps structure). Do NOT use `<page>` for cross-references – that can move pages.
 
 ## Resolve Identifier to Page
 
@@ -33,12 +44,11 @@ Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → 
 **Project subpages** (activeContext, progress): Resolve `projectId` → get Project page ID. For each null ID:
 1. `notion-search` with `query: "Active Context"` or `"Progress"`, `page_url: projectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context" } }]` or `{ title: "Progress" }`
 2. Extract created page ID from tool response (or use resolved ID from search)
-3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageId` or `progressPageId`
+3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageId` or `progressPageId` (skip if value unchanged)
 
-**Task subpages** (creative, reflection, archive): Resolve `taskId` → get Task page ID. For each null ID:
-1. `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative" } }]` or `"Reflection"` or `"Archive"`
-2. Extract created page ID from tool response
-3. **Update** `.cursor/notion-memory-bank.json` with the new `creativePageId`, `reflectionPageId`, or `archivePageId`
+**Task subpages** (creative, reflection, archive): For each ID (creativePageId, reflectionPageId, archivePageId):
+1. If ID is set: `notion-fetch` to verify page exists and is not deleted. If valid, use it and skip create/config update.
+2. If ID is null or page is deleted: `notion-create-pages` with `parent: { page_id: taskPageId }`, extract new ID, update config only if the new value differs from current.
 
 ## Write Tasks / ActiveContext / Progress
 
@@ -52,4 +62,5 @@ Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → 
 
 ## Update Task Status
 
-- `notion-update-page` with `command: "update_properties"` on the Task page (e.g. Status = "Complete")
+- `notion-update-page` with `command: "update_properties"` on the Task page (e.g. Status = "Done")
+- When archiving (task complete): Update Dates property – if current Dates has start, keep it as start and set end = today; if empty, set start = today, end = today. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).

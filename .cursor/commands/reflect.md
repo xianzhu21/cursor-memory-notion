@@ -13,7 +13,7 @@ Creates (notion-create-pages):
 - reflection page under Task (`reflectionPageId` or create under resolved Task)
 
 Updates (notion-update-page):
-- Task page (`taskId`) - Reflection status
+- Task page (`taskId`) - Add "# Reflection" only (level 1 heading; no subpage text, no separator)
 
 ## Progressive Rule Loading
 
@@ -84,13 +84,14 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
    - Document technical improvements
 
 4. **Create Reflection Document**
-   - notion-create-pages: reflection page under Task (or use `reflectionPageId`)
+   - If `reflectionPageId` is set: notion-fetch to verify page exists and is not deleted. If valid, use it and skip creation/config update.
+   - If `reflectionPageId` is null or page is deleted: notion-create-pages under Task. Update config per notion-memory-bank-ops.mdc (read file, write only if reflectionPageId differs).
    - Structure: Summary, What Went Well, Challenges, Lessons Learned, Process Improvements, Technical Improvements, Next Steps
 
 5. **Update Memory Bank**
    - notion-update-page Task page with reflection status
-   - Mark reflection phase as complete
    - Use `replace_content_range` to replace "## 8. Next Steps" or "## Next Steps" content with "Run `/archive` to finalize task documentation."
+   - Add "# Reflection" only (level 1 heading; no subpage text, no separator). The reflection page is the child page under the Task.
 
 ## Usage
 

@@ -11,13 +11,16 @@ When using Notion as Memory Bank, **MANDATORY** steps. Do NOT skip subpage creat
 ## Verification Steps (Execute in Order)
 
 1. **Read config**: Get `projectId`, `taskId`, `activeContextPageId`, `progressPageId` from `.cursor/notion-memory-bank.json`
-2. **Task creation (VAN only, when taskId is null or empty)**: If running `/van` and `taskId` is null or empty string `""`, create task first per van.md step 2 (follow task-creation-notion.mdc). Then proceed. For other commands, taskId must be set.
+2. **Task creation / validation (VAN only)**: If running `/van`, follow van.md step 2 in full:
+   - If `taskId` is null or empty: create task per task-creation-notion.mdc, then proceed.
+   - If `taskId` exists AND user provided description: notion-fetch Task page, compare title with description. If clearly different (different topic/intent), **MUST ask**: "Current task (TASK-xxx: <title>) doesn't match your description. Is this a new task? Should I create it?" – do not skip. If user confirms new task, follow task-creation-notion.mdc.
+   - For other commands, taskId must be set.
 3. **Resolve identifiers**: PROJECT- → notion-search in Projects; TASK- → notion-search in Tasks. Get page IDs from results.
 4. **Fetch pages**: `notion-fetch` Project and Task pages by resolved URLs
 5. **Project subpages (MANDATORY if null)** – **Search first to avoid duplicates**:
    - If `activeContextPageId` is null: `notion-search` with `query: "Active Context"`, `page_url: resolvedProjectPageUrl` to find existing subpage under Project. If a child page with title "Active Context" is found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Active Context" } }]`.
    - If `progressPageId` is null: `notion-search` with `query: "Progress"`, `page_url: resolvedProjectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** create.
-   - **Update config**: Write the resolved or new page IDs into `.cursor/notion-memory-bank.json` for `activeContextPageId` and/or `progressPageId`. This step is REQUIRED.
+   - **Update config**: Follow notion-memory-bank-ops.mdc config rules. Read current file, compare `activeContextPageId`/`progressPageId` with new values. Write only if at least one differs; otherwise do NOT write.
 6. **Report**: Confirm Project, Task, activeContext, and progress pages are accessible
 
 ## Skip File Verification

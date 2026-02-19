@@ -150,6 +150,10 @@ graph TD
     CheckActive -->|"Yes"| ReadyPlan["Ready for<br>Planning"]
 ```
 
+## 📝 TASK PAGE PLAN HEADING (Notion)
+
+Use **# Plan** as the top-level plan heading on the Task page (not "# Implementation Plan: [Task name]").
+
 ## 📝 TASKS.MD UPDATE FORMAT
 
 During planning, update tasks.md with this structure:

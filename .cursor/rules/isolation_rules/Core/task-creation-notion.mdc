@@ -22,6 +22,7 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 | Name | title | Task title |
 | Project | relation | Project page URL (string) |
 | Status | status | `Not Started`, `Pending`, `In Progress`, `Done` |
+| Dates | date | `date:Dates:start` = today (YYYY-MM-DD), `date:Dates:is_datetime` = 0 |
 
 ## Workflow
 
@@ -31,16 +32,18 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 
 2. **Create Task**
    - Extract `data_source_id` from `tasksDataSourceUrl` (UUID after `collection://`)
+   - Set today's date as `YYYY-MM-DD` for Dates property
    - `notion-create-pages` with:
      - `parent`: `{ "type": "data_source_id", "data_source_id": "<uuid>" }`
-     - `pages`: `[{ "properties": { "Name": "<title>", "Project": "<project page URL>", "Status": "Not Started" } }]`
+     - `pages`: `[{ "properties": { "Name": "<title>", "Project": "<project page URL>", "Status": "Not Started", "date:Dates:start": "<today YYYY-MM-DD>", "date:Dates:is_datetime": 0 } }]`
+   - If your schema uses a different date property name (e.g. "Due"), replace "Dates" accordingly
 
 3. **Extract TASK-ID**
    - `notion-fetch` the created page (from create response `url` or `id`)
    - Read `userDefined:ID` (e.g. TASK-1385)
 
 4. **Update Config**
-   - Write new `taskId` to `.cursor/notion-memory-bank.json`
+   - Follow notion-memory-bank-ops.mdc config rules. Read current file; write `taskId` only if new value differs from current. If unchanged, do NOT write.
 
 ## VAN-Specific
 

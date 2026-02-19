@@ -27,7 +27,7 @@ Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc
 
 2. **Create Task**
    - Follow `Core/task-creation-notion.mdc` (resolve project, notion-create-pages, extract TASK-ID)
-   - For extra properties: use `date:Due:start`, `date:Due:is_datetime` (0), etc.
+   - Dates defaults to today; override with user-provided date if given. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).
    - For relation `Project`: pass project page URL as **string** (not array)
 
 3. **Confirm & Return TASK-ID**

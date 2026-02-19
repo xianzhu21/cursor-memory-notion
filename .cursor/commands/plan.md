@@ -71,6 +71,7 @@ Load: .cursor/rules/isolation_rules/Level4/workflow-level4.mdc
 
 5. **Update Memory Bank**
    - notion-update-page on Task page with complete plan
+   - Use **# Plan** as the top-level plan heading (not "# Implementation Plan: [Task name]")
    - Mark planning phase as complete
 
 6. **Update Task Page Workflow Sections**

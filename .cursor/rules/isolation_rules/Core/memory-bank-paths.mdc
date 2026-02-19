@@ -51,6 +51,11 @@ Read `.cursor/notion-memory-bank.json`:
 | reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageId |
 | archive/archive-[id].md | Archive subpage under Task | archivePageId |
 
+## Page Links in Content
+
+- **Cross-references** (References, progress, activeContext): use `<mention-page url="[URL]">[Title]</mention-page>`
+- **Preserving child pages** (replace_content_range): use `<page url="...">` to keep child structure. Do NOT use `<page>` for cross-references – that can move pages.
+
 ## MCP Tool Usage
 
 - **Read**: Resolve identifier → `notion-fetch` with page ID or URL.
