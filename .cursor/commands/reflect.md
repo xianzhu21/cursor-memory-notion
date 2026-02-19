@@ -90,6 +90,7 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
 5. **Update Memory Bank**
    - notion-update-page Task page with reflection status
    - Mark reflection phase as complete
+   - Replace "## 8. Next Steps" → "Run `/archive` to finalize task documentation."
 
 ## Usage
 

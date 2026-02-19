@@ -108,6 +108,10 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - Verify changes meet requirements
    - notion-update-page Task page with completion status
 
+7. **Update Task Page Workflow Sections**
+   - Replace "## 7. Creative Phases" line if it says "Proceed to `/build`" → "Proceeded to `/build`. Completed."
+   - Replace "## 8. Next Steps" → "Run `/reflect` for task review."
+
 ## Usage
 
 Type `/build` to start implementation based on the plan in Notion Task page.
