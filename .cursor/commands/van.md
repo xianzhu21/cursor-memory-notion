@@ -22,6 +22,7 @@ Load: .cursor/rules/isolation_rules/main.mdc
 Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
 Load: .cursor/rules/isolation_rules/Core/platform-awareness.mdc
 Load: .cursor/rules/isolation_rules/Core/notion-verification.mdc
+Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc
 ```
 (Notion backend: use notion-verification; skip file-verification)
 
@@ -42,22 +43,31 @@ After determining complexity level, load:
    - Adapt commands for platform
    - Set path separators
 
-2. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
+2. **Task Creation / Task Validation**
+   - Read config: projectId, taskId, tasksDataSourceUrl, projectsDataSourceUrl
+   - Treat `taskId` as "needs creation" when it is `null` or empty string `""`
+   - **If taskId is null/empty**: Follow `Core/task-creation-notion.mdc`. User MUST provide task description in `/van [description]`; if missing, ask: "Please provide a task description, e.g. /van Add user authentication feature"
+   - **If taskId exists AND user provided description**: notion-fetch current Task page, compare its title with user's van description
+     - If description clearly differs from current task (different topic/intent): ask: "当前 task (TASK-xxx: <title>) 与描述不符。是否为新 task？是否要创建？"
+     - If user confirms new task: follow task-creation-notion.mdc, update config
+     - If user says no: continue with existing task
+
+3. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
    - [ ] Read config: projectId, taskId, activeContextPageId, progressPageId
    - [ ] Resolve PROJECT-/TASK- via notion-search; notion-fetch Project and Task pages
-   - [ ] If activeContextPageId or progressPageId is null: notion-create-pages under Project (title: "Active Context" / "Progress"), then update .cursor/notion-memory-bank.json with new IDs
+   - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing "Active Context" / "Progress"; if not found, notion-create-pages. Update config with resolved or new IDs (avoid duplicates)
    - [ ] Confirm all Project, Task, activeContext, progress pages are accessible
 
-3. **Task Analysis**
+4. **Task Analysis**
    - notion-fetch Task page (resolve `taskId` via notion-search) for plan/checklist
    - Analyze task requirements
    - Determine complexity level (1-4)
 
-4. **Route Based on Complexity**
+5. **Route Based on Complexity**
    - **Level 1:** Continue in VAN mode, proceed to implementation
    - **Level 2-4:** Transition to `/plan` command
 
-5. **Update Memory Bank**
+6. **Update Memory Bank**
    - notion-update-page on Task page (complexity)
    - notion-update-page on activeContext page (current focus)
 

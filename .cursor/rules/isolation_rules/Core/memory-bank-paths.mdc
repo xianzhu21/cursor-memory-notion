@@ -8,6 +8,8 @@ alwaysApply: true
 
 **CRITICAL:** This project uses **Notion** as the Memory Bank backend. All read/write operations MUST use Notion MCP tools (`notion-fetch`, `notion-update-page`, `notion-create-pages`), NOT local file operations.
 
+**Language:** All content written to Notion (page body, properties, subtasks, etc.) MUST be in **English**. Chat responses to the user may use the user's language.
+
 ## Identifier Convention
 
 - **PROJECT-** prefix: Look up in **Projects** database
@@ -22,7 +24,7 @@ Read `.cursor/notion-memory-bank.json`:
 | Key | Required | Description |
 |-----|----------|-------------|
 | projectId | Yes | e.g. `PROJECT-123` – current Project |
-| taskId | Yes | e.g. `TASK-588` – current Task |
+| taskId | No* | e.g. `TASK-588` – current Task; null → `/van [description]` creates one |
 | projectsDataSourceUrl | Yes | Projects data source (collection://...) – from fetch of Projects database |
 | tasksDataSourceUrl | Yes | Tasks data source (collection://...) – from fetch of Tasks database |
 | activeContextPageId | No | activeContext subpage ID; if null, create under Project |

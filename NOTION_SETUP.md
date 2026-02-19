@@ -29,11 +29,13 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 
 **Required:**
 - `projectId` – e.g. `PROJECT-123` (your Project)
-- `taskId` – e.g. `TASK-588` (your current Task)
+- `tasksDataSourceUrl`, `projectsDataSourceUrl` – from `notion-fetch` on the databases (see below)
+
+**Optional:**
+- `taskId` – e.g. `TASK-588`. Leave as `null` or empty string `""` to have `/van [task description]` create a new task automatically (same flow as original cursor-memory-bank).
+- Subpage IDs (`activeContextPageId`, `progressPageId`, etc.) – leave as `null` to have commands create them automatically.
 
 **Data source URLs:** Fetch the Projects and Tasks databases with `notion-fetch` to get the `collection://` URLs from `<data-source>` tags. Use these for `projectsDataSourceUrl` and `tasksDataSourceUrl`.
-
-**Optional:** Set subpage IDs if you've already created them. Leave as `null` to have commands create them automatically.
 
 ## 4. Mapping (by ID)
 
@@ -54,9 +56,11 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 
 ## 6. Command Usage
 
-Same as before: `/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive`
+Same as original cursor-memory-bank: `/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive`
 
-Update `taskId` when you switch to a different task.
+**First run:** Set `taskId` to `null` in config. Run `/van Add user authentication to the application` – a new task is created in Notion and `taskId` is updated automatically.
+
+**Switch task:** Use `/create-task <title>` to create a new task, then run `/van` (or update `taskId` manually and run `/van`).
 
 ## 7. Token Optimization
 

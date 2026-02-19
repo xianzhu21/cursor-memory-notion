@@ -10,7 +10,7 @@ Reads from (resolve PROJECT-/TASK- via notion-search, then notion-fetch):
 - Project page body (`projectId`, e.g. PROJECT-123) - projectBrief (if exists)
 
 Updates (via notion-update-page):
-- Task page (`taskId`) - Adds detailed implementation plan
+- Task page (`taskId`) - Adds detailed implementation plan. **Write in English** (Notion content rule).
 
 ## Progressive Rule Loading
 

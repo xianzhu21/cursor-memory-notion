@@ -27,6 +27,18 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 - Creative phases identified → `/creative`
 - No creative phases → `/build`
 
+### `/plan-update` - Incremental Plan Updates
+**Purpose:** Add or update plan content without replacing the existing plan. Preserves user edits and manual additions.
+
+**When to use:**
+- After `/plan` when you have new findings, subtasks, or refinements
+- During planning phase when you discover issues (e.g. "重复创建了 Active Context")
+- Avoid re-running `/plan` which would overwrite the entire plan
+
+**Next steps:**
+- More refinements → `/plan-update`
+- Ready to implement → `/build`
+
 ### `/creative` - Design Decisions
 **Purpose:** Perform structured design exploration for components requiring creative phases.
 

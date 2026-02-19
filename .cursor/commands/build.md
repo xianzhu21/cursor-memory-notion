@@ -12,6 +12,7 @@ Reads from (resolve TASK- via notion-search, then notion-fetch):
 Updates (notion-update-page):
 - Task page (`taskId`) - Implementation progress, test results, status
 - progress page (`progressPageId`) - Build status, test outcomes, observations
+- **Write in English** (Notion content rule)
 
 ## Progressive Rule Loading
 

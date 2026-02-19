@@ -101,7 +101,7 @@ For a detailed explanation of how Memory Bank implements these principles, see t
 
 **This fork uses Notion as the default Memory Bank backend.** All operations use Notion MCP (`notion-fetch`, `notion-update-page`, `notion-create-pages`).
 
-**Setup:** Copy `.cursor/notion-memory-bank.json.example` to `.cursor/notion-memory-bank.json`, then configure your `projectId`, `taskId`, and data source URLs. See **[NOTION_SETUP.md](NOTION_SETUP.md)** for details.
+**Setup:** Copy `.cursor/notion-memory-bank.json.example` to `.cursor/notion-memory-bank.json`, then configure your `projectId` and data source URLs. Set `taskId` to `null` for first run – `/van [task description]` will create a new task automatically (same flow as original cursor-memory-bank). See **[NOTION_SETUP.md](NOTION_SETUP.md)** for details.
 
 ### Notion Backend
 
@@ -114,12 +114,13 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 **Identifier convention:** `PROJECT-123` and `TASK-588` are resolved via `notion-search` against the respective databases. Add an `ID` property to your databases for reliable lookup.
 
 **Config keys** (in `.cursor/notion-memory-bank.json`):
-- `projectId`, `taskId` – Current project and task
+- `projectId` – Current project (required)
+- `taskId` – Current task; set to `null` or `""` to have `/van [description]` create one automatically
 - `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database collection URLs
 - `activeContextPageId`, `progressPageId` – Optional subpage IDs under Project
 - `creativePageId`, `reflectionPageId`, `archivePageId` – Optional subpage IDs under Task
 
-**Create a new task:** Use `/create-task <title>` to add a task to the Tasks database and associate it with the current project. The command returns the new `TASK-ID` and can update `taskId` in config.
+**Create a new task:** Run `/van [task description]` with `taskId` null – a task is created in Notion and config is updated. Or use `/create-task <title>` to create a task first, then `/van` to load it.
 
 ## Installation Instructions
 
@@ -161,6 +162,7 @@ Edit `.cursor/notion-memory-bank.json` with your Notion project/task IDs and dat
 1. **Type `/` in the Cursor chat** to see available commands:
    - `/van` - Initialization & entry point
    - `/plan` - Task planning
+   - `/plan-update` - Incremental plan updates (preserves existing content)
    - `/creative` - Design decisions
    - `/build` - Code implementation
    - `/reflect` - Task reflection
@@ -179,13 +181,14 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 
 ### Quick Start
 
-1. **Initialize with `/van`**:
+1. **Initialize with `/van`** (same flow as original cursor-memory-bank):
    ```
    /van Add user authentication to the application
    ```
+   - Creates a new task in Notion if `taskId` is null (config updated automatically)
    - Analyzes your project structure
    - Determines task complexity (Level 1-4)
-   - Creates Memory Bank structure if needed
+   - Creates Memory Bank subpages (Active Context, Progress) if needed
    - Routes to appropriate next command
 
 2. **Follow the Workflow Based on Complexity**:
@@ -242,11 +245,24 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 - Creates implementation plan (complexity-appropriate)
 - Performs technology validation (Level 2-4)
 - Identifies components requiring creative phases
-- Updates `memory-bank/tasks.md` with complete plan
+- **Replaces** Task page with complete plan (previous content is overwritten)
 
 **Next steps:**
 - Creative phases identified → `/creative`
 - No creative phases → `/build`
+
+#### `/plan-update` - Incremental Plan Updates
+**Purpose:** Add or update plan content without replacing existing plan. Preserves user edits.
+
+**Usage:**
+```
+/plan-update [what to add, e.g. 发现重复创建 Active Context，添加为 subtask]
+```
+
+**What it does:**
+- Fetches current Task page content
+- Adds new subtasks/sections or updates specific parts using `insert_content_after` / `replace_content_range`
+- Does NOT replace entire plan
 
 #### `/creative` - Design Decisions
 **Purpose:** Perform structured design exploration for flagged components.

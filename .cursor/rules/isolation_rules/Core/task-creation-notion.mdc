@@ -1,0 +1,53 @@
+---
+description: Shared task creation workflow for Notion. Load when VAN or create-task needs to create a task.
+globs: task-creation-notion.mdc
+alwaysApply: false
+---
+
+# TASK CREATION (NOTION)
+
+Shared workflow for creating a task in the Tasks database. Used by `/van` (when taskId is null/empty) and `/create-task`.
+
+## Prerequisites
+
+- Config: `projectId`, `tasksDataSourceUrl`, `projectsDataSourceUrl` from `.cursor/notion-memory-bank.json`
+- Task title (from user: `/van [description]` or `/create-task <title>`)
+
+## Tasks DB Schema (Common Case)
+
+For typical Tasks databases, use these property names. Fetch schema if your DB differs:
+
+| Property | Type | Example |
+|----------|------|---------|
+| Name | title | Task title |
+| Project | relation | Project page URL (string) |
+| Status | status | `Not Started`, `Pending`, `In Progress`, `Done` |
+
+## Workflow
+
+1. **Resolve Project**
+   - `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `projectId` (e.g. PROJECT-37)
+   - Get project page URL from first result
+
+2. **Create Task**
+   - Extract `data_source_id` from `tasksDataSourceUrl` (UUID after `collection://`)
+   - `notion-create-pages` with:
+     - `parent`: `{ "type": "data_source_id", "data_source_id": "<uuid>" }`
+     - `pages`: `[{ "properties": { "Name": "<title>", "Project": "<project page URL>", "Status": "Not Started" } }]`
+
+3. **Extract TASK-ID**
+   - `notion-fetch` the created page (from create response `url` or `id`)
+   - Read `userDefined:ID` (e.g. TASK-1385)
+
+4. **Update Config**
+   - Write new `taskId` to `.cursor/notion-memory-bank.json`
+
+## VAN-Specific
+
+- Treat `taskId` as "needs creation" when it is `null` or empty string `""`
+- User must provide task description in `/van [description]`; if missing, ask
+
+## create-task-Specific
+
+- Optional: ask for Status, Assignee, Dates, Module, Man-Day, content
+- After creation: ask user if they want to update `taskId` in config

@@ -8,6 +8,8 @@ alwaysApply: false
 
 Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → Projects database; **TASK-** prefix → Tasks database.
 
+**Language:** All content written to Notion (page body, properties) MUST be in **English**.
+
 ## Resolve Identifier to Page
 
 1. **PROJECT-X**: `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `PROJECT-X` or `X`. Use page URL from first result.
