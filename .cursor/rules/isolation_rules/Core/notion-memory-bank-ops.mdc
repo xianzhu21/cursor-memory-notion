@@ -19,7 +19,7 @@ Never write the file when no field value actually changes.
 
 **Language:** All content written to Notion (page body, properties) MUST be in **English**.
 
-**Page links:** To reference an existing page (e.g. References, progress): use `<mention-page url="[URL]">[Title]</mention-page>`. Use `<page url="...">` only when preserving child pages during replace_content_range (keeps structure). Do NOT use `<page>` for cross-references – that can move pages.
+**Page links:** To reference an existing page (e.g. References, progress): use `<mention-page url="[URL]">[Title]</mention-page>`. Use `<page url="...">` only when preserving child pages during replace_content_range (keeps structure). Do NOT use `<page>` for cross-references – that can move pages. **Reflection/Archive subpages under Task:** Use ONLY `<page url="...">` – do NOT add `<mention-page>` (creates redundant "Title: [link]" display).
 
 ## Resolve Identifier to Page
 

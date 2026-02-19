@@ -55,6 +55,7 @@ Read `.cursor/notion-memory-bank.json`:
 
 - **Cross-references** (References, progress, activeContext): use `<mention-page url="[URL]">[Title]</mention-page>`
 - **Preserving child pages** (replace_content_range): use `<page url="...">` to keep child structure. Do NOT use `<page>` for cross-references – that can move pages.
+- **Reflection/Archive under Task:** Use ONLY `<page url="...">`. Do NOT combine with `<mention-page>` – that creates redundant display.
 
 ## MCP Tool Usage
 

@@ -91,7 +91,7 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
 5. **Update Memory Bank**
    - notion-update-page Task page with reflection status
    - Use `replace_content_range` to replace "## 8. Next Steps" or "## Next Steps" content with "Run `/archive` to finalize task documentation."
-   - Add "# Reflection" at the **end** of the Task page (level 1 heading; no subpage text, no separator). **Order**: (1) Replace "## 8. Next Steps" content with "Run `/archive`..."; (2) Use `replace_content_range` with `selection_with_ellipsis` matching "## 8. Next Steps...Run `/archive` to finalize task documentation." and `new_str` = same + "\n\n# Reflection\n<page url=\"[reflectionPageUrl]\">Reflection TASK-xxx</page>". Use `<page>` block (not `<mention-page>`). **Do not reference pages in trash** – if reflection page is deleted, create a new one with notion-create-pages first.
+   - Add "# Reflection" at the **end** of the Task page (level 1 heading; no subpage text, no separator). **Order**: (1) Replace "## 8. Next Steps" or "## Next Steps" content with "Run `/archive`..."; (2) Use `replace_content_range` with `selection_with_ellipsis` matching the heading that exists on the page – either "## 8. Next Steps...Run `/archive` to finalize task documentation." or "## Next Steps...Run `/archive` to finalize task documentation." – and `new_str` = same + "\n\n# Reflection\n<page url=\"[reflectionPageUrl]\">Reflection TASK-xxx</page>". Use `<page>` block (not `<mention-page>`). **Do not reference pages in trash** – if reflection page is deleted, create a new one with notion-create-pages first.
 
 ## Usage
 

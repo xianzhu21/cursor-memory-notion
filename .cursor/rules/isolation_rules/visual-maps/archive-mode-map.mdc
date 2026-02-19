@@ -223,7 +223,7 @@ When marking task COMPLETE:
 
 1. **Properties** (`update_properties`): **Status** = "Done"; **Dates**: fetch first, if start exists → keep as start, set end = today; if empty → start = today, end = today. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).
 2. **Content**: Replace "## 8. Next Steps" with "Run `/van` for next task."
-3. **Content**: Replace "# Reflection" with "# Reflection & Archive" (heading only; keep child pages with `<page url="...">` to preserve structure).
+3. **Content**: Replace "# Reflection" with "# Reflection & Archive" (heading only; keep child pages with `<page url="...">` to preserve structure – do NOT add `<mention-page>` for Reflection/Archive subpages).
 
 ## 📊 TASKS.MD FINAL UPDATE
 
