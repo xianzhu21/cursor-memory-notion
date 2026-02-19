@@ -48,7 +48,7 @@ After determining complexity level, load:
    - Treat `taskId` as "needs creation" when it is `null` or empty string `""`
    - **If taskId is null/empty**: Follow `Core/task-creation-notion.mdc`. User MUST provide task description in `/van [description]`; if missing, ask: "Please provide a task description, e.g. /van Add user authentication feature"
    - **If taskId exists AND user provided description**: notion-fetch current Task page, compare its title with user's van description
-     - If description clearly differs from current task (different topic/intent): ask: "当前 task (TASK-xxx: <title>) 与描述不符。是否为新 task？是否要创建？"
+     - If description clearly differs from current task (different topic/intent): ask: "Current task (TASK-xxx: <title>) doesn't match your description. Is this a new task? Should I create it?"
      - If user confirms new task: follow task-creation-notion.mdc, update config
      - If user says no: continue with existing task
 

@@ -77,7 +77,11 @@ Load: .cursor/rules/isolation_rules/Phases/CreativePhase/creative-phase-algorith
    - notion-create-pages: creative page under Task (or use `creativePageId`)
    - notion-update-page: Task page with design decisions
 
-5. **Verify Completion**
+5. **Update Task Page Workflow Sections**
+   - Use `notion-update-page` with `command: "replace_content_range"` and `selection_with_ellipsis` matching the section.
+   - Replace "## 8. Next Steps" or "## Next Steps" content with "Run `/build` for implementation."
+
+6. **Verify Completion**
    - Ensure all flagged components have completed creative phases
    - Mark creative phase complete in Task page
 

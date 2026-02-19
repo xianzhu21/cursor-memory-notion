@@ -83,27 +83,27 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
 
 3. **Archive Document Structure**
    ```
-   # TASK ARCHIVE: [Task Name]
+   # Task Archive: [Task Name]
    
-   ## METADATA
+   ## Metadata
    - Task ID, dates, complexity level
    
-   ## SUMMARY
+   ## Summary
    Brief overview of the task
    
-   ## REQUIREMENTS
+   ## Requirements
    What the task needed to accomplish
    
-   ## IMPLEMENTATION
+   ## Implementation
    How the task was implemented
    
-   ## TESTING
+   ## Testing
    How the solution was verified
    
-   ## LESSONS LEARNED
+   ## Lessons Learned
    Key takeaways from the task
    
-   ## REFERENCES
+   ## References
    Links to related documents (reflection, creative phases, etc.)
    ```
 

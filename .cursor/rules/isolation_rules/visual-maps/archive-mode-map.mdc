@@ -62,14 +62,14 @@ The archive document should follow this structured format:
 ```mermaid
 graph TD
     subgraph "Archive Document Structure"
-        Header["# TASK ARCHIVE: [Task Name]"]
-        Meta["## METADATA<br>Task info, dates, complexity"]
-        Summary["## SUMMARY<br>Brief overview of the task"]
-        Requirements["## REQUIREMENTS<br>What the task needed to accomplish"]
-        Implementation["## IMPLEMENTATION<br>How the task was implemented"]
-        Testing["## TESTING<br>How the solution was verified"]
-        Lessons["## LESSONS LEARNED<br>Key takeaways from the task"]
-        Refs["## REFERENCES<br>Links to related documents"]
+        Header["# Task Archive: [Task Name]"]
+        Meta["## Metadata<br>Task info, dates, complexity"]
+        Summary["## Summary<br>Brief overview of the task"]
+        Requirements["## Requirements<br>What the task needed to accomplish"]
+        Implementation["## Implementation<br>How the task was implemented"]
+        Testing["## Testing<br>How the solution was verified"]
+        Lessons["## Lessons Learned<br>Key takeaways from the task"]
+        Refs["## References<br>Links to related documents"]
     end
     
     Header --> Meta --> Summary --> Requirements --> Implementation --> Testing --> Lessons --> Refs
@@ -260,7 +260,7 @@ When archiving is complete, update tasks.md with:
 When archiving is complete, notify user with:
 
 ```
-## TASK ARCHIVED
+## Task Archived
 
 ✅ Archive document created in docs/archive/
 ✅ All task documentation preserved

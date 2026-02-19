@@ -73,6 +73,10 @@ Load: .cursor/rules/isolation_rules/Level4/workflow-level4.mdc
    - notion-update-page on Task page with complete plan
    - Mark planning phase as complete
 
+6. **Update Task Page Workflow Sections**
+   - Use `notion-update-page` with `command: "replace_content_range"` and `selection_with_ellipsis` matching the section.
+   - Replace "## 8. Next Steps" or "## Next Steps" content with "Run `/creative` for design exploration, or `/build` for implementation."
+
 ## Usage
 
 Type `/plan` to start planning based on the task in Notion (Task page by ID).
