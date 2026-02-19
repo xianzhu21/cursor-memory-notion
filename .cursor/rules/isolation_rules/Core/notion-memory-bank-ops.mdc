@@ -15,7 +15,7 @@ Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → 
 4. **If at least one value differs** → write only the changed fields, merge with existing content.
 Never write the file when no field value actually changes.
 
-**Format:** Write `.cursor/notion-memory-bank.json` as formatted JSON (2-space indentation, one key per line).
+**Format:** Write `.cursor/notion-memory-bank.json` as formatted JSON (2-space indentation, one key per line). **Always** parse existing content, merge changes, then serialize with `JSON.stringify(obj, null, 2)` – never write minified single-line JSON.
 
 **Language:** All content written to Notion (page body, properties) MUST be in **English**.
 
