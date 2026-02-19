@@ -1,1 +1,11 @@
-{"projectId":"PROJECT-xxx","taskId":null,"projectsDataSourceUrl":"collection://YOUR_PROJECTS_DATA_SOURCE_ID","tasksDataSourceUrl":"collection://YOUR_TASKS_DATA_SOURCE_ID","activeContextPageId":null,"progressPageId":null,"creativePageId":null,"reflectionPageId":null,"archivePageId":null}
+{
+  "projectId": "PROJECT-xxx",
+  "taskId": null,
+  "projectsDataSourceUrl": "collection://YOUR_PROJECTS_DATA_SOURCE_ID",
+  "tasksDataSourceUrl": "collection://YOUR_TASKS_DATA_SOURCE_ID",
+  "activeContextPageId": null,
+  "progressPageId": null,
+  "creativePageId": null,
+  "reflectionPageId": null,
+  "archivePageId": null
+}

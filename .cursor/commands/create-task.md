@@ -55,7 +55,7 @@ Or without title – the AI will ask:
 
 Example:
 ```
-/create-task 实现 Notion 同步 API 重试逻辑
+/create-task Implement Notion sync API retry logic
 ```
 
 ## Next Steps

@@ -24,12 +24,13 @@ Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
 
 1. **Fetch Current Plan**
    - Read config: `taskId`, `tasksDataSourceUrl`
+   - **Precondition**: If `taskId` is null or empty, ask user to run `/van [description]` or `/create-task` first – plan-update requires an existing task.
    - Resolve TASK- via notion-search in Tasks database
    - **notion-fetch** Task page to get full existing content
 
 2. **Interpret User Input**
    - User provides: new finding, subtask to add, section to update, or refinement
-   - If user did not specify what to add: ask: "请说明要添加或更新什么内容？例如：发现重复创建 Active Context 和 Progress，需添加为 subtask"
+   - If user did not specify what to add: ask: "What would you like to add or update? E.g. 'Avoid duplicate Active Context and Progress: search before create'"
 
 3. **Apply Incremental Update**
    - **Add new subtask**: Find the Subtasks section (e.g. `## 3. Subtasks` or `### Subtasks`); use `insert_content_after` to append `- [ ] **3.X** <description>`. **Write in English** (Notion content rule).

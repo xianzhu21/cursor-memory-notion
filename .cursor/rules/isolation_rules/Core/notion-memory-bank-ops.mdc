@@ -28,9 +28,11 @@ Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → 
 
 ## Create Missing Subpages (MANDATORY when config IDs are null)
 
+**Note:** For Project subpages (activeContext, progress), use **notion-verification.mdc** which implements search-before-create to avoid duplicates. The steps below are superseded by notion-verification when running VAN or other commands that load it.
+
 **Project subpages** (activeContext, progress): Resolve `projectId` → get Project page ID. For each null ID:
-1. `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context" } }]` or `{ title: "Progress" }`
-2. Extract created page ID from tool response
+1. `notion-search` with `query: "Active Context"` or `"Progress"`, `page_url: projectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context" } }]` or `{ title: "Progress" }`
+2. Extract created page ID from tool response (or use resolved ID from search)
 3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageId` or `progressPageId`
 
 **Task subpages** (creative, reflection, archive): Resolve `taskId` → get Task page ID. For each null ID:
