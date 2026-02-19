@@ -52,6 +52,10 @@ graph TD
     UpdateSystem --> Transition["NEXT MODE:<br>ARCHIVE MODE"]
 ```
 
+## 📋 REFLECTION ON TASK PAGE (Notion)
+
+The "# Reflection" section is appended at the **end** of the Task page. Use `insert_content_after` with `selection_with_ellipsis` matching the last section (e.g. "## 8. Next Steps...Run `/archive`").
+
 ## 📋 REFLECTION STRUCTURE
 
 The reflection should follow this structured format:
@@ -66,10 +70,9 @@ graph TD
         Lessons["## LESSONS LEARNED<br>Key insights gained from the experience"]
         ProcessImp["## PROCESS IMPROVEMENTS<br>How to improve for future tasks"]
         TechImp["## TECHNICAL IMPROVEMENTS<br>Better approaches for similar tasks"]
-        NextSteps["## NEXT STEPS<br>Follow-up actions or future work"]
     end
     
-    Header --> Summary --> WWW --> Challenges --> Lessons --> ProcessImp --> TechImp --> NextSteps
+    Header --> Summary --> WWW --> Challenges --> Lessons --> ProcessImp --> TechImp
 ```
 
 ## 📊 REQUIRED FILE STATE VERIFICATION
@@ -154,10 +157,6 @@ graph TD
 ## Technical Improvements
 - [Technical improvement 1]
 - [Technical improvement 2]
-
-## Next Steps
-- [Follow-up task 1]
-- [Follow-up task 2]
 ```
 
 ## 📊 REFLECTION QUALITY METRICS
@@ -191,7 +190,6 @@ During reflection, update tasks.md with:
 - **What Went Well**: [Key successes]
 - **Challenges**: [Key challenges]
 - **Lessons Learned**: [Key lessons]
-- **Next Steps**: [Follow-up actions]
 ```
 
 ## 📊 REFLECTION VERIFICATION CHECKLIST
@@ -204,7 +202,6 @@ During reflection, update tasks.md with:
 - Lessons Learned section completed? [YES/NO]
 - Process Improvements identified? [YES/NO]
 - Technical Improvements identified? [YES/NO]
-- Next Steps documented? [YES/NO]
 - reflection.md created? [YES/NO]
 - tasks.md updated with reflection status? [YES/NO]
 
