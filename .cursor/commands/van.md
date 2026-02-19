@@ -2,6 +2,8 @@
 
 This command initializes the Memory Bank system, performs platform detection, determines task complexity, and routes to appropriate workflows.
 
+**MANDATORY: When /van is invoked, ALWAYS execute the full workflow** (Steps 1–6). Do NOT skip steps. Do NOT substitute with other actions (e.g. only updating rules or files) even if the user message includes additional text. If the user message contains text that could be a task description (e.g. "Add X", "Clarify Y", "明确 Z"), treat it as the `/van [description]` and run Task Creation/Validation accordingly.
+
 ## Memory Bank Integration (Notion)
 
 **CRITICAL:** This project uses **Notion** as Memory Bank. Use page IDs from `.cursor/notion-memory-bank.json`:

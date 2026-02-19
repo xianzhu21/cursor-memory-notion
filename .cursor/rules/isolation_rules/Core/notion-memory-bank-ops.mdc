@@ -63,4 +63,4 @@ Never write the file when no field value actually changes.
 ## Update Task Status
 
 - `notion-update-page` with `command: "update_properties"` on the Task page (e.g. Status = "Done")
-- When archiving (task complete): Update Dates property – if current Dates has start, keep it as start and set end = today; if empty, set start = today, end = today. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).
+- When archiving (task complete): Update Dates property – if current Dates has start, keep it as start and set end = today; if empty, set start = today, end = today. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0). **Get today**: run `date +%Y-%m-%d`.

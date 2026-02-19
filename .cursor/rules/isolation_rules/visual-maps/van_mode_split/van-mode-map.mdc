@@ -5,6 +5,8 @@ alwaysApply: false
 ---
 # VAN MODE: INITIALIZATION PROCESS MAP
 
+**MANDATORY: When /van is invoked, execute the FULL workflow.** Do not skip steps. Do not only perform a subset (e.g. rule updates). If the user message includes text that could be a task description, treat it as the van description and run Task Creation/Validation.
+
 🚨 MANDATORY FIRST STEP: MEMORY BANK CREATION 🚨
 NO OPERATION CAN PROCEED WITHOUT MEMORY BANK STRUCTURE
 

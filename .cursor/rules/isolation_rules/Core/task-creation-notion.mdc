@@ -32,7 +32,7 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 
 2. **Create Task**
    - Extract `data_source_id` from `tasksDataSourceUrl` (UUID after `collection://`)
-   - Set today's date as `YYYY-MM-DD` for Dates property
+   - Set today's date as `YYYY-MM-DD` for Dates property. **Get today**: run `date +%Y-%m-%d` to avoid stale session date.
    - `notion-create-pages` with:
      - `parent`: `{ "type": "data_source_id", "data_source_id": "<uuid>" }`
      - `pages`: `[{ "properties": { "Name": "<title>", "Project": "<project page URL>", "Status": "Not Started", "date:Dates:start": "<today YYYY-MM-DD>", "date:Dates:is_datetime": 0 } }]`
