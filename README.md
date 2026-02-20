@@ -161,8 +161,7 @@ Edit `.cursor/notion-memory-bank.json` with your Notion project/task IDs and dat
 
 1. **Type `/` in the Cursor chat** to see available commands:
    - `/van` - Initialization & entry point
-   - `/plan` - Task planning
-   - `/plan-update` - Incremental plan updates (preserves existing content)
+   - `/plan` - Task planning (creates full plan if empty; updates incrementally if plan exists)
    - `/creative` - Design decisions
    - `/build` - Code implementation
    - `/reflect` - Task reflection
@@ -175,7 +174,7 @@ Edit `.cursor/notion-memory-bank.json` with your Notion project/task IDs and dat
 
 3. **Follow the workflow** - each command will guide you to the next step
 
-See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed command documentation.
+See [COMMANDS_README.md](COMMANDS_README.md) for detailed command documentation.
 
 ## Basic Usage
 
@@ -231,38 +230,23 @@ See [`.cursor/commands/README.md`](.cursor/commands/README.md) for detailed comm
 - Level 1 → `/build`
 - Level 2-4 → `/plan`
 
-#### `/plan` - Task Planning
-**Purpose:** Create detailed implementation plans based on complexity level.
+#### `/plan` - Task Planning (Create or Update)
+**Purpose:** Create or update implementation plans. Auto-detects Notion Task content: if Plan section is empty, creates a full plan; if it exists, applies incremental updates.
 
 **Usage:**
 ```
 /plan
+/plan [what to add, e.g. Avoid duplicate Active Context: search before create]
 ```
 
 **What it does:**
-- Reads task requirements from Task page or `memory-bank/tasks.md`
-- Reviews codebase structure
-- Creates implementation plan (complexity-appropriate)
-- Performs technology validation (Level 2-4)
-- Identifies components requiring creative phases
-- **Replaces** Task page with complete plan (previous content is overwritten)
+- Fetches Task page and checks for Plan section (`# Plan` or `## Plan`)
+- **Plan empty or missing** → Creates full implementation plan (complexity-appropriate), technology validation, creative phase identification
+- **Plan exists with content** → Applies incremental updates (add subtasks, sections, or replace specific parts) using `insert_content_after` / `replace_content_range`; never overwrites entire plan
 
 **Next steps:**
 - Creative phases identified → `/creative`
-- No creative phases → `/build`
-
-#### `/plan-update` - Incremental Plan Updates
-**Purpose:** Add or update plan content without replacing existing plan. Preserves user edits.
-
-**Usage:**
-```
-/plan-update [what to add, e.g. 发现重复创建 Active Context，添加为 subtask]
-```
-
-**What it does:**
-- Fetches current Task page content
-- Adds new subtasks/sections or updates specific parts using `insert_content_after` / `replace_content_range`
-- Does NOT replace entire plan
+- No creative phases / update complete → `/build`
 
 #### `/creative` - Design Decisions
 **Purpose:** Perform structured design exploration for flagged components.
@@ -511,7 +495,7 @@ The Memory Bank system is actively being developed and improved. Key points to u
 ## Resources
 
 - [NOTION_SETUP.md](NOTION_SETUP.md) - Notion configuration and mapping
-- [Commands Documentation](.cursor/commands/README.md) - Detailed command usage guide
+- [Commands Documentation](COMMANDS_README.md) - Detailed command usage guide
 - [Commands Migration Guide](COMMANDS_MIGRATION.md) - Migration from custom modes to commands
 - [Memory Bank Optimizations](MEMORY_BANK_OPTIMIZATIONS.md) - Detailed overview of token efficiency improvements
 - [Release Notes](RELEASE_NOTES.md) - Information about the latest changes

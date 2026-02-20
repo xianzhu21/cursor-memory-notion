@@ -17,27 +17,16 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 - Level 2-4 tasks → `/plan`
 
 ### `/plan` - Task Planning
-**Purpose:** Create detailed implementation plans based on complexity level.
+**Purpose:** Create or update implementation plans in the Notion Task page. Auto-detects: if Plan section is empty → creates full plan; if Plan exists → updates incrementally.
 
 **When to use:**
 - After `/van` determines Level 2-4 complexity
 - Need to create structured implementation plan
+- Need to add subtasks or refinements (use `/plan [description]`)
 
 **Next steps:**
 - Creative phases identified → `/creative`
 - No creative phases → `/build`
-
-### `/plan-update` - Incremental Plan Updates
-**Purpose:** Add or update plan content without replacing the existing plan. Preserves user edits and manual additions.
-
-**When to use:**
-- After `/plan` when you have new findings, subtasks, or refinements
-- During planning phase when you discover issues (e.g. "重复创建了 Active Context")
-- Avoid re-running `/plan` which would overwrite the entire plan
-
-**Next steps:**
-- More refinements → `/plan-update`
-- Ready to implement → `/build`
 
 ### `/creative` - Design Decisions
 **Purpose:** Perform structured design exploration for components requiring creative phases.
@@ -79,6 +68,17 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 **Next steps:**
 - After archiving complete → `/van` (for next task)
 
+## Phase Scope
+
+| Command | Scope | Does NOT |
+|---------|-------|----------|
+| `/van` | Init, task creation, complexity | Implement (Level 2-4) |
+| `/plan` | Notion Task page only | Modify code or files |
+| `/creative` | Design decisions (Notion) | Implement |
+| `/build` | Code implementation | Plan or design |
+| `/reflect` | Reflection (Notion) | Implement |
+| `/archive` | Archive (Notion) | Implement |
+
 ## Command Workflow
 
 ```
@@ -101,15 +101,15 @@ This approach reduces initial token usage by ~70% compared to loading all rules 
 
 ## Memory Bank Integration
 
-All commands read from and update files in the `memory-bank/` directory:
+**This fork uses Notion** as the Memory Bank backend (not local files). All commands read from and update Notion pages:
 
-- **tasks.md** - Source of truth for task tracking
-- **activeContext.md** - Current project focus
-- **progress.md** - Implementation status
-- **projectbrief.md** - Project foundation
-- **creative/** - Creative phase documents
-- **reflection/** - Reflection documents
-- **archive/** - Archive documents
+- **Task page** (`taskId`) - Source of truth for task tracking, plan, checklists
+- **activeContext page** - Current project focus
+- **progress page** - Implementation status
+- **Project page** (`projectId`) - projectBrief
+- **Creative / Reflection / Archive** - Subpages under Task when applicable
+
+See `.cursor/notion-memory-bank.json` and `memory-bank-paths.mdc` for configuration.
 
 ## Usage Examples
 

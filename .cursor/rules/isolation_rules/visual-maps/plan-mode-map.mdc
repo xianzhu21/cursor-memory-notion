@@ -12,7 +12,7 @@ alwaysApply: false
 
 ```mermaid
 graph TD
-    Start["START PLANNING"] --> ReadTasks["Read tasks.md<br>Core/task-tracking.md"]
+    Start["START PLANNING"] --> ReadTasks["Read Task page<br>Core/task-tracking.md"]
     
     %% Complexity Level Determination
     ReadTasks --> CheckLevel{"Determine<br>Complexity Level"}
@@ -25,7 +25,7 @@ graph TD
     L2Review --> L2Document["Document<br>Planned Changes"]
     L2Document --> L2Challenges["Identify<br>Challenges"]
     L2Challenges --> L2Checklist["Create Task<br>Checklist"]
-    L2Checklist --> L2Update["Update tasks.md<br>with Plan"]
+    L2Checklist --> L2Update["Update Task page<br>with Plan"]
     L2Update --> L2Tech["TECHNOLOGY<br>VALIDATION"]
     L2Tech --> L2Verify["Verify Plan<br>Completeness"]
     
@@ -35,7 +35,7 @@ graph TD
     L3Requirements --> L3Components["Identify Affected<br>Components"]
     L3Components --> L3Plan["Create Comprehensive<br>Implementation Plan"]
     L3Plan --> L3Challenges["Document Challenges<br>& Solutions"]
-    L3Challenges --> L3Update["Update tasks.md<br>with Plan"]
+    L3Challenges --> L3Update["Update Task page<br>with Plan"]
     L3Update --> L3Tech["TECHNOLOGY<br>VALIDATION"]
     L3Tech --> L3Flag["Flag Components<br>Requiring Creative"]
     L3Flag --> L3Verify["Verify Plan<br>Completeness"]
@@ -47,18 +47,18 @@ graph TD
     L4Diagrams --> L4Subsystems["Identify Affected<br>Subsystems"]
     L4Subsystems --> L4Dependencies["Document Dependencies<br>& Integration Points"]
     L4Dependencies --> L4Plan["Create Phased<br>Implementation Plan"]
-    L4Plan --> L4Update["Update tasks.md<br>with Plan"]
+    L4Plan --> L4Update["Update Task page<br>with Plan"]
     L4Update --> L4Tech["TECHNOLOGY<br>VALIDATION"]
     L4Tech --> L4Flag["Flag Components<br>Requiring Creative"]
     L4Flag --> L4Verify["Verify Plan<br>Completeness"]
     
-    %% Technology Validation Gate - NEW
+    %% Technology Validation Gate - Documentation only (PLAN does not run code)
     L2Tech & L3Tech & L4Tech --> TechGate["⛔ TECHNOLOGY<br>VALIDATION GATE"]
     TechGate --> TechSelection["Document Technology<br>Stack Selection"]
-    TechSelection --> TechHelloWorld["Create Hello World<br>Proof of Concept"]
-    TechHelloWorld --> TechDependencies["Verify Required<br>Dependencies"]
-    TechDependencies --> TechConfig["Validate Build<br>Configuration"]
-    TechConfig --> TechBuild["Complete Test<br>Build"]
+    TechSelection --> TechHelloWorld["Document POC<br>Requirements"]
+    TechHelloWorld --> TechDependencies["Document Required<br>Dependencies"]
+    TechDependencies --> TechConfig["Document Build<br>Configuration"]
+    TechConfig --> TechBuild["Document Validation<br>Checklist for /build"]
     TechBuild --> TechVerify["⛔ TECHNOLOGY<br>CHECKPOINT"]
     
     %% Verification & Completion
@@ -111,21 +111,23 @@ graph TD
     L4A --> L4B --> L4C --> L4D --> L4E --> L4F
 ```
 
-## 🔧 TECHNOLOGY VALIDATION WORKFLOW
+## 🔧 TECHNOLOGY VALIDATION WORKFLOW (PLAN: Document Only)
+
+**Note:** PLAN phase documents validation requirements only. `/build` executes them.
 
 ```mermaid
 graph TD
-    Start["Technology<br>Validation Start"] --> Select["Technology<br>Stack Selection"]
+    Start["Technology<br>Validation Start"] --> Select["Document Technology<br>Stack Selection"]
     Select --> Document["Document Chosen<br>Technologies"]
-    Document --> POC["Create Minimal<br>Proof of Concept"]
-    POC --> Build["Verify Build<br>Process Works"]
-    Build --> Dependencies["Validate All<br>Dependencies"]
-    Dependencies --> Config["Confirm Configuration<br>Files Are Correct"]
-    Config --> Test["Complete Test<br>Build/Run"]
-    Test --> Success{"All Checks<br>Pass?"}
+    Document --> POC["Document POC<br>Requirements"]
+    POC --> Build["Document Build<br>Verification Steps"]
+    Build --> Dependencies["Document Required<br>Dependencies"]
+    Dependencies --> Config["Document Configuration<br>Requirements"]
+    Config --> Test["Document Validation<br>Checklist for /build"]
+    Test --> Success{"All Documented<br>for /build?"}
     
     Success -->|"Yes"| Ready["Ready for<br>Implementation"]
-    Success -->|"No"| Fix["Fix Technology<br>Issues"]
+    Success -->|"No"| Fix["Complete Missing<br>Documentation"]
     Fix --> Document
     
     style Start fill:#4da6ff,stroke:#0066cc,color:white
@@ -137,14 +139,14 @@ graph TD
 
 ## 📊 REQUIRED FILE STATE VERIFICATION
 
-Before planning can begin, verify the file state:
+Before planning can begin, verify the file state. **Notion fork:** Task page = tasks.md; activeContext page = activeContext.md.
 
 ```mermaid
 graph TD
-    Start["File State<br>Verification"] --> CheckTasks{"tasks.md<br>initialized?"}
+    Start["File State<br>Verification"] --> CheckTasks{"Task page<br>initialized?"}
     
     CheckTasks -->|"No"| ErrorTasks["ERROR:<br>Return to VAN Mode"]
-    CheckTasks -->|"Yes"| CheckActive{"activeContext.md<br>exists?"}
+    CheckTasks -->|"Yes"| CheckActive{"activeContext page<br>exists?"}
     
     CheckActive -->|"No"| ErrorActive["ERROR:<br>Return to VAN Mode"]
     CheckActive -->|"Yes"| ReadyPlan["Ready for<br>Planning"]
@@ -156,7 +158,7 @@ Use **# Plan** as the top-level plan heading on the Task page (not "# Implementa
 
 ## 📝 TASKS.MD UPDATE FORMAT
 
-During planning, update tasks.md with this structure:
+During planning, update Task page with this structure:
 
 ```
 # Task: [Task name]
@@ -227,23 +229,23 @@ graph TD
     Decision -->|"Yes"| Flag["Flag for<br>Creative Phase"]
     Decision -->|"No"| Skip["Standard<br>Implementation"]
     
-    Flag --> Document["Document in<br>tasks.md"]
+    Flag --> Document["Document in<br>Task page"]
 ```
 
-## 📊 TECHNOLOGY VALIDATION CHECKLIST
+## 📊 TECHNOLOGY VALIDATION CHECKLIST (Documentation for /build)
 
 ```
-✓ TECHNOLOGY VALIDATION CHECKLIST
-- Technology stack clearly defined? [YES/NO]
+✓ TECHNOLOGY VALIDATION CHECKLIST (PLAN documents; /build executes)
+- Technology stack documented in plan? [YES/NO]
 - Project initialization command documented? [YES/NO]
-- Required dependencies identified? [YES/NO]
-- Minimal proof of concept created? [YES/NO]
-- Hello world build/run successful? [YES/NO]
-- Configuration files validated? [YES/NO]
-- Test build completes successfully? [YES/NO]
+- Required dependencies documented? [YES/NO]
+- POC requirements documented for /build? [YES/NO]
+- Build/run verification steps documented? [YES/NO]
+- Configuration requirements documented? [YES/NO]
+- Validation checklist for /build documented? [YES/NO]
 
-→ If all YES: Technology validation complete - ready for next phase
-→ If any NO: Resolve technology issues before proceeding
+→ If all YES: Technology validation documented - ready for /build
+→ If any NO: Complete documentation before proceeding
 ```
 
 ## 📊 PLAN VERIFICATION CHECKLIST
@@ -257,7 +259,7 @@ graph TD
 - Dependencies documented? [YES/NO]
 - Challenges & mitigations addressed? [YES/NO]
 - Creative phases identified (Level 3-4)? [YES/NO/NA]
-- tasks.md updated with plan? [YES/NO]
+- Task page updated with plan? [YES/NO]
 
 → If all YES: Planning complete - ready for next mode
 → If any NO: Complete missing plan elements
@@ -272,7 +274,7 @@ When planning is complete, notify user with:
 
 ✅ Implementation plan created
 ✅ Technology stack validated
-✅ tasks.md updated with plan
+✅ Task page updated with plan
 ✅ Challenges and mitigations documented
 [✅ Creative phases identified (for Level 3-4)]
 

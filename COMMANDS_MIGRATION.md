@@ -126,7 +126,7 @@ custom_modes/       # Legacy files (kept for reference)
 ## Support
 
 If you encounter any issues with the commands, check:
-- `.cursor/commands/README.md` for command documentation
+- [COMMANDS_README.md](COMMANDS_README.md) for command documentation
 - `memory-bank/tasks.md` for current task status
 - Original `custom_modes/` files for reference (if needed)
 

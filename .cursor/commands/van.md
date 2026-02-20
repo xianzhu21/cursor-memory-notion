@@ -2,7 +2,9 @@
 
 This command initializes the Memory Bank system, performs platform detection, determines task complexity, and routes to appropriate workflows.
 
-**MANDATORY: When /van is invoked, ALWAYS execute the full workflow** (Steps 1–6). Do NOT skip steps. Do NOT substitute with other actions (e.g. only updating rules or files) even if the user message includes additional text. If the user message contains text that could be a task description (e.g. "Add X", "Clarify Y", "明确 Z"), treat it as the `/van [description]` and run Task Creation/Validation accordingly.
+**MANDATORY: When /van is invoked, ALWAYS execute the full workflow** (Steps 1–6). The "full workflow" means **only** these 6 initialization steps—NOT implementation of the user's task. Do NOT skip steps. Do NOT substitute with other actions (e.g. only updating rules or files) even if the user message includes additional text. If the user message contains text that could be a task description (e.g. "Add X", "Clarify Y", "明确 Z"), treat it as the `/van [description]` and run Task Creation/Validation accordingly.
+
+**CRITICAL for Level 2-4:** VAN **never** implements code, rules, or docs. For Level 2-4 tasks, VAN **stops** after Step 6 and hands off to `/plan`. Implementation is done in `/build`, not in VAN.
 
 ## Memory Bank Integration (Notion)
 
@@ -67,7 +69,7 @@ After determining complexity level, load:
 
 5. **Route Based on Complexity**
    - **Level 1:** Continue in VAN mode, proceed to implementation
-   - **Level 2-4:** Transition to `/plan` command
+   - **Level 2-4:** Transition to `/plan` command. **STOP here**—do NOT implement; user runs `/plan` then `/build` separately.
 
 6. **Update Memory Bank**
    - notion-update-page on Task page (complexity)
@@ -85,5 +87,5 @@ Example:
 ## Next Steps
 
 - **Level 1 tasks:** Proceed directly to `/build` command
-- **Level 2-4 tasks:** Use `/plan` command for detailed planning
+- **Level 2-4 tasks:** VAN completes after Step 6. Tell user to run `/plan` for detailed planning, then `/build` for implementation. Do NOT implement in VAN.
 
