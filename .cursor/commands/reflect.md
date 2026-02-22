@@ -84,8 +84,8 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
    - Document technical improvements
 
 4. **Create Reflection Document**
-   - If `reflectionPageId` is set: notion-fetch to verify page exists and is not deleted. If valid, use it and skip creation/config update.
-   - If `reflectionPageId` is null or page is deleted: notion-create-pages under Task. Update config per notion-memory-bank-ops.mdc (read file, write only if reflectionPageId differs).
+   - If `reflectionPageId` is set: notion-fetch to verify page exists, is not deleted, and parent = Task page. If parent ≠ Task page (stale), clear reflectionPageId in config and treat as null.
+   - If `reflectionPageId` is null or page is deleted/stale: notion-create-pages under Task with `title: "Reflection TASK-xxx"` (use taskId from config, e.g. TASK-1391). Update config per notion-memory-bank-ops.mdc (read file, write only if reflectionPageId differs).
    - Structure: Summary, What Went Well, Challenges, Lessons Learned, Process Improvements, Technical Improvements (no ## Next Steps section)
 
 5. **Update Memory Bank**

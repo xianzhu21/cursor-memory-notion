@@ -66,3 +66,10 @@ Same as original cursor-memory-bank: `/van` → `/plan` → `/creative` → `/bu
 
 - **Read**: Fetch only when needed; prefer once per session.
 - **Write**: On explicit trigger or at command end.
+
+## 8. Migration (Existing Projects)
+
+If you have existing subpages with old names (`Active Context`, `Progress` without projectId; `Creative`, `Reflection`, `Archive` without taskId):
+
+- **Option A (recommended)**: Clear `activeContextPageId` and `progressPageId` in config, then run `/van`. New pages will be created with correct names (`Active Context PROJECT-X`, `Progress PROJECT-X`). For Task subpages: clear `creativePageId`, `reflectionPageId`, and `archivePageId` if desired; new pages will be created with correct names when you run `/creative`, `/reflect`, or `/archive`. You can delete or archive the old pages in Notion.
+- **Option B**: Manually rename pages in Notion to match the new convention, then update config if needed. Page IDs stay the same; only titles change.

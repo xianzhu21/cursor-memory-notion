@@ -74,7 +74,8 @@ Load: .cursor/rules/isolation_rules/Phases/CreativePhase/creative-phase-algorith
    - **🎨🎨🎨 EXITING CREATIVE PHASE**
 
 4. **Document Decisions**
-   - notion-create-pages: creative page under Task (or use `creativePageId`)
+   - If `creativePageId` is set: notion-fetch to verify parent = Task page. If stale (parent ≠ Task), clear in config and treat as null.
+   - notion-create-pages: creative page under Task with `title: "Creative TASK-xxx"` (use taskId from config). Or use existing `creativePageId` if valid.
    - notion-update-page: Task page with design decisions
 
 5. **Update Task Page Workflow Sections**

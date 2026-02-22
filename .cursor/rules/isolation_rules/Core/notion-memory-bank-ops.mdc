@@ -42,13 +42,13 @@ Never write the file when no field value actually changes.
 **Note:** For Project subpages (activeContext, progress), use **notion-verification.mdc** which implements search-before-create to avoid duplicates. The steps below are superseded by notion-verification when running VAN or other commands that load it.
 
 **Project subpages** (activeContext, progress): Resolve `projectId` → get Project page ID. For each null ID:
-1. `notion-search` with `query: "Active Context"` or `"Progress"`, `page_url: projectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context" } }]` or `{ title: "Progress" }`
+1. `notion-search` with `query: "Active Context <projectId>"` or `"Progress <projectId>"` (e.g. "Active Context PROJECT-37"), `page_url: projectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context <projectId>" } }]` or `pages: [{ properties: { title: "Progress <projectId>" } }]` respectively.
 2. Extract created page ID from tool response (or use resolved ID from search)
 3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageId` or `progressPageId` (skip if value unchanged)
 
 **Task subpages** (creative, reflection, archive): For each ID (creativePageId, reflectionPageId, archivePageId):
-1. If ID is set: `notion-fetch` to verify page exists and is not deleted. If valid, use it and skip create/config update.
-2. If ID is null or page is deleted: `notion-create-pages` with `parent: { page_id: taskPageId }`, extract new ID, update config only if the new value differs from current.
+1. If ID is set: `notion-fetch` to verify page exists and is not deleted. **Stale check**: If page parent ≠ resolved Task page ID → treat as stale, clear ID in config, then treat as null.
+2. If ID is null or page is deleted/stale: `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative TASK-Y" } }]` or `pages: [{ properties: { title: "Reflection TASK-Y" } }]` or `pages: [{ properties: { title: "Archive TASK-Y" } }]` (use `taskId` from config, e.g. TASK-1391). Extract new ID, update config only if the new value differs from current.
 
 ## Write Tasks / ActiveContext / Progress
 

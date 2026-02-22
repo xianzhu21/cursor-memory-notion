@@ -59,7 +59,8 @@ After determining complexity level, load:
 3. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
    - [ ] Read config: projectId, taskId, activeContextPageId, progressPageId
    - [ ] Resolve PROJECT-/TASK- via notion-search; notion-fetch Project and Task pages
-   - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing "Active Context" / "Progress"; if not found, notion-create-pages. Update config with resolved or new IDs (avoid duplicates)
+   - [ ] **Stale detection**: notion-fetch each config page by ID; if parent ≠ expected (Project for activeContext/progress; Task for creative/reflection/archive), clear ID in config and treat as null
+   - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing "Active Context PROJECT-X" / "Progress PROJECT-X" (use projectId from config); if not found, notion-create-pages with those titles. Update config with resolved or new IDs (avoid duplicates)
    - [ ] Confirm all Project, Task, activeContext, progress pages are accessible
 
 4. **Task Analysis**

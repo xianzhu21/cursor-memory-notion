@@ -29,9 +29,14 @@ Read `.cursor/notion-memory-bank.json`:
 | tasksDataSourceUrl | Yes | Tasks data source (collection://...) – from fetch of Tasks database |
 | activeContextPageId | No | activeContext subpage ID; if null, create under Project |
 | progressPageId | No | progress subpage ID; if null, create under Project |
-| creativePageId | No | Creative subpage ID; if null, create under Task (title: "Creative") |
-| reflectionPageId | No | Reflection subpage ID; if null, create under Task (title: "Reflection") |
-| archivePageId | No | Archive subpage ID; if null, create under Task (title: "Archive") |
+| creativePageId | No | Creative subpage ID; if null, create under Task |
+| reflectionPageId | No | Reflection subpage ID; if null, create under Task |
+| archivePageId | No | Archive subpage ID; if null, create under Task |
+
+## Subpage Naming Convention
+
+- **Project subpages** (activeContext, progress): Include `projectId` in title. Format: `Active Context PROJECT-37`, `Progress PROJECT-37`. Enables stale detection when page is not under the expected Project.
+- **Task subpages** (creative, reflection, archive): Include `taskId` in title. Format: `Creative TASK-1391`, `Reflection TASK-1391`, `Archive TASK-1391`. Enables stale detection when page is not under the expected Task.
 
 ## Resolving Page IDs
 
