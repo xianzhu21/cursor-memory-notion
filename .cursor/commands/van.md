@@ -59,7 +59,8 @@ After determining complexity level, load:
 3. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
    - [ ] Read config: projectId, taskId, activeContextPageId, progressPageId
    - [ ] Resolve PROJECT-/TASK- via notion-search; notion-fetch Project and Task pages
-   - [ ] **Stale detection**: notion-fetch each config page by ID; if parent ≠ expected (Project for activeContext/progress; Task for creative/reflection/archive), clear ID in config and treat as null
+   - [ ] **Stale detection (Active Context and Progress only)**: notion-fetch activeContext and progress by ID; if parent ≠ resolved Project page, clear ID in config and treat as null. VAN does NOT check creative/reflection/archive—those are verified by /creative, /reflect, /archive.
+   - [ ] **Legacy migration**: If activeContext or progress page title lacks projectId (e.g. "Active Context"), update title to `Active Context <projectId>` or `Progress <projectId>`.
    - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing "Active Context PROJECT-X" / "Progress PROJECT-X" (use projectId from config); if not found, notion-create-pages with those titles. Update config with resolved or new IDs (avoid duplicates)
    - [ ] Confirm all Project, Task, activeContext, progress pages are accessible
 

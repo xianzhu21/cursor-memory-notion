@@ -35,7 +35,7 @@ Read `.cursor/notion-memory-bank.json`:
 
 ## Subpage Naming Convention
 
-- **Project subpages** (activeContext, progress): Include `projectId` in title. Format: `Active Context PROJECT-37`, `Progress PROJECT-37`. Enables stale detection when page is not under the expected Project.
+- **Project subpages** (activeContext, progress): Include `projectId` in title. Format: `Active Context PROJECT-37`, `Progress PROJECT-37`. Analogous to Task subpages including taskId. Enables stale detection when page is not under the expected Project.
 - **Task subpages** (creative, reflection, archive): Include `taskId` in title. Format: `Creative TASK-1391`, `Reflection TASK-1391`, `Archive TASK-1391`. Enables stale detection when page is not under the expected Task.
 
 ## Resolving Page IDs
