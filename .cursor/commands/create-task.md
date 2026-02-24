@@ -15,6 +15,7 @@ Uses `notion-create-pages` to create the task row. Optionally updates `taskId` a
 
 ```
 Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
+Load: .cursor/rules/isolation_rules/Core/notion-retry.mdc
 Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc
 ```
 

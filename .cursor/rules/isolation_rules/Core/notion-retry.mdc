@@ -1,0 +1,41 @@
+---
+description: Retry policy for Notion MCP tool calls when connection fails. Load with memory-bank-paths when using Notion backend.
+globs: notion-retry.mdc
+alwaysApply: false
+---
+
+# NOTION MCP RETRY POLICY
+
+When a Notion MCP tool call fails due to connection or transient errors, **retry before giving up**.
+
+## Retry Policy
+
+- **Max retries**: 2 (3 attempts total)
+- **Delay between attempts**: 5–10 seconds. Before each retry, run `sleep 5` (or `sleep 10`) to allow transient issues to resolve.
+- **Scope**: Applies to `notion-search`, `notion-fetch`, `notion-update-page`, `notion-create-pages`.
+
+## Errors to Retry
+
+Retry when the error indicates connection or transient failure, e.g.:
+
+- MCP error codes indicating server/connection issues (e.g. `-32603` Internal error). Do NOT retry `-32602` (Invalid params).
+- Messages containing: "disconnected", "connection refused", "timeout", "ECONNREFUSED", "ETIMEDOUT", "MCP error"
+- Any error that suggests the Notion MCP server is temporarily unavailable
+
+**Do NOT retry** for:
+
+- Invalid arguments (e.g. missing required parameter, MCP error `-32602` Invalid params)
+- Permission errors
+- Page not found (404)
+- Validation errors (e.g. invalid property format)
+
+## When All Retries Fail
+
+Report clearly to the user:
+
+- "Notion MCP is unavailable after 3 attempts. Please check your Notion MCP connection and try the command again later."
+- Suggest: retry the command in a few minutes, or verify the Notion MCP server is running.
+
+## Commands That Use Retry
+
+All commands that invoke Notion MCP load this rule: `/van`, `/plan`, `/build`, `/creative`, `/reflect`, `/archive`, `/create-task`.

@@ -27,6 +27,7 @@ Updates (via notion-update-page):
 ```
 Load: .cursor/rules/isolation_rules/main.mdc
 Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
+Load: .cursor/rules/isolation_rules/Core/notion-retry.mdc
 ```
 
 ### Step 2: Load PLAN Mode Map

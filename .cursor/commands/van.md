@@ -24,6 +24,7 @@ This command loads rules progressively to optimize context usage:
 ```
 Load: .cursor/rules/isolation_rules/main.mdc
 Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
+Load: .cursor/rules/isolation_rules/Core/notion-retry.mdc
 Load: .cursor/rules/isolation_rules/Core/platform-awareness.mdc
 Load: .cursor/rules/isolation_rules/Core/notion-verification.mdc
 Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc

@@ -67,6 +67,7 @@ Read `.cursor/notion-memory-bank.json`:
 - **Read**: Resolve identifier → `notion-fetch` with page ID or URL.
 - **Update content**: `notion-update-page` with `command: "replace_content"` or `replace_content_range` or `insert_content_after`.
 - **Create page**: `notion-create-pages` with `parent: { page_id: "..." }` and `properties: { title: "..." }`, `content: "..."`.
+- **Retry on failure**: If a Notion MCP call fails due to connection/disconnection, retry per `Core/notion-retry.mdc` (max 2 retries, 5–10 s delay) before reporting failure.
 
 ## Token Optimization
 
