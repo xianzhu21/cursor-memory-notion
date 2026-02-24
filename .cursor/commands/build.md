@@ -107,7 +107,6 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - Verify all build steps completed
    - Verify all success criteria tests pass
    - Verify changes meet requirements
-   - notion-update-page Task page with completion status
 
 7. **Update Task Page Workflow Sections**
    - Use `notion-update-page` with `command: "replace_content_range"` and `selection_with_ellipsis` matching the section.

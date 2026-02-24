@@ -75,19 +75,23 @@ graph TD
 
 ## 📖 Style Guide Integration
 
-A consistent visual style is paramount for good UI/UX. This section details how to reference an existing style guide or prompt for its creation. **The primary location for the style guide in this system will be `memory-bank/style-guide.md`.**
+A consistent visual style is paramount for good UI/UX. This section details how to reference an existing style guide or prompt for its creation.
+
+**Notion backend:** Use `notion-fetch` on `styleGuidePageId` from `.cursor/notion-memory-bank.json`. If null, notion-search under Project for "Style Guide \<projectId\>" (e.g. "Style Guide PROJECT-37"); if not found, notion-create-pages under Project with that title, then update config. Use `notion-update-page` to write style guide content. **When using Notion, treat all references to `memory-bank/style-guide.md` below as the Style Guide Notion page (styleGuidePageId).**
+
+**File-based (fallback):** The primary location for the style guide is `memory-bank/style-guide.md`.
 
 ### Step 0: Style Guide Check & Handling
 
 **A. Checking for an Existing Style Guide:**
-1.  **Primary Location Check**: The system **MUST** first look for the style guide at this specific path:
-    * `memory-bank/style-guide.md`
-2.  **Secondary Check (User Prompt)**: If `memory-bank/style-guide.md` is not found, the system **MUST** prompt the user:
+1.  **Notion backend**: Read `styleGuidePageId` from config. If set, notion-fetch the page. If null, run notion-verification (or /van) to create "Style Guide \<projectId\>" subpage, then fetch.
+2.  **File-based**: The system **MUST** look for the style guide at `memory-bank/style-guide.md`
+3.  **Secondary Check (User Prompt)**: If no style guide is found (Notion page missing/empty or file missing), the system **MUST** prompt the user:
     ```
-    "I could not find 'memory-bank/style-guide.md'.
+    "I could not find a style guide (Notion: styleGuidePageId; file-based: memory-bank/style-guide.md).
     Is there an existing style guide at a different location, or a URL I should reference?
     If yes, please provide the full path or URL.
-    Otherwise, we can create a basic 'memory-bank/style-guide.md' now, or you can opt to proceed without one (though this is not recommended for new UI development)."
+    Otherwise, we can create a basic style guide now, or you can opt to proceed without one (though this is not recommended for new UI development)."
     ```
 
 **B. Using an Existing Style Guide:**

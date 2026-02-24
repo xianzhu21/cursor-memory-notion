@@ -31,15 +31,16 @@ Never write the file when no field value actually changes.
 
 - Resolve `taskId` (e.g. TASK-588) → `notion-fetch` the Task page – content lives in page body
 
-## Read ProjectBrief / ActiveContext / Progress
+## Read ProjectBrief / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
 - projectBrief: Resolve `projectId` → `notion-fetch` (page body)
-- activeContext: If `activeContextPageId` set → `notion-fetch`. If null → **create first** (see Create Missing Subpages), then fetch.
-- progress: If `progressPageId` set → `notion-fetch`. If null → **create first** (see Create Missing Subpages), then fetch.
+- activeContext: If `activeContextPageId` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch.
+- progress: If `progressPageId` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch.
+- productContext, systemPatterns, techContext, styleGuide: If respective page ID set → `notion-fetch`. If null → notion-verification creates them; then fetch.
 
 ## Create Missing Subpages (MANDATORY when config IDs are null)
 
-**Note:** For Project subpages (activeContext, progress), use **notion-verification.mdc** which implements search-before-create to avoid duplicates. The steps below are superseded by notion-verification when running VAN or other commands that load it.
+**Note:** For Project subpages (activeContext, progress, productContext, systemPatterns, techContext, styleGuide), use **notion-verification.mdc** which implements search-before-create to avoid duplicates. The steps below are for activeContext and progress only; notion-verification handles all six when running VAN or other commands that load it.
 
 **Project subpages** (activeContext, progress): Resolve `projectId` → get Project page ID. For each null ID:
 1. `notion-search` with `query: "Active Context <projectId>"` or `"Progress <projectId>"` (e.g. "Active Context PROJECT-37"), `page_url: projectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context <projectId>" } }]` or `pages: [{ properties: { title: "Progress <projectId>" } }]` respectively.
@@ -50,7 +51,7 @@ Never write the file when no field value actually changes.
 1. If ID is set: `notion-fetch` to verify page exists and is not deleted. **Stale check**: If page parent ≠ resolved Task page ID → treat as stale, clear ID in config, then treat as null.
 2. If ID is null or page is deleted/stale: `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative TASK-Y" } }]` or `pages: [{ properties: { title: "Reflection TASK-Y" } }]` or `pages: [{ properties: { title: "Archive TASK-Y" } }]` (use `taskId` from config, e.g. TASK-1391). Extract new ID, update config only if the new value differs from current.
 
-## Write Tasks / ActiveContext / Progress
+## Write Tasks / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
 - `notion-update-page` with `command: "replace_content"` and `new_str` = full Markdown content
 - Use the resolved page ID from the identifier

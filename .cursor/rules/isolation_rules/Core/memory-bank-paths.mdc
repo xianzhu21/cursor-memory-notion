@@ -21,6 +21,8 @@ Example: `PROJECT-123` → search Projects database; `TASK-588` → search Tasks
 
 Read `.cursor/notion-memory-bank.json`:
 
+**Migration:** Existing configs without the new keys (productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId) work as-is; missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`).
+
 | Key | Required | Description |
 |-----|----------|-------------|
 | projectId | Yes | e.g. `PROJECT-123` – current Project |
@@ -29,13 +31,17 @@ Read `.cursor/notion-memory-bank.json`:
 | tasksDataSourceUrl | Yes | Tasks data source (collection://...) – from fetch of Tasks database |
 | activeContextPageId | No | activeContext subpage ID; if null, create under Project |
 | progressPageId | No | progress subpage ID; if null, create under Project |
+| productContextPageId | No | productContext subpage ID; if null, create under Project (Level 4) |
+| systemPatternsPageId | No | systemPatterns subpage ID; if null, create under Project (Level 4) |
+| techContextPageId | No | techContext subpage ID; if null, create under Project (Level 4) |
+| styleGuidePageId | No | style-guide subpage ID; if null, create under Project (creative UI/UX) |
 | creativePageId | No | Creative subpage ID; if null, create under Task |
 | reflectionPageId | No | Reflection subpage ID; if null, create under Task |
 | archivePageId | No | Archive subpage ID; if null, create under Task |
 
 ## Subpage Naming Convention
 
-- **Project subpages** (activeContext, progress): Include `projectId` in title. Format: `Active Context PROJECT-37`, `Progress PROJECT-37`. Analogous to Task subpages including taskId. Enables stale detection when page is not under the expected Project.
+- **Project subpages** (activeContext, progress, productContext, systemPatterns, techContext, style-guide): Include `projectId` in title. Format: `Active Context PROJECT-37`, `Progress PROJECT-37`, `Product Context PROJECT-37`, `System Patterns PROJECT-37`, `Tech Context PROJECT-37`, `Style Guide PROJECT-37`. Analogous to Task subpages including taskId. Enables stale detection when page is not under the expected Project.
 - **Task subpages** (creative, reflection, archive): Include `taskId` in title. Format: `Creative TASK-1391`, `Reflection TASK-1391`, `Archive TASK-1391`. Enables stale detection when page is not under the expected Task.
 
 ## Resolving Page IDs
@@ -52,6 +58,10 @@ Read `.cursor/notion-memory-bank.json`:
 | projectbrief.md | Project page body | projectId (PROJECT-123) |
 | activeContext.md | activeContext subpage under Project | activeContextPageId |
 | progress.md | progress subpage under Project | progressPageId |
+| productContext.md | productContext subpage under Project | productContextPageId |
+| systemPatterns.md | systemPatterns subpage under Project | systemPatternsPageId |
+| techContext.md | techContext subpage under Project | techContextPageId |
+| style-guide.md | style-guide subpage under Project | styleGuidePageId |
 | creative/creative-[name].md | Creative subpage under Task | creativePageId |
 | reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageId |
 | archive/archive-[id].md | Archive subpage under Task | archivePageId |

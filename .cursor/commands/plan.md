@@ -20,6 +20,7 @@ Reads from (resolve PROJECT-/TASK- via notion-search, then notion-fetch):
 
 Updates (via notion-update-page):
 - Task page (`taskId`) - Adds or updates implementation plan. **Write in English** (Notion content rule).
+- Project page body (`projectId`) - projectbrief (Level 2/3/4 Create mode only): When creating a full plan, after writing the Task plan, notion-update-page the Project page body with projectbrief content per workflow-level2/3/4 (Level 2: enhancement details; Level 3: feature alignment note; Level 4: architectural vision). If Project page body is empty or minimal, populate with a brief derived from the task and plan. Skip if projectbrief update is not required by the loaded workflow rules.
 
 ## Progressive Rule Loading
 
@@ -73,8 +74,9 @@ Load: .cursor/rules/isolation_rules/Level4/workflow-level4.mdc
    - **Level 2:** Document planned changes, files to modify, implementation steps
    - **Level 3:** Create comprehensive plan with components, dependencies, challenges
    - **Level 4:** Create phased implementation plan with architectural considerations
-   - notion-update-page with `replace_content` or `replace_content_range` to write full plan
+   - notion-update-page with `replace_content` or `replace_content_range` to write full plan to Task page
    - Use **# Plan** as the top-level plan heading (not "# Implementation Plan: [Task name]")
+   - **projectbrief (Level 2/3/4):** After writing Task plan, notion-update-page Project page body (`projectId`) with projectbrief content: Level 2 – enhancement details and scope; Level 3 – feature alignment with project goals; Level 4 – architectural vision and high-level approach. Merge with existing Project body if non-empty; do not overwrite user content entirely.
 
 3. **Update Mode** (Plan substantive)
    - **Interpret user input**: User provides new finding, subtask to add, section to update, or refinement

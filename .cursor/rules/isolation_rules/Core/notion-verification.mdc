@@ -10,14 +10,14 @@ When using Notion as Memory Bank, **MANDATORY** steps. Do NOT skip subpage creat
 
 ## Verification Steps (Execute in Order)
 
-1. **Read config**: Get `projectId`, `taskId`, `activeContextPageId`, `progressPageId` from `.cursor/notion-memory-bank.json`
+1. **Read config**: Get `projectId`, `taskId`, `activeContextPageId`, `progressPageId`, `productContextPageId`, `systemPatternsPageId`, `techContextPageId`, `styleGuidePageId` from `.cursor/notion-memory-bank.json`
 2. **Task creation / validation (VAN only)**: If running `/van`, follow van.md step 2 in full:
    - If `taskId` is null or empty: create task per task-creation-notion.mdc, then proceed.
    - If `taskId` exists AND user provided description: notion-fetch Task page, compare title with description. If clearly different (different topic/intent), **MUST ask**: "Current task (TASK-xxx: <title>) doesn't match your description. Is this a new task? Should I create it?" – do not skip. If user confirms new task, follow task-creation-notion.mdc.
    - For other commands, taskId must be set.
 3. **Resolve identifiers**: PROJECT- → notion-search in Projects; TASK- → notion-search in Tasks. Get page IDs and URLs from results. **If notion-search or notion-fetch fails** (connection/disconnection): retry per notion-retry.mdc before reporting verification incomplete.
 4. **Stale page detection – Project subpages only (VAN scope)** – Before using config IDs, verify activeContext and progress are under the resolved Project:
-   - **activeContextPageId, progressPageId**: If set, notion-fetch each page. Check `ancestor-path` (Notion MCP returns `<parent-page url="...">` for subpages); if parent page ID ≠ resolved Project page ID → **stale**. Clear the ID in config (set to null), then treat as null for step 6.
+   - **activeContextPageId, progressPageId, productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId**: If set, notion-fetch each page. Check `ancestor-path` (Notion MCP returns `<parent-page url="...">` for subpages); if parent page ID ≠ resolved Project page ID → **stale**. Clear the ID in config (set to null), then treat as null for step 6.
    - **Legacy migration**: Apply only when the page is not stale (parent = Project). If page title does not include projectId (e.g. "Active Context" or "Progress" instead of "Active Context PROJECT-37"), use notion-update-page with `command: "update_properties"` to set `title` to `Active Context <projectId>` or `Progress <projectId>`. (Notion MCP returns subpage title in `properties.title`.)
    - After clearing any stale ID, **update** `.cursor/notion-memory-bank.json` per notion-memory-bank-ops.mdc (write only if value changed).
    - **Note**: creativePageId, reflectionPageId, archivePageId are verified by /creative, /reflect, /archive when those commands run. VAN does NOT check them.
@@ -26,8 +26,12 @@ When using Notion as Memory Bank, **MANDATORY** steps. Do NOT skip subpage creat
    - Use `projectId` from config (e.g. PROJECT-37) in page names. Search: `query: "Active Context <projectId>"`, `page_url: resolvedProjectPageUrl`. Same for Progress.
    - If `activeContextPageId` is null: notion-search with `query: "Active Context <projectId>"` (e.g. "Active Context PROJECT-37"), `page_url: resolvedProjectPageUrl`. If a child page with that title is found, use its ID. **Otherwise** notion-create-pages with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Active Context <projectId>" } }]`.
    - If `progressPageId` is null: notion-search with `query: "Progress <projectId>"`, `page_url: resolvedProjectPageUrl`. If found, use its ID. **Otherwise** notion-create-pages with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Progress <projectId>" } }]`.
-   - **Update config**: Follow notion-memory-bank-ops.mdc config rules. Read current file, compare `activeContextPageId`/`progressPageId` with new values. Write only if at least one differs; otherwise do NOT write.
-7. **Report**: Confirm Project, Task, activeContext, and progress pages are accessible
+   - If `productContextPageId` is null: notion-search with `query: "Product Context <projectId>"`, `page_url: resolvedProjectPageUrl`. If found, use its ID. **Otherwise** notion-create-pages with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Product Context <projectId>" } }]`.
+   - If `systemPatternsPageId` is null: notion-search with `query: "System Patterns <projectId>"`, `page_url: resolvedProjectPageUrl`. If found, use its ID. **Otherwise** notion-create-pages with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "System Patterns <projectId>" } }]`.
+   - If `techContextPageId` is null: notion-search with `query: "Tech Context <projectId>"`, `page_url: resolvedProjectPageUrl`. If found, use its ID. **Otherwise** notion-create-pages with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Tech Context <projectId>" } }]`.
+   - If `styleGuidePageId` is null: notion-search with `query: "Style Guide <projectId>"`, `page_url: resolvedProjectPageUrl`. If found, use its ID. **Otherwise** notion-create-pages with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Style Guide <projectId>" } }]`.
+   - **Update config**: Follow notion-memory-bank-ops.mdc config rules. Read current file, compare all subpage IDs with new values. Write only if at least one differs; otherwise do NOT write.
+7. **Report**: Confirm Project, Task, activeContext, and progress pages are accessible (productContext, systemPatterns, techContext, styleGuide if created)
 
 ## Skip File Verification
 

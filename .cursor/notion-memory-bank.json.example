@@ -5,6 +5,10 @@
   "tasksDataSourceUrl": "collection://YOUR_TASKS_DATA_SOURCE_ID",
   "activeContextPageId": null,
   "progressPageId": null,
+  "productContextPageId": null,
+  "systemPatternsPageId": null,
+  "techContextPageId": null,
+  "styleGuidePageId": null,
   "creativePageId": null,
   "reflectionPageId": null,
   "archivePageId": null

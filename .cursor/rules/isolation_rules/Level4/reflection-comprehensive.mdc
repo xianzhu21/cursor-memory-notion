@@ -592,34 +592,36 @@ flowchart TD
 
 ### Memory Bank Updates
 
+**Notion backend:** Use `notion-update-page` on resolved page IDs from config. projectbrief → Project page body (`projectId`); productContext → `productContextPageId`; activeContext → `activeContextPageId`; systemPatterns → `systemPatternsPageId`; techContext → `techContextPageId`; progress → `progressPageId`. If an ID is null, ensure notion-verification has created the subpage.
+
 Specific updates to make to Memory Bank files:
 
-1. **projectbrief.md**
+1. **projectbrief.md** (Project page body)
    - Update with strategic insights
    - Document key achievements
    - Incorporate lessons learned
 
-2. **productContext.md**
+2. **productContext.md** (productContextPageId)
    - Update with business insights
    - Document market/user insights
    - Include value delivery insights
 
-3. **activeContext.md**
+3. **activeContext.md** (activeContextPageId)
    - Update with current status
    - Document action items
    - Include next steps
 
-4. **systemPatterns.md**
+4. **systemPatterns.md** (systemPatternsPageId)
    - Update with architectural insights
    - Document successful patterns
    - Include technical knowledge
 
-5. **techContext.md**
+5. **techContext.md** (techContextPageId)
    - Update with implementation insights
    - Document technology stack insights
    - Include performance and security insights
 
-6. **progress.md**
+6. **progress.md** (progressPageId)
    - Update with final status
    - Document achievements
    - Include project metrics
