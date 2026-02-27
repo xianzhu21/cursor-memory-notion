@@ -10,8 +10,8 @@ Reads from (resolve TASK- via notion-search, then notion-fetch):
 - activeContext page (`activeContextPageId`) - Current project context
 
 Updates (notion-update-page):
-- Task page (`taskId`) - Implementation progress, test results, status
-- progress page (`progressPageId`) - Build status, test outcomes, observations
+- Task page (`taskId`) - Implementation progress, test results
+- progress page (`progressPageId`) - Build progress, test outcomes, observations
 - **Write in English** (Notion content rule)
 
 ## Progressive Rule Loading

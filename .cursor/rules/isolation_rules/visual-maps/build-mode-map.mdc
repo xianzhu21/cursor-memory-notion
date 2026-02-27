@@ -61,7 +61,7 @@ graph TD
     
     %% Completion & Transition
     L1Update & L2Update & L34Update --> VerifyComplete["Verify Build<br>Complete"]
-    VerifyComplete --> UpdateProgress["Update progress.md<br>with Status"]
+    VerifyComplete --> UpdateProgress["Update progress.md"]
     UpdateProgress --> Transition["NEXT MODE:<br>REFLECT MODE"]
 ```
 
@@ -229,7 +229,7 @@ Document builds with:
 - [Test 1]: [Result]
 - [Test 2]: [Result]
 
-### Status
+### Progress
 - [x] Build complete
 - [x] Testing performed
 - [x] File verification completed
@@ -241,7 +241,7 @@ Document builds with:
 During the build process, update tasks.md with progress:
 
 ```
-## Status
+## Build Progress
 - [x] Initialization complete
 - [x] Planning complete
 [For Level 3-4:]
@@ -251,15 +251,14 @@ During the build process, update tasks.md with progress:
 - [x] [Built component 2]
 - [ ] [Remaining component]
 
-## Build Progress
 - [Component 1]: Complete
   - Files: [/absolute/path/to/files]
   - [Details about implementation]
 - [Component 2]: Complete
   - Files: [/absolute/path/to/files]
   - [Details about implementation]
-- [Component 3]: In Progress
-  - [Current status]
+- [Component 3]: In progress
+  - [Current progress]
 ```
 
 ## 📋 PROGRESS.MD UPDATE FORMAT
@@ -314,7 +313,7 @@ When the build is complete, notify user with:
 ✅ All files created in correct locations
 ✅ All planned changes implemented
 ✅ Testing performed successfully
-✅ tasks.md updated with status
+✅ tasks.md updated with progress
 ✅ progress.md updated with details
 
 → NEXT RECOMMENDED MODE: REFLECT MODE

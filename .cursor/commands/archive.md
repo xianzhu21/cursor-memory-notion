@@ -111,9 +111,9 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
 4. **Update Memory Bank**
    - If `archivePageId` is set: notion-fetch to verify parent = Task page. If stale (parent ≠ Task), clear in config and treat as null.
    - notion-create-pages: archive page under Task with `title: "Archive TASK-xxx"` (use taskId from config). Or use existing `archivePageId` if valid.
-   - notion-update-page Task page: mark COMPLETE and update Dates
+   - **MANDATORY** notion-update-page Task page properties (do NOT skip):
      - Status: "Done"
-     - Dates: notion-fetch Task page first to get current Dates. If Dates has start date → use it as start, set end = today (YYYY-MM-DD). If Dates is empty → set start = today, end = today. Use `update_properties` with `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0). Property name may differ (e.g. "Due"); use schema from fetch.
+     - **Dates**: notion-fetch Task first. If `date:Dates:start` exists → keep it, set `date:Dates:end` = today. If empty → `date:Dates:start` = today, `date:Dates:end` = today. Run `date +%Y-%m-%d` for today. Use `update_properties` with `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).
    - Use `replace_content_range` to replace "## 8. Next Steps" or "## Next Steps" content with "Run `/van` for next task."
    - Use `replace_content_range` to replace "# Reflection" with "# Reflection & Archive" (heading only; keep child pages using `<page url="...">` – required to preserve structure)
    - notion-update-page progress page: add archive reference using `<mention-page url="[archivePageUrl]">Archive TASK-xxx</mention-page>`
