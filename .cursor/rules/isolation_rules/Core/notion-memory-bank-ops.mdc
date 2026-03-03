@@ -10,7 +10,7 @@ Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → 
 
 **Config updates (MANDATORY):** Before writing `.cursor/notion-memory-bank.json`:
 1. **Read** the current file.
-2. For each field you intend to update, compare new value with current value.
+2. For each field you intend to update, compare new value with current value. Includes `projectName`, `taskName` when fetched from Notion.
 3. **If all values are unchanged** → do NOT write the file (skip entirely).
 4. **If at least one value differs** → write only the changed fields, merge with existing content.
 Never write the file when no field value actually changes.
@@ -26,6 +26,7 @@ Never write the file when no field value actually changes.
 1. **PROJECT-X**: `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `PROJECT-X` or `X`. Use page URL from first result.
 2. **TASK-Y**: `notion-search` with `data_source_url` = `tasksDataSourceUrl`, `query` = `TASK-Y` or `Y`. Use page URL from first result.
 3. Then `notion-fetch` with the resolved page URL/ID.
+4. **Name lookup**: When `notion-fetch` returns Project or Task page, extract page title (e.g. `properties.title` or first heading). Store as `projectName` or `taskName` in config when updating – per config update rules below.
 
 ## Read Tasks (plan, checklist)
 

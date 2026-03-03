@@ -21,12 +21,14 @@ Example: `PROJECT-123` → search Projects database; `TASK-588` → search Tasks
 
 Read `.cursor/notion-memory-bank.json`:
 
-**Migration:** Existing configs without the new keys (productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId) work as-is; missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`).
+**Migration:** Existing configs without the new keys (productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId, projectName, taskName) work as-is; missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`). projectName and taskName are populated when notion-verification fetches Project and Task pages.
 
 | Key | Required | Description |
 |-----|----------|-------------|
 | projectId | Yes | e.g. `PROJECT-123` – current Project |
+| projectName | No | Page title of Project (populated when notion-verification fetches Project) |
 | taskId | No* | e.g. `TASK-588` – current Task; null → `/van [description]` creates one |
+| taskName | No | Page title of Task (populated when notion-verification fetches Task) |
 | projectsDataSourceUrl | Yes | Projects data source (collection://...) – from fetch of Projects database |
 | tasksDataSourceUrl | Yes | Tasks data source (collection://...) – from fetch of Tasks database |
 | activeContextPageId | No | activeContext subpage ID; if null, create under Project |

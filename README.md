@@ -115,7 +115,9 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 
 **Config keys** (in `.cursor/notion-memory-bank.json`):
 - `projectId` – Current project (required)
+- `projectName` – Project page title (auto-populated by notion-verification)
 - `taskId` – Current task; set to `null` or `""` to have `/van [description]` create one automatically
+- `taskName` – Task page title (auto-populated by notion-verification)
 - `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database collection URLs
 - `activeContextPageId`, `progressPageId` – Optional subpage IDs under Project
 - `creativePageId`, `reflectionPageId`, `archivePageId` – Optional subpage IDs under Task

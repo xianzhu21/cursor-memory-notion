@@ -43,7 +43,7 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
    - Read `userDefined:ID` (e.g. TASK-1385)
 
 4. **Update Config**
-   - Follow notion-memory-bank-ops.mdc config rules. Read current file; write `taskId` only if new value differs from current. If unchanged, do NOT write.
+   - Follow notion-memory-bank-ops.mdc config rules. Read current file; write `taskId` and `taskName` (task title from step 2) if new values differ from current. If unchanged, do NOT write.
 
 ## VAN-Specific
 
