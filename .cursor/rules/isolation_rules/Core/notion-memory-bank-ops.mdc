@@ -13,9 +13,9 @@ Use identifiers from `.cursor/notion-memory-bank.json`. **PROJECT-** prefix → 
 2. For each field you intend to update, compare new value with current value. Includes `projectName`, `taskName` when fetched from Notion.
 3. **If all values are unchanged** → do NOT write the file (skip entirely).
 4. **If at least one value differs** → write only the changed fields, merge with existing content.
-Never write the file when no field value actually changes.
+5. **Format (MUST):** Serialize with `JSON.stringify(obj, null, 2)` – 2-space indentation, one key per line. Never write minified single-line JSON.
 
-**Format:** Write `.cursor/notion-memory-bank.json` as formatted JSON (2-space indentation, one key per line). **Always** parse existing content, merge changes, then serialize with `JSON.stringify(obj, null, 2)` – never write minified single-line JSON.
+Never write the file when no field value actually changes.
 
 **Language:** All content written to Notion (page body, properties) MUST be in **English**.
 
@@ -47,15 +47,17 @@ Never write the file when no field value actually changes.
 1. `notion-search` with `query: "Active Context <projectId>"` or `"Progress <projectId>"` (e.g. "Active Context PROJECT-37"), `page_url: projectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context <projectId>" } }]` or `pages: [{ properties: { title: "Progress <projectId>" } }]` respectively.
 2. Extract created page ID from tool response (or use resolved ID from search)
 3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageId` or `progressPageId` (skip if value unchanged)
+4. **MUST output in chat (do not skip):** After create, output the created content in chat (you have it—no notion-fetch). Follow notion-output-after-write skill.
 
 **Task subpages** (creative, reflection, archive): For each ID (creativePageId, reflectionPageId, archivePageId):
 1. If ID is set: `notion-fetch` to verify page exists and is not deleted. **Stale check**: If page parent ≠ resolved Task page ID → treat as stale, clear ID in config, then treat as null.
-2. If ID is null or page is deleted/stale: `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative TASK-Y" } }]` or `pages: [{ properties: { title: "Reflection TASK-Y" } }]` or `pages: [{ properties: { title: "Archive TASK-Y" } }]` (use `taskId` from config, e.g. TASK-1391). Extract new ID, update config only if the new value differs from current.
+2. If ID is null or page is deleted/stale: `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative TASK-Y" } }]` or `pages: [{ properties: { title: "Reflection TASK-Y" } }]` or `pages: [{ properties: { title: "Archive TASK-Y" } }]` (use `taskId` from config, e.g. TASK-1391). Extract new ID, update config only if the new value differs from current. **MUST output in chat (do not skip):** After create, output the created content in chat (you have it—no notion-fetch). Follow notion-output-after-write skill.
 
 ## Write Tasks / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
 - `notion-update-page` with `command: "replace_content"` and `new_str` = full Markdown content
 - Use the resolved page ID from the identifier
+- **MUST output in chat (do not skip):** After each update, output the modified content in chat (you have `new_str`—no notion-fetch). Follow notion-output-after-write skill.
 
 ## Task Subpages (Creative, Reflection, Archive)
 
@@ -66,3 +68,4 @@ Never write the file when no field value actually changes.
 
 - `notion-update-page` with `command: "update_properties"` on the Task page (e.g. Status = "Done")
 - When archiving (task complete): Update Dates property – if current Dates has start, keep it as start and set end = today; if empty, set start = today, end = today. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0). **Get today**: run `date +%Y-%m-%d`.
+- **MUST output in chat (do not skip):** After update, output the updated content in chat (you have the properties/values—no notion-fetch). Follow notion-output-after-write skill.

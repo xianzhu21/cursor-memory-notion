@@ -33,7 +33,6 @@ Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc
 
 3. **Confirm & Return TASK-ID**
    - **Return prominently**: `TASK-ID: TASK-xxxx`
-   - Also return: task title, key properties, Notion link
    - Ask user if they want to update `taskId` in config – if yes, update `.cursor/notion-memory-bank.json`
 
 ## Skill Reference

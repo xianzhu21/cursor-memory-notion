@@ -21,6 +21,8 @@ Example: `PROJECT-123` → search Projects database; `TASK-588` → search Tasks
 
 Read `.cursor/notion-memory-bank.json`:
 
+**Config write format (MUST):** When writing `.cursor/notion-memory-bank.json`, use formatted JSON: 2-space indentation, one key per line. Parse existing content, merge changes, then serialize with `JSON.stringify(obj, null, 2)` – never minified single-line JSON.
+
 **Migration:** Existing configs without the new keys (productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId, projectName, taskName) work as-is; missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`). projectName and taskName are populated when notion-verification fetches Project and Task pages.
 
 | Key | Required | Description |
@@ -79,6 +81,7 @@ Read `.cursor/notion-memory-bank.json`:
 - **Read**: Resolve identifier → `notion-fetch` with page ID or URL.
 - **Update content**: `notion-update-page` with `command: "replace_content"` or `replace_content_range` or `insert_content_after`.
 - **Create page**: `notion-create-pages` with `parent: { page_id: "..." }` and `properties: { title: "..." }`, `content: "..."`.
+- **MUST output in chat (do not skip):** After each `notion-update-page` or `notion-create-pages`, output the modified content in chat. You already have it (e.g. `new_str`, `properties`)—no `notion-fetch` needed. Follow `notion-output-after-write` skill for format (Original → Modified).
 - **Retry on failure**: If a Notion MCP call fails due to connection/disconnection, retry per `Core/notion-retry.mdc` (max 2 retries, 5–10 s delay) before reporting failure.
 
 ## Token Optimization
