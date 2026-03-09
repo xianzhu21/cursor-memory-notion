@@ -50,9 +50,11 @@ Read `.cursor/notion-memory-bank.json`:
 
 ## Resolving Page IDs
 
-1. **PROJECT-X**: Use `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `PROJECT-X` or `X`. Get page URL from first result; use `notion-fetch` with that URL.
-2. **TASK-Y**: Use `notion-search` with `data_source_url` = `tasksDataSourceUrl`, `query` = `TASK-Y` or `Y`. Get page URL from first result; use `notion-fetch` with that URL.
+1. **PROJECT-X**: Search by **ID field first** (`userDefined:ID`). Use `notion-query-database-view` with a view filtered by ID when available; otherwise `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `PROJECT-X` (exact identifier). Verify result's ID property matches; then `notion-fetch` with page URL.
+2. **TASK-Y**: Search by **ID field first** (`userDefined:ID`). Same as PROJECT-X but for Tasks database.
 3. **Subpages**: Use explicit page IDs if set; otherwise create under Project or Task with `notion-create-pages`.
+
+**Identifier is source of truth:** If projectId or taskId cannot be resolved (no matching result), report verification incomplete. Do NOT use projectName/taskName as fallback. See `Core/notion-verification.mdc` step 3.
 
 ## Mapping: cursor-memory-bank → Notion
 
