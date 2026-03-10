@@ -27,8 +27,8 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 ## Workflow
 
 1. **Resolve Project**
-   - `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `projectId` (e.g. PROJECT-37)
-   - Get project page URL from first result
+   - `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `projectId` (exact identifier, e.g. PROJECT-37). Do NOT use projectName or description – that can return a different project.
+   - Pick the result whose `userDefined:ID` matches `projectId`; if multiple results, verify before using. Get project page URL. If no matching result, fail – do not create task under wrong project.
 
 2. **Create Task**
    - Extract `data_source_id` from `tasksDataSourceUrl` (UUID after `collection://`)
