@@ -4,8 +4,8 @@ This command implements the planned changes following the implementation plan an
 
 ## Memory Bank Integration (Notion)
 
-Reads from (resolve TASK- via notion-search, then notion-fetch):
-- Task page (`taskId`, e.g. TASK-588) - Implementation plan and checklists
+Reads from (resolve taskId via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. `588`) - Implementation plan and checklists
 - creative page (`creativePageId`) - Design decisions (Level 3-4)
 - activeContext page (`activeContextPageId`) - Current project context
 

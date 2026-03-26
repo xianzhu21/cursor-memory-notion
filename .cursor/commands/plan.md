@@ -13,10 +13,10 @@ This command creates or updates implementation plans in the Notion Task page. It
 
 ## Memory Bank Integration (Notion)
 
-Reads from (resolve PROJECT-/TASK- via notion-search, then notion-fetch):
-- Task page (`taskId`, e.g. TASK-588) - Task requirements, complexity level, existing plan content
+Reads from (resolve projectId / taskId via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. `588`) - Task requirements, complexity level, existing plan content
 - activeContext page (`activeContextPageId`) - Current project context
-- Project page body (`projectId`, e.g. PROJECT-123) - projectBrief (if exists)
+- Project page body (`projectId`, e.g. `123`) - projectBrief (if exists)
 
 Updates (via notion-update-page):
 - Task page (`taskId`) - Adds or updates implementation plan. **Write in English** (Notion content rule).

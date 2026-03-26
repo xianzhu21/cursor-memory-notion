@@ -101,7 +101,7 @@ For a detailed explanation of how Memory Bank implements these principles, see t
 
 **This fork uses Notion as the default Memory Bank backend.** All operations use Notion MCP (`notion-fetch`, `notion-update-page`, `notion-create-pages`).
 
-**Setup:** Copy `.cursor/notion-memory-bank.json.example` to `.cursor/notion-memory-bank.json`, then configure your `projectId` and data source URLs. Set `taskId` to `null` for first run – `/van [task description]` will create a new task automatically (same flow as original cursor-memory-bank). See **[NOTION_SETUP.md](NOTION_SETUP.md)** for details.
+**Setup:** Copy `.cursor/notion-memory-bank.json.example` to `.cursor/notion-memory-bank.json`, then configure your `projectId` and data source URLs. Set `taskId` to `null` for first run – `/van [task description]` will create a new task automatically (same flow as original cursor-memory-bank). See **[NOTION_SETUP.md](NOTION_SETUP.md)** for details. If `collection://` URLs are wrong, **[NOTION_SETUP.md](NOTION_SETUP.md)** §8 and `notion-memory-bank-ops.mdc` describe finding the databases and updating the URLs.
 
 ### Notion Backend
 
@@ -111,7 +111,7 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 - **Tasks database** – Holds task pages (plan, checklist, creative/reflection/archive subpages)
 - **Relation** – Tasks link to Projects via a bidirectional relation
 
-**Identifier convention:** `PROJECT-123` and `TASK-588` are resolved via `notion-search` against the respective databases. Add an `ID` property to your databases for reliable lookup.
+**Identifier convention:** `projectId` and `taskId` are numeric keys (JSON **number** or **string** — both OK). They match **Project ID** and **Task ID** on each row. Resolve via `notion-search` and verify `userDefined:Project ID` / `userDefined:Task ID` on the result.
 
 **Config keys** (in `.cursor/notion-memory-bank.json`):
 - `projectId` – Current project (required)

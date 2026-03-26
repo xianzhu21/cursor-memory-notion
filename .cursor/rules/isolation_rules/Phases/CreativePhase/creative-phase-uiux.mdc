@@ -77,7 +77,7 @@ graph TD
 
 A consistent visual style is paramount for good UI/UX. This section details how to reference an existing style guide or prompt for its creation.
 
-**Notion backend:** Use `notion-fetch` on `styleGuidePageId` from `.cursor/notion-memory-bank.json`. If null, notion-search under Project for "Style Guide \<projectId\>" (e.g. "Style Guide PROJECT-37"); if not found, notion-create-pages under Project with that title, then update config. Use `notion-update-page` to write style guide content. **When using Notion, treat all references to `memory-bank/style-guide.md` below as the Style Guide Notion page (styleGuidePageId).**
+**Notion backend:** Use `notion-fetch` on `styleGuidePageId` from `.cursor/notion-memory-bank.json`. If null, notion-search under Project for "Style Guide \<projectId\>" (e.g. "Style Guide 37"); if not found, notion-create-pages under Project with that title, then update config. Use `notion-update-page` to write style guide content. **When using Notion, treat all references to `memory-bank/style-guide.md` below as the Style Guide Notion page (styleGuidePageId).**
 
 **File-based (fallback):** The primary location for the style guide is `memory-bank/style-guide.md`.
 

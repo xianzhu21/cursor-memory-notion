@@ -54,7 +54,7 @@ graph TD
 
 ## 📋 REFLECTION ON TASK PAGE (Notion)
 
-The "# Reflection" section is appended at the **end** of the Task page. Use `replace_content_range` to extend "## 8. Next Steps...Run `/archive`" with `\n\n# Reflection\n<page url="[reflectionPageUrl]">Reflection TASK-xxx</page>`. **Use ONLY `<page>` block** – do NOT add `<mention-page>` (creates redundant "Reflection TASK-xxx: [link]").
+The "# Reflection" section is appended at the **end** of the Task page. Use `replace_content_range` to extend "## 8. Next Steps...Run `/archive`" with `\n\n# Reflection\n<page url="[reflectionPageUrl]">Reflection <taskId></page>` (e.g. `Reflection 1391`). **Use ONLY `<page>` block** – do NOT add `<mention-page>` (creates redundant "Reflection …: [link]").
 
 ## 📋 REFLECTION STRUCTURE
 

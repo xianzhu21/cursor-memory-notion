@@ -90,7 +90,7 @@ graph TD
     FetchTask --> CompareTitle["Compare Task title with<br>user's van description"]
     CompareTitle --> Differs{"Description clearly<br>differs?<br>different topic/intent"}
     Differs -->|"No"| ContinueTask
-    Differs -->|"Yes"| AskNew["Ask: Current task (TASK-xxx: title) doesn't match your description.<br>Is this a new task? Should I create it?"]
+    Differs -->|"Yes"| AskNew["Ask: Current task (taskId: title) doesn't match your description.<br>Is this a new task? Should I create it?"]
     AskNew --> UserConfirm{"User confirms<br>new task?"}
     UserConfirm -->|"Yes"| CreateTask
     UserConfirm -->|"No"| ContinueTask

@@ -9,12 +9,12 @@ This command initializes the Memory Bank system, performs platform detection, de
 ## Memory Bank Integration (Notion)
 
 **CRITICAL:** This project uses **Notion** as Memory Bank. Use page IDs from `.cursor/notion-memory-bank.json`:
-- **tasks** - Task page body (`taskId`, e.g. TASK-588 → search Tasks database)
+- **tasks** - Task page body (`taskId`, e.g. `588` → search Tasks by **Task ID**)
 - **activeContext** - activeContext page (`activeContextPageId`)
 - **progress** - progress page (`progressPageId`)
-- **projectBrief** - Project page body (`projectId`, e.g. PROJECT-123 → search Projects database)
+- **projectBrief** - Project page body (`projectId`, e.g. `123` → search Projects by **Project ID**)
 
-Use `notion-search` to resolve PROJECT-/TASK- identifiers, then `notion-fetch`/`notion-update-page`/`notion-create-pages`.
+Use `notion-search` to resolve `projectId` and `taskId`, then `notion-fetch`/`notion-update-page`/`notion-create-pages`.
 
 ## Progressive Rule Loading
 
@@ -27,6 +27,7 @@ Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
 Load: .cursor/rules/isolation_rules/Core/notion-retry.mdc
 Load: .cursor/rules/isolation_rules/Core/platform-awareness.mdc
 Load: .cursor/rules/isolation_rules/Core/notion-verification.mdc
+Load: .cursor/rules/isolation_rules/Core/notion-memory-bank-ops.mdc
 Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc
 ```
 (Notion backend: use notion-verification; skip file-verification)
@@ -53,16 +54,17 @@ After determining complexity level, load:
    - Treat `taskId` as "needs creation" when it is `null` or empty string `""`
    - **If taskId is null/empty**: Follow `Core/task-creation-notion.mdc`. User MUST provide task description in `/van [description]`; if missing, ask: "Please provide a task description, e.g. /van Add user authentication feature"
    - **If taskId exists AND user provided description**: notion-fetch current Task page, compare its title with user's van description
-     - If description clearly differs from current task (different topic/intent): ask: "Current task (TASK-xxx: <title>) doesn't match your description. Is this a new task? Should I create it?"
+     - If description clearly differs from current task (different topic/intent): ask: "Current task (<taskId>: <title>) doesn't match your description. Is this a new task? Should I create it?"
      - If user confirms new task: follow task-creation-notion.mdc, update config
      - If user says no: continue with existing task
 
 3. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
-   - [ ] Read config: projectId, taskId, activeContextPageId, progressPageId
-   - [ ] Resolve PROJECT-/TASK- via notion-search; notion-fetch Project and Task pages
+   - [ ] Read config: projectId, taskId, projectsDataSourceUrl, tasksDataSourceUrl, activeContextPageId, progressPageId
+   - [ ] If `projectsDataSourceUrl` / `tasksDataSourceUrl` are missing, placeholders, or MCP errors indicate invalid `collection://` ids: find Projects/Tasks databases in the workspace → `notion-fetch` each → extract `<data-source url="collection://...">` → update config (`Core/notion-memory-bank-ops.mdc`, **Recover invalid or missing data source URLs**)
+   - [ ] Resolve projectId / taskId via notion-search; notion-fetch Project and Task pages
    - [ ] **Stale detection (Active Context and Progress only)**: notion-fetch activeContext and progress by ID; if parent ≠ resolved Project page, clear ID in config and treat as null. VAN does NOT check creative/reflection/archive—those are verified by /creative, /reflect, /archive.
    - [ ] **Legacy migration**: If activeContext or progress page title lacks projectId (e.g. "Active Context"), update title to `Active Context <projectId>` or `Progress <projectId>`.
-   - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing "Active Context PROJECT-X" / "Progress PROJECT-X" (use projectId from config); if not found, notion-create-pages with those titles. Update config with resolved or new IDs (avoid duplicates)
+   - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing `Active Context <projectId>` / `Progress <projectId>` (substitute projectId from config); if not found, notion-create-pages with those titles. Update config with resolved or new IDs (avoid duplicates)
    - [ ] Confirm all Project, Task, activeContext, progress pages are accessible
 
 4. **Task Analysis**

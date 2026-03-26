@@ -6,7 +6,7 @@ This command creates a new task in the Tasks database and associates it with the
 
 Reads from `.cursor/notion-memory-bank.json`:
 - `tasksDataSourceUrl` – Tasks database data source (e.g. `collection://d1b195db-550c-411f-84b8-8067fe4a12c3`)
-- `projectId` – Current project (e.g. `PROJECT-37`)
+- `projectId` – Current project numeric id, JSON number or string (e.g. `37` or `"37"`) — matches **Project ID** in Notion
 - `projectsDataSourceUrl` – For resolving projectId
 
 Uses `notion-create-pages` to create the task row. Optionally updates `taskId` after creation.
@@ -27,12 +27,12 @@ Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc
    - Status options: `Not Started`, `Pending`, `In Progress`, `Done`
 
 2. **Create Task**
-   - Follow `Core/task-creation-notion.mdc` (resolve project, notion-create-pages, extract TASK-ID)
+   - Follow `Core/task-creation-notion.mdc` (resolve project, notion-create-pages, extract **Task ID** → `taskId`)
    - Dates defaults to today; override with user-provided date if given. Use `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).
    - For relation `Project`: pass project page URL as **string** (not array)
 
-3. **Confirm & Return TASK-ID**
-   - **Return prominently**: `TASK-ID: TASK-xxxx`
+3. **Confirm & Return taskId**
+   - **Return prominently**: `taskId` as assigned in Notion (config may use number or string, e.g. `taskId: 1385` or `"1385"`)
    - Ask user if they want to update `taskId` in config – if yes, update `.cursor/notion-memory-bank.json`
 
 ## Skill Reference

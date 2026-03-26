@@ -1,5 +1,5 @@
 ---
-description: Defines Notion page locations for Memory Bank. Uses PROJECT- and TASK- identifiers.
+description: Defines Notion page locations for Memory Bank. Projects and Tasks use numeric Project ID / Task ID (same convention).
 globs: memory-bank-paths.mdc
 alwaysApply: true
 ---
@@ -12,10 +12,12 @@ alwaysApply: true
 
 ## Identifier Convention
 
-- **PROJECT-** prefix: Look up in **Projects** database
-- **TASK-** prefix: Look up in **Tasks** database
+- **Projects**: `projectId` in config matches the **Project ID** property in the **Projects** database (numeric value). In JSON you may use a **number** (`123`) or **string** (`"123"`) — both are valid.
+- **Tasks**: `taskId` matches **Task ID** (same rule: JSON number or string).
 
-Example: `PROJECT-123` → search Projects database; `TASK-588` → search Tasks database.
+Example: `projectId` `123` or `"123"` → resolve via **Project ID**; `taskId` `588` or `"588"` → resolve via **Task ID**.
+
+**MCP / search:** When passing `projectId` or `taskId` to `notion-search` `query` (or comparing to Notion properties), coerce if needed (e.g. `String(projectId)`) so the value matches Notion’s stored form.
 
 ## Configuration
 
@@ -27,13 +29,13 @@ Read `.cursor/notion-memory-bank.json`:
 
 | Key | Required | Description |
 |-----|----------|-------------|
-| projectId | Yes | e.g. `PROJECT-123` – current Project |
+| projectId | Yes | Numeric key: JSON **number** or **string** (e.g. `123` or `"123"`) — must match **Project ID** on the Project row |
 | projectName | No | Page title of Project (populated when notion-verification fetches Project) |
-| taskId | No* | e.g. `TASK-588` – current Task; null → `/van [description]` creates one |
+| taskId | No* | Numeric key: JSON **number** or **string** (e.g. `588` or `"588"`) — must match **Task ID** on the Task row; null → `/van [description]` creates one |
 | taskName | No | Page title of Task (populated when notion-verification fetches Task) |
 | issueId | No | Jira/issue ID from Task's "Issue ID" property (synced when notion-verification fetches Task) |
-| projectsDataSourceUrl | Yes | Projects data source (collection://...) – from fetch of Projects database |
-| tasksDataSourceUrl | Yes | Tasks data source (collection://...) – from fetch of Tasks database |
+| projectsDataSourceUrl | Yes | Projects data source (`collection://...` from `notion-fetch` of the Projects **database**). If invalid, recover per `Core/notion-memory-bank-ops.mdc` (**Recover invalid or missing data source URLs**) |
+| tasksDataSourceUrl | Yes | Tasks data source (`collection://...` from `notion-fetch` of the Tasks **database**). Same recovery if invalid |
 | activeContextPageId | No | activeContext subpage ID; if null, create under Project |
 | progressPageId | No | progress subpage ID; if null, create under Project |
 | productContextPageId | No | productContext subpage ID; if null, create under Project (Level 4) |
@@ -46,23 +48,25 @@ Read `.cursor/notion-memory-bank.json`:
 
 ## Subpage Naming Convention
 
-- **Project subpages** (activeContext, progress, productContext, systemPatterns, techContext, style-guide): Include `projectId` in title. Format: `Active Context PROJECT-37`, `Progress PROJECT-37`, `Product Context PROJECT-37`, `System Patterns PROJECT-37`, `Tech Context PROJECT-37`, `Style Guide PROJECT-37`. Analogous to Task subpages including taskId. Enables stale detection when page is not under the expected Project.
-- **Task subpages** (creative, reflection, archive): Include `taskId` in title. Format: `Creative TASK-1391`, `Reflection TASK-1391`, `Archive TASK-1391`. Enables stale detection when page is not under the expected Task.
+- **Project subpages** (activeContext, progress, productContext, systemPatterns, techContext, style-guide): Include `projectId` in title. Format: `Active Context <projectId>`, `Progress <projectId>`, etc. (e.g. `Active Context 37` whether `projectId` is `37` or `"37"`). Analogous to Task subpages including taskId. Enables stale detection when page is not under the expected Project.
+- **Task subpages** (creative, reflection, archive): Include `taskId` in title. Format: `Creative <taskId>`, `Reflection <taskId>`, `Archive <taskId>` (e.g. `Creative 1391`). Enables stale detection when page is not under the expected Task.
 
 ## Resolving Page IDs
 
-1. **PROJECT-X**: Search by **ID field first** (`userDefined:ID`). Use `notion-query-database-view` with a view filtered by ID when available; otherwise `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `PROJECT-X` (exact identifier). Verify result's ID property matches; then `notion-fetch` with page URL.
-2. **TASK-Y**: Search by **ID field first** (`userDefined:ID`). Same as PROJECT-X but for Tasks database.
+1. **Project (by projectId)**: Search by **Project ID** first (`userDefined:Project ID`). Use `notion-query-database-view` with a view filtered by **Project ID** when available; otherwise `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = string form of `projectId` (e.g. `String(projectId)` if the tool expects a string). Verify the result's **Project ID** matches (normalize number vs string when comparing); then `notion-fetch` with page URL.
+2. **Task (by taskId)**: Search by **Task ID** first (`userDefined:Task ID`). Same pattern: `query` = string form of `taskId` if needed; verify **Task ID** matches `taskId`. **Note:** If your Tasks database still uses a property named **ID** (not **Task ID**), the MCP key may be `userDefined:ID` — confirm on a `notion-fetch` of a Task row; values are numeric like **Project ID**.
 3. **Subpages**: Use explicit page IDs if set; otherwise create under Project or Task with `notion-create-pages`.
 
-**Identifier is source of truth:** If projectId or taskId cannot be resolved (no matching result), report verification incomplete. Do NOT use projectName/taskName as fallback. See `Core/notion-verification.mdc` step 3.
+**Identifier is source of truth:** If projectId or taskId cannot be resolved (no matching result), report verification incomplete. Do NOT use projectName/taskName as fallback. See `Core/notion-verification.mdc` step 4.
+
+**Bad data source URLs:** If `projectsDataSourceUrl` / `tasksDataSourceUrl` fail, run recovery in `Core/notion-memory-bank-ops.mdc` before relying on scoped search. See `Core/notion-verification.mdc` step 2.
 
 ## Mapping: cursor-memory-bank → Notion
 
 | Memory Bank Concept | Notion Location | Config Key |
 |---------------------|-----------------|------------|
-| tasks.md | Current Task page body | taskId (TASK-588) |
-| projectbrief.md | Project page body | projectId (PROJECT-123) |
+| tasks.md | Current Task page body | taskId (number or string, e.g. `588`) |
+| projectbrief.md | Project page body | projectId (number or string, e.g. `123`) |
 | activeContext.md | activeContext subpage under Project | activeContextPageId |
 | progress.md | progress subpage under Project | progressPageId |
 | productContext.md | productContext subpage under Project | productContextPageId |

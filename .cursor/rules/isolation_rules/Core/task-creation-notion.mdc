@@ -20,6 +20,7 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 | Property | Type | Example |
 |----------|------|---------|
 | Name | title | Task title |
+| Task ID | number / unique id | Numeric id (same convention as **Project ID**); often auto-assigned — read from row after create |
 | Project | relation | Project page URL (string) |
 | Status | status | `Not Started`, `Pending`, `In Progress`, `Done` |
 | Dates | date | `date:Dates:start` = today (YYYY-MM-DD), `date:Dates:is_datetime` = 0 |
@@ -27,8 +28,8 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 ## Workflow
 
 1. **Resolve Project**
-   - `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `projectId` (exact identifier, e.g. PROJECT-37). Do NOT use projectName or description – that can return a different project.
-   - Pick the result whose `userDefined:ID` matches `projectId`; if multiple results, verify before using. Get project page URL. If no matching result, fail – do not create task under wrong project.
+   - `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `projectId` (exact value, e.g. `37` or `123`). Do NOT use projectName or description – that can return a different project.
+   - Pick the result whose `userDefined:Project ID` matches `projectId`; if multiple results, verify before using. Get project page URL. If no matching result, fail – do not create task under wrong project.
 
 2. **Create Task**
    - Extract `data_source_id` from `tasksDataSourceUrl` (UUID after `collection://`)
@@ -38,9 +39,9 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
      - `pages`: `[{ "properties": { "Name": "<title>", "Project": "<project page URL>", "Status": "Not Started", "date:Dates:start": "<today YYYY-MM-DD>", "date:Dates:is_datetime": 0 } }]`
    - If your schema uses a different date property name (e.g. "Due"), replace "Dates" accordingly
 
-3. **Extract TASK-ID**
+3. **Extract taskId**
    - `notion-fetch` the created page (from create response `url` or `id`)
-   - Read `userDefined:ID` (e.g. TASK-1385)
+   - Read `userDefined:Task ID` (numeric; store in config as JSON **number** or **string**, e.g. `1385` or `"1385"` — match your `projectId` style). If the property appears as `userDefined:ID` in MCP output, use that key — same numeric convention as **Project ID**.
 
 4. **Update Config**
    - Follow notion-memory-bank-ops.mdc config rules. Read current file; write `taskId` and `taskName` (task title from step 2) if new values differ from current. If unchanged, do NOT write.

@@ -4,8 +4,8 @@ This command facilitates structured reflection on completed implementation, docu
 
 ## Memory Bank Integration (Notion)
 
-Reads from (resolve TASK- via notion-search, then notion-fetch):
-- Task page (`taskId`, e.g. TASK-588) - Completed implementation details
+Reads from (resolve taskId via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. `588`) - Completed implementation details
 - progress page (`progressPageId`) - Implementation status and observations
 - creative page (`creativePageId`) - Design decisions (Level 3-4)
 
@@ -86,13 +86,13 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
 
 4. **Create Reflection Document**
    - If `reflectionPageId` is set: notion-fetch to verify page exists, is not deleted, and parent = Task page. If parent ≠ Task page (stale), clear reflectionPageId in config and treat as null.
-   - If `reflectionPageId` is null or page is deleted/stale: notion-create-pages under Task with `title: "Reflection TASK-xxx"` (use taskId from config, e.g. TASK-1391). Update config per notion-memory-bank-ops.mdc (read file, write only if reflectionPageId differs).
+   - If `reflectionPageId` is null or page is deleted/stale: notion-create-pages under Task with `title: "Reflection <taskId>"` (e.g. `Reflection 1391`). Update config per notion-memory-bank-ops.mdc (read file, write only if reflectionPageId differs).
    - Structure: Summary, What Went Well, Challenges, Lessons Learned, Process Improvements, Technical Improvements (no ## Next Steps section)
 
 5. **Update Memory Bank**
    - notion-update-page Task page with reflection status
    - Use `replace_content_range` to replace "## 8. Next Steps" or "## Next Steps" content with "Run `/archive` to finalize task documentation."
-   - Add "# Reflection" at the **end** of the Task page (level 1 heading; no subpage text, no separator). **Order**: (1) Replace "## 8. Next Steps" or "## Next Steps" content with "Run `/archive`..."; (2) Use `replace_content_range` with `selection_with_ellipsis` matching the heading that exists on the page – either "## 8. Next Steps...Run `/archive` to finalize task documentation." or "## Next Steps...Run `/archive` to finalize task documentation." – and `new_str` = same + "\n\n# Reflection\n<page url=\"[reflectionPageUrl]\">Reflection TASK-xxx</page>". Use `<page>` block (not `<mention-page>`). **Do not reference pages in trash** – if reflection page is deleted, create a new one with notion-create-pages first.
+   - Add "# Reflection" at the **end** of the Task page (level 1 heading; no subpage text, no separator). **Order**: (1) Replace "## 8. Next Steps" or "## Next Steps" content with "Run `/archive`..."; (2) Use `replace_content_range` with `selection_with_ellipsis` matching the heading that exists on the page – either "## 8. Next Steps...Run `/archive` to finalize task documentation." or "## Next Steps...Run `/archive` to finalize task documentation." – and `new_str` = same + "\n\n# Reflection\n<page url=\"[reflectionPageUrl]\">Reflection <taskId></page>" (substitute taskId, e.g. `Reflection 1391`). Use `<page>` block (not `<mention-page>`). **Do not reference pages in trash** – if reflection page is deleted, create a new one with notion-create-pages first.
 
 ## Usage
 

@@ -4,8 +4,8 @@ This command creates comprehensive archive documentation and updates the Memory 
 
 ## Memory Bank Integration (Notion)
 
-Reads from (resolve TASK- via notion-search, then notion-fetch):
-- Task page (`taskId`, e.g. TASK-588) - Complete task details and checklists
+Reads from (resolve taskId via notion-search, then notion-fetch):
+- Task page (`taskId`, e.g. `588`) - Complete task details and checklists
 - reflection page (`reflectionPageId`) - Reflection document
 - progress page (`progressPageId`) - Implementation status
 - creative page (`creativePageId`) - Creative phase documents (Level 3-4)
@@ -110,13 +110,13 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
 
 4. **Update Memory Bank**
    - If `archivePageId` is set: notion-fetch to verify parent = Task page. If stale (parent ≠ Task), clear in config and treat as null.
-   - notion-create-pages: archive page under Task with `title: "Archive TASK-xxx"` (use taskId from config). Or use existing `archivePageId` if valid.
+   - notion-create-pages: archive page under Task with `title: "Archive <taskId>"` (e.g. `Archive 1391`). Or use existing `archivePageId` if valid.
    - **MANDATORY** notion-update-page Task page properties (do NOT skip):
      - Status: "Done"
      - **Dates**: notion-fetch Task first. If `date:Dates:start` exists → keep it, set `date:Dates:end` = today. If empty → `date:Dates:start` = today, `date:Dates:end` = today. Run `date +%Y-%m-%d` for today. Use `update_properties` with `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).
    - Use `replace_content_range` to replace "## 8. Next Steps" or "## Next Steps" content with "Run `/van` for next task."
    - Use `replace_content_range` to replace "# Reflection" with "# Reflection & Archive" (heading only; keep child pages using `<page url="...">` – required to preserve structure)
-   - notion-update-page progress page: add archive reference using `<mention-page url="[archivePageUrl]">Archive TASK-xxx</mention-page>`
+   - notion-update-page progress page: add archive reference using `<mention-page url="[archivePageUrl]">Archive <taskId></mention-page>` (e.g. `Archive 1391`)
    - notion-update-page activeContext page: reset for next task
    - Clear completed task details from Task page (keep structure)
 
