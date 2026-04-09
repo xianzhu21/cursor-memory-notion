@@ -51,6 +51,14 @@ Read `.cursor/notion-memory-bank.json`:
 - **Project subpages** (activeContext, progress, productContext, systemPatterns, techContext, style-guide): Include `projectId` in title. Format: `Active Context <projectId>`, `Progress <projectId>`, etc. (e.g. `Active Context 37` whether `projectId` is `37` or `"37"`). Analogous to Task subpages including taskId. Enables stale detection when page is not under the expected Project.
 - **Task subpages** (creative, reflection, archive): Include `taskId` in title. Format: `Creative <taskId>`, `Reflection <taskId>`, `Archive <taskId>` (e.g. `Creative 1391`). Enables stale detection when page is not under the expected Task.
 
+## Subpage body (do not echo page title)
+
+Notion already shows the page **title** at the top. **Do not** put a level-1 heading (`# ...`) in the **body** that duplicates that title—it is redundant.
+
+- **Primary scope:** Project subpages (**activeContext**, **progress**, **productContext**, **systemPatterns**, **techContext**, **style-guide**). **Task** subpages (**Creative**, **Reflection**, **Archive**): same rule—do not open the body with `#` whose text equals the page title; use `##` for the first section unless a command’s workflow explicitly requires a different structure that does not duplicate the title.
+- **activeContext / progress** (e.g. `/van`, `/archive`): Start the written body with `##` sections (e.g. `## Current focus (YYYY-MM-DD)`), not `# Active Context <projectId>` or `# Progress <projectId>`.
+- **Cleanup**: If `notion-fetch` shows the body opening with `#` whose text matches `properties.title` (same wording, ignoring trivial whitespace), remove that heading (and one following blank line if present) via `notion-update-page` with `command: "update_content"`, preserving the rest.
+
 ## Resolving Page IDs
 
 1. **Project (by projectId)**: Search by **Project ID** first (`userDefined:Project ID`). Use `notion-query-database-view` with a view filtered by **Project ID** when available; otherwise `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = string form of `projectId` (e.g. `String(projectId)` if the tool expects a string). Verify the result's **Project ID** matches (normalize number vs string when comparing); then `notion-fetch` with page URL.

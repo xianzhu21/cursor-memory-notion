@@ -72,6 +72,7 @@ Do **not** invent `collection://` UUIDs; they must come from `notion-fetch` of t
 
 - `notion-update-page` with `command: "replace_content"` and `new_str` = full Markdown content
 - Use the resolved page ID from the identifier
+- **Subpage bodies:** For Project Memory Bank subpages (activeContext, progress, productContext, systemPatterns, techContext, styleGuide), follow `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**—never begin `new_str` with `#` that duplicates the page title; start at `##`.
 - **MUST output in chat (do not skip):** After each update, output the modified content in chat (you have `new_str`—no notion-fetch). Follow notion-output-after-write skill.
 
 ## Task Subpages (Creative, Reflection, Archive)

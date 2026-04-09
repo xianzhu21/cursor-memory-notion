@@ -117,7 +117,7 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
    - Use `replace_content_range` to replace "## 8. Next Steps" or "## Next Steps" content with "Run `/van` for next task."
    - Use `replace_content_range` to replace "# Reflection" with "# Reflection & Archive" (heading only; keep child pages using `<page url="...">` – required to preserve structure)
    - notion-update-page progress page: add archive reference using `<mention-page url="[archivePageUrl]">Archive <taskId></mention-page>` (e.g. `Archive 1391`)
-   - notion-update-page activeContext page: reset for next task
+   - notion-update-page activeContext page: reset for next task (body: `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**—no `#` heading that repeats the page title; use `##` for sections)
    - Clear completed task details from Task page (keep structure)
 
 ## Usage

@@ -78,7 +78,7 @@ After determining complexity level, load:
 
 6. **Update Memory Bank**
    - notion-update-page on Task page (complexity)
-   - notion-update-page on activeContext page (current focus)
+   - notion-update-page on activeContext page (current focus). **Body format:** follow `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**—do not use `# Active Context <projectId>` in the body; use `##` sections (e.g. `## Current focus (YYYY-MM-DD)`). If the page still has a redundant leading H1 matching the title, remove it first via `update_content`.
 
 ## Usage
 
