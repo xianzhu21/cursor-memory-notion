@@ -49,7 +49,6 @@ Read `.cursor/notion-memory-bank.json`:
 | styleGuidePageId | No | style-guide subpage ID; if null, create under Project (creative UI/UX) |
 | creativePageId | No | Creative subpage ID; if null, create under Task |
 | reflectionPageId | No | Reflection subpage ID; if null, create under Task |
-| archivePageId | No | Archive subpage ID; if null, create under Task |
 
 ## Subpage Naming Convention
 
@@ -88,7 +87,7 @@ Notion already shows the page **title** at the top. **Do not** put a level-1 hea
 | style-guide.md | style-guide subpage under Project | styleGuidePageId |
 | creative/creative-[name].md | Creative subpage under Task | creativePageId |
 | reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageId |
-| archive/archive-[id].md | Archive subpage under Task | archivePageId |
+| archive/archive-[id].md | Archive subpage under Task | *(no config key — resolve via Task child titled `Archive <taskId>` or Task body `<page>` links)* |
 
 ## Page Links in Content
 
