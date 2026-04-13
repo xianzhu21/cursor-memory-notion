@@ -9,7 +9,8 @@ This command initializes the Memory Bank system, performs platform detection, de
 ## Memory Bank Integration (Notion)
 
 **CRITICAL:** This project uses **Notion** as Memory Bank. Use page IDs from `.cursor/notion-memory-bank.json`:
-- **tasks** - Task page body (`taskId`, e.g. `588` → search Tasks by **Task ID**)
+- **tasks** - Task page body (`taskId`, e.g. `1430` → search Tasks by **Task ID**)
+- **issueId** / **issueUrl** - External tracker key and browse URL; **not** the Notion **Task ID**. Usually read from the Task’s **Issue ID** **text** property (often `[KEY](https://...)` in one field); `issueUrl` is parsed from that link unless the database has a separate URL column. Synced when notion-verification runs — same Task fetch as `taskName`.
 - **activeContext** - activeContext page (`activeContextPageId`)
 - **progress** - progress page (`progressPageId`)
 - **projectBrief** - Project page body (`projectId`, e.g. `123` → search Projects by **Project ID**)
@@ -50,7 +51,7 @@ After determining complexity level, load:
    - Set path separators
 
 2. **Task Creation / Task Validation**
-   - Read config: projectId, taskId, tasksDataSourceUrl, projectsDataSourceUrl
+   - Read config: projectId, taskId, issueId, issueUrl, tasksDataSourceUrl, projectsDataSourceUrl (`issueId` / `issueUrl` are optional; overwritten from Notion in Step 3 when the Task row has issue fields)
    - Treat `taskId` as "needs creation" when it is `null` or empty string `""`
    - **If taskId is null/empty**: Follow `Core/task-creation-notion.mdc`. User MUST provide task description in `/van [description]`; if missing, ask: "Please provide a task description, e.g. /van Add user authentication feature"
    - **If taskId exists AND user provided description**: notion-fetch current Task page, compare its title with user's van description
@@ -59,9 +60,9 @@ After determining complexity level, load:
      - If user says no: continue with existing task
 
 3. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
-   - [ ] Read config: projectId, taskId, projectsDataSourceUrl, tasksDataSourceUrl, activeContextPageId, progressPageId
+   - [ ] Read config: projectId, projectName, taskId, taskName, issueId, issueUrl, projectsDataSourceUrl, tasksDataSourceUrl, activeContextPageId, progressPageId
    - [ ] If `projectsDataSourceUrl` / `tasksDataSourceUrl` are missing, placeholders, or MCP errors indicate invalid `collection://` ids: find Projects/Tasks databases in the workspace → `notion-fetch` each → extract `<data-source url="collection://...">` → update config (`Core/notion-memory-bank-ops.mdc`, **Recover invalid or missing data source URLs**)
-   - [ ] Resolve projectId / taskId via notion-search; notion-fetch Project and Task pages
+   - [ ] Resolve projectId / taskId via notion-search; notion-fetch Project and Task pages; **sync `projectName`, `taskName`, `issueId`, `issueUrl` from fetched pages into config** (step 6 of `notion-verification.mdc`)
    - [ ] **Stale detection (Active Context and Progress only)**: notion-fetch activeContext and progress by ID; if parent ≠ resolved Project page, clear ID in config and treat as null. VAN does NOT check creative/reflection/archive—those are verified by /creative, /reflect, /archive.
    - [ ] **Legacy migration**: If activeContext or progress page title lacks projectId (e.g. "Active Context"), update title to `Active Context <projectId>` or `Progress <projectId>`.
    - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing `Active Context <projectId>` / `Progress <projectId>` (substitute projectId from config); if not found, notion-create-pages with those titles. Update config with resolved or new IDs (avoid duplicates)

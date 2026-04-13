@@ -7,7 +7,7 @@
 
 ## Learned Workspace Facts
 
-- `projectName` and `taskName` in config are auto-populated when notion-verification fetches Project/Task pages
+- `projectName`, `taskName`, `issueId`, and `issueUrl` in config are auto-populated when notion-verification fetches Project/Task pages; **Issue ID** is usually **text** (often `[KEY](https://...)`), so `issueUrl` is typically parsed from that string, not a separate Notion column
 - This project uses Notion as Memory Bank backend; config stores page IDs and names for quick reference
 - Projects use **Project ID** (numeric); Tasks use **Task ID** (numeric, same convention); `projectId` / `taskId` in config may be JSON **numbers** or **strings** (e.g. `123` or `"123"`)
 - If `projectsDataSourceUrl` / `tasksDataSourceUrl` are invalid: find Projects/Tasks databases via Notion search → `notion-fetch` → read `<data-source url="collection://...">` → update config (see `Core/notion-memory-bank-ops.mdc`)
