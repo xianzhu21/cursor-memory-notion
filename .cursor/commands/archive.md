@@ -66,12 +66,12 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
 
    **Level 1:**
    - Create quick summary
-   - Update `memory-bank/tasks.md` marking task complete
+   - notion-update-page Task page marking task complete
 
    **Level 2:**
    - Create basic archive document
    - Document changes made
-   - Update `memory-bank/tasks.md` and `memory-bank/progress.md`
+   - notion-update-page Task page and progress page
 
    **Level 3-4:**
    - Create comprehensive archive document
@@ -80,7 +80,7 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
    - Document code changes
    - Document testing approach
    - Summarize lessons learned
-   - Update all Memory Bank files
+   - Update Task page, progress page, activeContext page, and other Memory Bank pages per loaded archive rules
 
 3. **Archive Document Structure**
    ```

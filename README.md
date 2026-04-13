@@ -118,11 +118,13 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 - `projectName` – Project page title (auto-populated by notion-verification)
 - `taskId` – Current task; set to `null` or `""` to have `/van [description]` create one automatically
 - `taskName` – Task page title (auto-populated by notion-verification)
+- `issueId` – External tracker key from the Task’s **Issue ID** property (auto-populated by notion-verification on `/van`, e.g. `XHMI-1430`)
+- `issueUrl` – Issue browse URL from **Issue URL** and/or link in **Issue ID** (auto-populated by notion-verification)
 - `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database collection URLs
 - `activeContextPageId`, `progressPageId` – Optional subpage IDs under Project
 - `creativePageId`, `reflectionPageId`, `archivePageId` – Optional subpage IDs under Task
 
-**Create a new task:** Run `/van [task description]` with `taskId` null – a task is created in Notion and config is updated. Or use `/create-task <title>` to create a task first, then `/van` to load it.
+**Create a new task:** Run `/van [task description]` with `taskId` null – a task is created in Notion and config is updated (same entry point as upstream Memory Bank: VAN initializes task context).
 
 ## Installation Instructions
 

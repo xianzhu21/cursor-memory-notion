@@ -1,26 +1,19 @@
 # PLAN Command - Task Planning
 
-This command creates or updates implementation plans in the Notion Task page. It **auto-detects** whether the Plan section is empty (create full plan) or substantive (incremental update).
-
-**CRITICAL:** PLAN phase **only** updates Notion Task page content. **Never** modify code, delete files, or change any files in the codebase. Implementation is done in `/build`.
-
-## Plan Section Detection
-
-**Before any write**, notion-fetch the Task page and parse content:
-
-- **Empty/skeleton** → **Create mode**: No `# Plan` (or `## Plan`) heading, OR it exists but content between that heading and next `#` is minimal (e.g. only "Status: Pending", "Next Steps", "Run /plan", or content length < approximately 200 characters)
-- **Substantive** → **Update mode**: `# Plan` or `## Plan` exists AND (has "## 1. Requirements" or "## 3. Subtasks" with actual items, or content length > approximately 200 characters)
+This command creates detailed implementation plans based on complexity level determined in VAN mode.
 
 ## Memory Bank Integration (Notion)
 
 Reads from (resolve projectId / taskId via notion-search, then notion-fetch):
-- Task page (`taskId`, e.g. `588`) - Task requirements, complexity level, existing plan content
+- Task page (`taskId`) - Task requirements and complexity level
 - activeContext page (`activeContextPageId`) - Current project context
-- Project page body (`projectId`, e.g. `123`) - projectBrief (if exists)
+- Project page body (`projectId`) - Project foundation (if exists; `projectbrief.md` equivalent)
 
-Updates (via notion-update-page):
-- Task page (`taskId`) - Adds or updates implementation plan. **Write in English** (Notion content rule).
-- Project page body (`projectId`) - projectbrief (Level 2/3/4 Create mode only): When creating a full plan, after writing the Task plan, notion-update-page the Project page body with projectbrief content per workflow-level2/3/4 (Level 2: enhancement details; Level 3: feature alignment note; Level 4: architectural vision). If Project page body is empty or minimal, populate with a brief derived from the task and plan. Skip if projectbrief update is not required by the loaded workflow rules.
+Updates (notion-update-page):
+- Task page (`taskId`) - Adds detailed implementation plan
+- **Write in English** (Notion content rule)
+
+Project brief (`projectbrief.md` equivalent): update the Project page body only when loaded level workflow rules (e.g. `workflow-level2.mdc`, `workflow-level3.mdc`, `workflow-level4.mdc`) require it—the same as upstream, where those rules update `memory-bank/projectbrief.md`.
 
 ## Progressive Rule Loading
 
@@ -62,68 +55,35 @@ Load: .cursor/rules/isolation_rules/Level4/workflow-level4.mdc
 ## Workflow
 
 0. **Precondition**
-   - If `taskId` is null or empty, ask user to run `/van [description]` or `/create-task` first and stop. The Task page cannot be fetched without a valid `taskId`.
+   - If `taskId` is null or empty, ask the user to run `/van [description]` first and stop. The Task page cannot be fetched without a valid `taskId` (same as upstream: need `memory-bank/tasks.md` / task context).
 
 1. **Read Task Context**
-   - notion-fetch Task page (resolve `taskId`) for complexity level and existing plan
-   - notion-fetch activeContext page (`activeContextPageId`) for current context
-   - **Determine mode**: Parse Task page content; apply Plan section detection logic → Create or Update
+   - notion-fetch Task page for complexity level
+   - notion-fetch activeContext page for current context
+   - Review codebase structure
 
-2. **Create Mode** (Plan empty/skeleton)
-   - Create full implementation plan per complexity level
+2. **Create Implementation Plan**
    - **Level 2:** Document planned changes, files to modify, implementation steps
    - **Level 3:** Create comprehensive plan with components, dependencies, challenges
    - **Level 4:** Create phased implementation plan with architectural considerations
-   - notion-update-page with `replace_content` or `replace_content_range` to write full plan to Task page
-   - Use **# Plan** as the top-level plan heading (not "# Implementation Plan: [Task name]")
-   - **projectbrief (Level 2/3/4):** After writing Task plan, notion-update-page Project page body (`projectId`) with projectbrief content: Level 2 – enhancement details and scope; Level 3 – feature alignment with project goals; Level 4 – architectural vision and high-level approach. Merge with existing Project body if non-empty; do not overwrite user content entirely.
 
-3. **Update Mode** (Plan substantive)
-   - **Interpret user input**: User provides new finding, subtask to add, section to update, or refinement
-   - If user did not specify what to add: ask: "What would you like to add or update? E.g. 'Avoid duplicate Active Context and Progress: search before create'"
-   - **Apply incremental update** (Notion Task page only; no code/file changes):
-     - Add new subtask: Find Subtasks section (e.g. `## 3. Subtasks`); use `insert_content_after` to append `- [ ] **3.X** <description>`
-     - Add new section: Use `insert_content_after` with `selection_with_ellipsis` matching the last section before where to insert
-     - Update existing section: Use `replace_content_range` with `selection_with_ellipsis` to replace only that section
-   - **Never** use `replace_content` to overwrite the entire page in Update mode
+3. **Technology Validation** (Level 2-4)
+   - Document technology stack selection
+   - Create proof of concept if needed
+   - Verify dependencies and build configuration
 
-4. **Technology Validation** (Level 2-4, Create mode only)
-   - Document technology stack selection in the plan
-   - Document proof-of-concept requirements and dependency checks for `/build` to execute
-   - Do NOT run commands or create files—document only
-
-5. **Identify Creative Phases** (Create mode only)
+4. **Identify Creative Phases**
    - Flag components requiring design decisions
    - Document which components need creative exploration
 
-6. **Update Task Page Workflow Sections**
-   - Use `notion-update-page` with `command: "replace_content_range"` and `selection_with_ellipsis` matching the section.
-   - Replace "## 8. Next Steps" or "## Next Steps" content **conditionally**:
-     - **Level 2:** "Run `/build` for implementation."
-     - **Level 3-4 (Create mode):** If creative phases were identified in Step 5 → "Run `/creative` for design exploration, or `/build` for implementation." Otherwise → "Run `/build` for implementation."
-     - **Level 3-4 (Update mode):** Infer from existing plan content: if the plan has a "Creative Phases Required" (or similar) section with at least one item → "Run `/creative` for design exploration, or `/build` for implementation." Otherwise → "Run `/build` for implementation."
+5. **Update Memory Bank**
+   - notion-update-page Task page with complete plan
+   - Mark planning phase as complete
+   - Apply any Project page body (`projectbrief`) updates required by the loaded level workflow rules (Notion equivalent of `memory-bank/projectbrief.md`)
 
 ## Usage
 
-```
-/plan
-```
-Create full plan when Plan section is empty; or, if Plan exists and user provided no description, ask: "Plan already exists. Add/update something? E.g. '/plan Add subtask: handle edge case X'"
-
-```
-/plan [description of what to add]
-```
-- **Create mode**: Create full plan (description may inform focus)
-- **Update mode**: Add or update per description (e.g. "Add subtask: handle empty taskId string")
-
-Examples:
-```
-/plan Add subtask: search before create for Active Context and Progress
-```
-
-```
-/plan Update section 5: add dependency on notion-search
-```
+Type `/plan` to start planning based on the task in the Notion Task page (`tasks.md` equivalent).
 
 ## Next Steps
 

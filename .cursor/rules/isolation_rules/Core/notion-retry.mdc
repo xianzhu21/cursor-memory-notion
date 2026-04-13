@@ -38,4 +38,4 @@ Report clearly to the user:
 
 ## Commands That Use Retry
 
-All commands that invoke Notion MCP load this rule: `/van`, `/plan`, `/build`, `/creative`, `/reflect`, `/archive`, `/create-task`.
+All commands that invoke Notion MCP load this rule: `/van`, `/plan`, `/build`, `/creative`, `/reflect`, `/archive`.

@@ -5,13 +5,13 @@ This command implements the planned changes following the implementation plan an
 ## Memory Bank Integration (Notion)
 
 Reads from (resolve taskId via notion-search, then notion-fetch):
-- Task page (`taskId`, e.g. `588`) - Implementation plan and checklists
+- Task page (`taskId`) - Implementation plan and checklists
 - creative page (`creativePageId`) - Design decisions (Level 3-4)
 - activeContext page (`activeContextPageId`) - Current project context
 
 Updates (notion-update-page):
-- Task page (`taskId`) - Implementation progress, test results
-- progress page (`progressPageId`) - Build progress, test outcomes, observations
+- Task page (`taskId`) - Implementation progress, test results, and status
+- progress page (`progressPageId`) - Build status, test outcomes, and observations
 - **Write in English** (Notion content rule)
 
 ## Progressive Rule Loading
@@ -88,7 +88,7 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
      - Do NOT proceed to next phase until all tests pass
    - Integration testing
    - Document implementation
-   - notion-update-page Task and progress pages
+   - notion-update-page Task page and progress page
 
 4. **Test-Driven Phase Completion**
    - Extract success criteria from current phase in Task page
@@ -107,17 +107,17 @@ Load: .cursor/rules/isolation_rules/Level4/phased-implementation.mdc
    - Verify all build steps completed
    - Verify all success criteria tests pass
    - Verify changes meet requirements
+   - notion-update-page Task page with completion status
 
-7. **Update Task Page Workflow Sections**
+7. **Update Task Page Workflow Sections** (Notion task body — same role as editing structured sections in `tasks.md`)
    - Use `notion-update-page` with `command: "replace_content_range"` and `selection_with_ellipsis` matching the section.
    - If a section like "## 7. Creative Phases" or "## Creative Phases" contains "Proceed to `/build`", replace that line with "Proceeded to `/build`. Completed." (Level 1/2 may not have this section; skip if absent.)
    - Replace "## 8. Next Steps" or "## Next Steps" content with "Run `/reflect` for task review."
 
 ## Usage
 
-Type `/build` to start implementation based on the plan in Notion Task page.
+Type `/build` to start implementation based on the plan in the Notion Task page (`tasks.md` equivalent).
 
 ## Next Steps
 
 After implementation complete, proceed to `/reflect` command for task review.
-

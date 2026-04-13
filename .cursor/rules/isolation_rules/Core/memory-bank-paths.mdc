@@ -19,13 +19,17 @@ Example: `projectId` `123` or `"123"` → resolve via **Project ID**; `taskId` `
 
 **MCP / search:** When passing `projectId` or `taskId` to `notion-search` `query` (or comparing to Notion properties), coerce if needed (e.g. `String(projectId)`) so the value matches Notion’s stored form.
 
+**Task ID in MCP:** **Task ID** may be `auto_increment_id` in Notion; `notion-fetch` can still return it as a **string** in JSON (e.g. `"1430"`). Compare using normalized string or number.
+
+**Issue ID / Issue URL (Tasks):** In the canonical Memory Bank **Tasks** data source, **Issue ID** is typically type **text**. The cell often holds a markdown link `[KEY](https://...)` so **config `issueUrl` is usually parsed from `Issue ID`**, not from a second Notion column. If your workspace adds a separate URL property, see `Core/notion-verification.mdc` step 6.
+
 ## Configuration
 
 Read `.cursor/notion-memory-bank.json`:
 
 **Config write format (MUST):** When writing `.cursor/notion-memory-bank.json`, use formatted JSON: 2-space indentation, one key per line. Parse existing content, merge changes, then serialize with `JSON.stringify(obj, null, 2)` – never minified single-line JSON.
 
-**Migration:** Existing configs without the new keys (productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId, projectName, taskName, issueId) work as-is; missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`). projectName and taskName are populated when notion-verification fetches Project and Task pages.
+**Migration:** Existing configs without the new keys (productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId, projectName, taskName, issueId, issueUrl) work as-is; missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`). `projectName`, `taskName`, `issueId`, and `issueUrl` are populated when notion-verification fetches Project and Task pages.
 
 | Key | Required | Description |
 |-----|----------|-------------|
@@ -33,7 +37,8 @@ Read `.cursor/notion-memory-bank.json`:
 | projectName | No | Page title of Project (populated when notion-verification fetches Project) |
 | taskId | No* | Numeric key: JSON **number** or **string** (e.g. `588` or `"588"`) — must match **Task ID** on the Task row; null → `/van [description]` creates one |
 | taskName | No | Page title of Task (populated when notion-verification fetches Task) |
-| issueId | No | Jira/issue ID from Task's "Issue ID" property (synced when notion-verification fetches Task) |
+| issueId | No | External tracker key from Task's **Issue ID** text (plain key, or link **label** when value is `[KEY](url)`); synced on Task fetch |
+| issueUrl | No | Browse URL: parsed from markdown in **Issue ID**, or from optional separate **Issue URL** if the schema has it; synced on Task fetch |
 | projectsDataSourceUrl | Yes | Projects data source (`collection://...` from `notion-fetch` of the Projects **database**). If invalid, recover per `Core/notion-memory-bank-ops.mdc` (**Recover invalid or missing data source URLs**) |
 | tasksDataSourceUrl | Yes | Tasks data source (`collection://...` from `notion-fetch` of the Tasks **database**). Same recovery if invalid |
 | activeContextPageId | No | activeContext subpage ID; if null, create under Project |

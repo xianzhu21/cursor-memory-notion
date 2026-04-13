@@ -1,17 +1,17 @@
 ---
-description: Shared task creation workflow for Notion. Load when VAN or create-task needs to create a task.
+description: Shared task creation workflow for Notion. Load when VAN needs to create a task.
 globs: task-creation-notion.mdc
 alwaysApply: false
 ---
 
 # TASK CREATION (NOTION)
 
-Shared workflow for creating a task in the Tasks database. Used by `/van` (when taskId is null/empty) and `/create-task`.
+Shared workflow for creating a task in the Tasks database. Used by `/van` when `taskId` is null or empty (same entry point as upstream: initialize task context via VAN).
 
 ## Prerequisites
 
 - Config: `projectId`, `tasksDataSourceUrl`, `projectsDataSourceUrl` from `.cursor/notion-memory-bank.json`
-- Task title (from user: `/van [description]` or `/create-task <title>`)
+- Task title from user: `/van [description]`
 
 ## Tasks DB Schema (Common Case)
 
@@ -24,6 +24,8 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 | Project | relation | Project page URL (string) |
 | Status | status | `Not Started`, `Pending`, `In Progress`, `Done` |
 | Dates | date | `date:Dates:start` = today (YYYY-MM-DD), `date:Dates:is_datetime` = 0 |
+| Issue ID | text | Optional. Often a markdown link in one line: `[XHMI-173320](https://.../browse/XHMI-173320)` — agents parse `issueId` + `issueUrl` from this on fetch (see notion-verification step 6) |
+| Issue URL | url | Optional **only if** your Tasks DB has a second property; many Memory Bank setups use **Issue ID** text alone |
 
 ## Workflow
 
@@ -44,14 +46,9 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
    - Read `userDefined:Task ID` (numeric; store in config as JSON **number** or **string**, e.g. `1385` or `"1385"` — match your `projectId` style). If the property appears as `userDefined:ID` in MCP output, use that key — same numeric convention as **Project ID**.
 
 4. **Update Config**
-   - Follow notion-memory-bank-ops.mdc config rules. Read current file; write `taskId` and `taskName` (task title from step 2) if new values differ from current. If unchanged, do NOT write.
+   - Follow notion-memory-bank-ops.mdc config rules. Read current file; from the post-create `notion-fetch`, write `taskId`, `taskName`, `issueId`, and `issueUrl` per notion-verification step 6 whenever any value differs from current (new tasks usually have empty issue fields → config gets `null` for both). If all unchanged, do NOT write.
 
 ## VAN-Specific
 
 - Treat `taskId` as "needs creation" when it is `null` or empty string `""`
 - User must provide task description in `/van [description]`; if missing, ask
-
-## create-task-Specific
-
-- Optional: ask for Status, Assignee, Dates, Module, Man-Day, content
-- After creation: ask user if they want to update `taskId` in config
