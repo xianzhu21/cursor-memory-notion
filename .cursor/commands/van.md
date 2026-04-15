@@ -9,13 +9,13 @@ This command initializes the Memory Bank system, performs platform detection, de
 ## Memory Bank Integration (Notion)
 
 **CRITICAL:** This project uses **Notion** as Memory Bank. Use page IDs from `.cursor/notion-memory-bank.json`:
-- **tasks** - Task page body (`taskId`, e.g. `1430` → search Tasks by **Task ID**)
+- **tasks** - Task page body: resolve the row whose Notion **`Task ID`** equals config `taskId` via **`Core/notion-task-id-resolution.mdc`** ( **`notion-fetch` Project** → read **`Tasks`** relation URLs → **parallel `notion-fetch`** Task pages until **`properties` → `Task ID`** matches — **not** Tasks–database semantic `notion-search` on a bare numeric id).
 - **issueId** / **issueUrl** - External tracker key and browse URL; **not** the Notion **Task ID**. Usually read from the Task’s **Issue ID** **text** property (often `[KEY](https://...)` in one field); `issueUrl` is parsed from that link unless the database has a separate URL column. Synced when notion-verification runs — same Task fetch as `taskName`.
 - **activeContext** - activeContext page (`activeContextPageId`)
 - **progress** - progress page (`progressPageId`)
-- **projectBrief** - Project page body (`projectId`, e.g. `123` → search Projects by **Project ID**)
+- **projectBrief** - Project page body: resolve Project by **`projectId`** per **`Core/notion-verification.mdc`** step 4 (**Project ID** is primary, like **Task ID**; **`projectName`** is optional disambiguation only—always verify **Project ID**; avoid workspace-only search on a bare numeric `projectId` first).
 
-Use `notion-search` to resolve `projectId` and `taskId`, then `notion-fetch`/`notion-update-page`/`notion-create-pages`.
+After Project and Task URLs are resolved, use **`notion-fetch`** / **`notion-update-page`** / **`notion-create-pages`** as required by **notion-verification** and this command’s Step 6.
 
 ## Progressive Rule Loading
 
@@ -28,6 +28,7 @@ Load: .cursor/rules/isolation_rules/Core/memory-bank-paths.mdc
 Load: .cursor/rules/isolation_rules/Core/notion-retry.mdc
 Load: .cursor/rules/isolation_rules/Core/platform-awareness.mdc
 Load: .cursor/rules/isolation_rules/Core/notion-verification.mdc
+Load: .cursor/rules/isolation_rules/Core/notion-task-id-resolution.mdc
 Load: .cursor/rules/isolation_rules/Core/notion-memory-bank-ops.mdc
 Load: .cursor/rules/isolation_rules/Core/task-creation-notion.mdc
 ```
@@ -62,14 +63,14 @@ After determining complexity level, load:
 3. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
    - [ ] Read config: projectId, projectName, taskId, taskName, issueId, issueUrl, projectsDataSourceUrl, tasksDataSourceUrl, activeContextPageId, progressPageId
    - [ ] If `projectsDataSourceUrl` / `tasksDataSourceUrl` are missing, placeholders, or MCP errors indicate invalid `collection://` ids: find Projects/Tasks databases in the workspace → `notion-fetch` each → extract `<data-source url="collection://...">` → update config (`Core/notion-memory-bank-ops.mdc`, **Recover invalid or missing data source URLs**)
-   - [ ] Resolve projectId / taskId via notion-search; notion-fetch Project and Task pages; **sync `projectName`, `taskName`, `issueId`, `issueUrl` from fetched pages into config** (step 6 of `notion-verification.mdc`)
+   - [ ] **Resolve identifiers** per **`Core/notion-verification.mdc`** step 4 + **`Core/notion-task-id-resolution.mdc`** (Project discovery order, **parallel `notion-fetch`** of Project **`Tasks`** relation for **`Task ID`** match); **`notion-fetch`** Project and Task pages; **sync `projectName`, `taskName`, `issueId`, `issueUrl` from fetched pages into config** (step 6 of `notion-verification.mdc`)
    - [ ] **Stale detection (Active Context and Progress only)**: notion-fetch activeContext and progress by ID; if parent ≠ resolved Project page, clear ID in config and treat as null. VAN does NOT check creative/reflection/archive—those are verified by /creative, /reflect, /archive.
    - [ ] **Legacy migration**: If activeContext or progress page title lacks projectId (e.g. "Active Context"), update title to `Active Context <projectId>` or `Progress <projectId>`.
    - [ ] If activeContextPageId or progressPageId is null: notion-search under Project for existing `Active Context <projectId>` / `Progress <projectId>` (substitute projectId from config); if not found, notion-create-pages with those titles. Update config with resolved or new IDs (avoid duplicates)
    - [ ] Confirm all Project, Task, activeContext, progress pages are accessible
 
 4. **Task Analysis**
-   - notion-fetch Task page (resolve `taskId` via notion-search) for plan/checklist
+   - Use the Task page already resolved in Step 3 (**`Task ID`** match); **`notion-fetch`** again only if you need a fresh body — do **not** use Tasks–database semantic **`notion-search`** on numeric `taskId` as the resolver
    - Analyze task requirements
    - Determine complexity level (1-4)
 
