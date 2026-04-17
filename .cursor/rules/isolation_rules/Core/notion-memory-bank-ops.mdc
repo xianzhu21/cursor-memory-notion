@@ -51,7 +51,7 @@ Do **not** invent `collection://` UUIDs; they must come from `notion-fetch` of t
 ## Read ProjectBrief / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
 - projectBrief: Resolve `projectId` → `notion-fetch` (page body)
-- activeContext: If `activeContextPageId` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch.
+- activeContext: If `activeContextPageId` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch. The page body may list **several** tasks (`## Task <taskId> — …` per `Core/memory-bank-paths.mdc`).
 - progress: If `progressPageId` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch.
 - productContext, systemPatterns, techContext, styleGuide: If respective page ID set → `notion-fetch`. If null → notion-verification creates them; then fetch.
 
@@ -73,7 +73,8 @@ Do **not** invent `collection://` UUIDs; they must come from `notion-fetch` of t
 
 ## Write Tasks / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
-- `notion-update-page` with `command: "replace_content"` and `new_str` = full Markdown content
+- `notion-update-page` with `command: "replace_content"` and `new_str` = full Markdown content when replacing an entire page is safe.
+- **activeContext (multi-task):** If the fetched body has multiple `## Task …` sections, **do not** `replace_content` the whole page for a single-task update—use section-scoped `update_content` (or equivalent) per `Core/memory-bank-paths.mdc` **Active Context: multiple in-flight tasks**.
 - Use the resolved page ID from the identifier
 - **Subpage bodies:** For Project Memory Bank subpages (activeContext, progress, productContext, systemPatterns, techContext, styleGuide), follow `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**—never begin `new_str` with `#` that duplicates the page title; start at `##`.
 - **MUST output in chat (do not skip):** After each update, output the modified content in chat (you have `new_str`—no notion-fetch). Follow notion-output-after-write skill.

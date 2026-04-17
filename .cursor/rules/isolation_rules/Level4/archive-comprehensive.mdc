@@ -534,8 +534,8 @@ Specific updates to make to Memory Bank files:
    - Include links to requirements documentation
 
 3. **activeContext.md** (activeContextPageId)
-   - Update with system status (completed)
-   - Document handover information
+   - **Remove** the archived task’s `## Task <taskId> — …` section from Active Context (in-flight list only); preserve other parallel `## Task …` sections per `Core/memory-bank-paths.mdc` **Active Context: multiple in-flight tasks**. Optional: one line under `## Recently completed` linking to Archive
+   - Document handover information for the completed task where relevant
    - Include links to operational documentation
 
 4. **systemPatterns.md** (systemPatternsPageId)

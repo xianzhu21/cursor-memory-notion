@@ -12,3 +12,4 @@
 - Projects use **Project ID** (numeric); Tasks use **Task ID** (numeric, same convention); `projectId` / `taskId` in config may be JSON **numbers** or **strings** (e.g. `123` or `"123"`)
 - If `projectsDataSourceUrl` / `tasksDataSourceUrl` are invalid: find Projects/Tasks databases via Notion search → `notion-fetch` → read `<data-source url="collection://...">` → update config (see `Core/notion-memory-bank-ops.mdc`)
 - Notion Memory Bank **Project subpage bodies** (activeContext, progress, etc.): do not repeat the page title as `#` in the body; Notion already shows the title—start sections at `##` (see `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**)
+- **Active Context** may track **several** parallel tasks via `## Task <taskId> — …` sections; `/van` updates **only** the block for config `taskId`; **`/archive` removes** that task’s section from Active Context (see **Active Context: multiple in-flight tasks** in `Core/memory-bank-paths.mdc`)

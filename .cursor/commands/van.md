@@ -11,7 +11,7 @@ This command initializes the Memory Bank system, performs platform detection, de
 **CRITICAL:** This project uses **Notion** as Memory Bank. Use page IDs from `.cursor/notion-memory-bank.json`:
 - **tasks** - Task page body: resolve the row whose Notion **`Task ID`** equals config `taskId` via **`Core/notion-task-id-resolution.mdc`** ( **`notion-fetch` Project** → read **`Tasks`** relation URLs → **parallel `notion-fetch`** Task pages until **`properties` → `Task ID`** matches — **not** Tasks–database semantic `notion-search` on a bare numeric id).
 - **issueId** / **issueUrl** - External tracker key and browse URL; **not** the Notion **Task ID**. Usually read from the Task’s **Issue ID** **text** property (often `[KEY](https://...)` in one field); `issueUrl` is parsed from that link unless the database has a separate URL column. Synced when notion-verification runs — same Task fetch as `taskName`.
-- **activeContext** - activeContext page (`activeContextPageId`)
+- **activeContext** - activeContext page (`activeContextPageId`). May contain **multiple** parallel tasks; see `Core/memory-bank-paths.mdc` **Active Context: multiple in-flight tasks**. `/van` updates **only** the section for config **`taskId`**.
 - **progress** - progress page (`progressPageId`)
 - **projectBrief** - Project page body: resolve Project by **`projectId`** per **`Core/notion-verification.mdc`** step 4 (**Project ID** is primary, like **Task ID**; **`projectName`** is optional disambiguation only—always verify **Project ID**; avoid workspace-only search on a bare numeric `projectId` first).
 
@@ -80,7 +80,7 @@ After determining complexity level, load:
 
 6. **Update Memory Bank**
    - notion-update-page on Task page (complexity)
-   - notion-update-page on activeContext page (current focus). **Body format:** follow `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**—do not use `# Active Context <projectId>` in the body; use `##` sections (e.g. `## Current focus (YYYY-MM-DD)`). If the page still has a redundant leading H1 matching the title, remove it first via `update_content`.
+   - notion-update-page on activeContext page (**multi-task safe**). Follow `Core/memory-bank-paths.mdc`: **Subpage body (do not echo page title)**—no `#` that repeats the page title; use `##` sections. **Primary pattern:** `## Task <taskId> — <taskName>` for the resolved Task (title from Step 3 fetch). `notion-fetch` Active Context first; **add or replace only** that task’s section (from its `## Task <taskId>` through the next peer `##`), leaving other `## Task …` blocks untouched. If no such section exists, **append** it (do not delete unrelated sections). Legacy-only `## Current focus (YYYY-MM-DD)` may remain; prefer migrating new content into `## Task <taskId> — …`. If the page still has a redundant leading H1 matching the title, remove it first via `update_content`.
 
 ## Usage
 

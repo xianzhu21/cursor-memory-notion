@@ -46,6 +46,8 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 | projectbrief.md | Project page body | projectId |
 | activeContext.md | activeContext subpage under Project | activeContextPageId |
 | progress.md | progress subpage under Project | progressPageId |
+
+**Parallel tasks:** Config still has **one** `taskId` (primary task for `/van` and task-scoped logs). The **Active Context** page may list **multiple** in-flight tasks using merge-safe `## Task <taskId> — <taskName>` sections—see `Core/memory-bank-paths.mdc` (**Active Context: multiple in-flight tasks**).
 | creative/reflection/archive | Creative, Reflection, Archive subpages under Task | creativePageId, reflectionPageId, archivePageId |
 
 ## 5. notion-search Lookup

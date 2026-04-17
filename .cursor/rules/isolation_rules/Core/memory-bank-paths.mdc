@@ -91,6 +91,22 @@ Notion already shows the page **title** at the top. **Do not** put a level-1 hea
 | reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageId |
 | archive/archive-[id].md | Archive subpage under Task | *(no config key — resolve via Task child titled `Archive <taskId>` or Task body `<page>` links)* |
 
+## Active Context: multiple in-flight tasks
+
+The **Active Context** page (`Active Context <projectId>`) may record **more than one** parallel task. Config **`taskId`** remains the **primary** Task for single-task resolution (`/van`, task logs, etc.); other streams live **only** on the Notion page body, not as extra config keys.
+
+**Merge-safe section pattern (English in Notion):**
+
+- Use **one `##` section per task** so updates do not overwrite unrelated work:
+  - `## Task <taskId> — <taskName>` (example: `## Task 588 — Add OAuth callbacks`)
+  - Under it: short bullets (focus, blockers, next step). Include a task link with `<mention-page url="[URL]">[Title]</mention-page>` where helpful.
+- **`/van` Step 6:** After `notion-fetch` of Active Context, **add or update only** the section for the resolved **`taskId`** and **`taskName`**. **Preserve** every other `## Task …` section. Prefer **`update_content`** with targeted `old_str` / `new_str` (or scoped `replace_content_range`)—**do not** `replace_content` the entire page when multiple task sections exist.
+- **Legacy bodies** that only have `## Current focus (YYYY-MM-DD)` (no `## Task …`): **append** `## Task <taskId> — <taskName>` with the current VAN focus rather than clearing the page; optional cleanup later.
+- **`notion-verification.mdc` step 6:** Reconcile wording **only** for the resolved **`taskId`** block—do not retitle the whole page around a single task.
+- **`/archive`:** **Remove** the completed task’s `## Task <taskId> — …` section from Active Context so only **in-flight** work remains. **Do not** delete other tasks’ sections. Optional: add one line under `## Recently completed` with `<mention-page>` to `Archive <taskId>`—that is separate from keeping the old in-flight block.
+
+Optional: **`Progress <projectId>`** may mirror a project-wide `## In progress` list (task links and one line each). Same merge discipline—update lines for the relevant task without replacing unrelated entries when possible.
+
 ## Page Links in Content
 
 - **Cross-references** (References, progress, activeContext): use `<mention-page url="[URL]">[Title]</mention-page>`

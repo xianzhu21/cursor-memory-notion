@@ -104,7 +104,7 @@ This approach reduces initial token usage by ~70% compared to loading all rules 
 **This fork uses Notion** as the Memory Bank backend (not local files). All commands read from and update Notion pages:
 
 - **Task page** (`taskId`) - Source of truth for task tracking, plan, checklists
-- **activeContext page** - Current project focus
+- **activeContext page** - Project operational context; may list multiple tasks (`## Task <taskId> — …`); commands update the config `taskId` block only unless noted
 - **progress page** - Implementation status
 - **Project page** (`projectId`) - projectBrief
 - **Creative / Reflection / Archive** - Subpages under Task when applicable
