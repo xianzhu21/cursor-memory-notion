@@ -2,6 +2,8 @@
 
 This command initializes the Memory Bank system, performs platform detection, determines task complexity, and routes to appropriate workflows.
 
+To **switch** the config primary task to another **existing** Task ID and **load** that task’s progress **without** this full init (no complexity step, no whole-page Progress rewrite), use **`/change-task`** instead.
+
 **MANDATORY: When /van is invoked, ALWAYS execute the full workflow** (Steps 1–6). The "full workflow" means **only** these 6 initialization steps—NOT implementation of the user's task. Do NOT skip steps. Do NOT substitute with other actions (e.g. only updating rules or files) even if the user message includes additional text. If the user message contains text that could be a task description (e.g. "Add X", "Clarify Y", "明确 Z"), treat it as the `/van [description]` and run Task Creation/Validation accordingly.
 
 **CRITICAL for Level 2-4:** VAN **never** implements code, rules, or docs. For Level 2-4 tasks, VAN **stops** after Step 6 and hands off to `/plan`. Implementation is done in `/build`, not in VAN.

@@ -63,7 +63,7 @@ Same as original cursor-memory-bank: `/van` → `/plan` → `/creative` → `/bu
 
 **First run:** Set `taskId` to `null` in config. Run `/van Add user authentication to the application` – a new task is created in Notion and `taskId` is updated automatically.
 
-**Switch task:** Run `/van [new task description]` with the desired work (if `taskId` is null, a new task is created), or set `taskId` in `.cursor/notion-memory-bank.json` to an existing Task ID and run `/van`.
+**Switch task (existing Task ID):** Prefer **`/change-task <Task ID>`** — updates config, verifies Project/Task, syncs metadata, and **loads** task progress into chat **without** full **`/van`** (avoids complexity routing and whole-page **Progress** resets). Alternatively set `taskId` in `.cursor/notion-memory-bank.json` and run **`/van`** if you need full initialization. For a **new** task from description, use **`/van [description]`** (or clear `taskId` first per task-creation flow).
 
 ## 7. Token Optimization
 

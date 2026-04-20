@@ -16,6 +16,19 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 - Level 1 tasks → `/build`
 - Level 2-4 tasks → `/plan`
 
+### `/change-task` - Switch primary task and load progress
+**Purpose:** Set config **`taskId`** to an **existing** Notion task, run a **narrow** verification pass (resolve Project/Task, sync names/issue fields, stale subpages), optionally refresh **only** that task’s **`## Task <taskId>`** block on **Active Context**, and **print** task state (Task body, status, Active Context section) in chat—**without** full **`/van`** (no complexity routing, no Task complexity write, no whole-page **Progress** rewrite).
+
+**When to use:**
+- Switching between in-flight tasks (A ↔ B) while keeping shared **Progress** mostly intact
+- Resuming work on a task whose **Task ID** you already know
+
+**When not to use:** Creating a new task from description (**`/van`**) or needing full init and handoff to **`/plan`**.
+
+**Next steps:**
+- Continue work → **`/plan`** / **`/build`** as appropriate
+- Full re-init → **`/van`**
+
 ### `/plan` - Task Planning
 **Purpose:** Create or update implementation plans in the Notion Task page. Auto-detects: if Plan section is empty → creates full plan; if Plan exists → updates incrementally.
 
@@ -73,6 +86,7 @@ This directory contains Cursor 2.0 commands that replace the deprecated custom m
 | Command | Scope | Does NOT |
 |---------|-------|----------|
 | `/van` | Init, task creation, complexity | Implement (Level 2-4) |
+| `/change-task` | Config `taskId`, verify IDs, load task state in chat | Full `/van`, new-task creation, Task complexity update, bulk Progress rewrite |
 | `/plan` | Notion Task page only | Modify code or files |
 | `/creative` | Design decisions (Notion) | Implement |
 | `/build` | Code implementation | Plan or design |
