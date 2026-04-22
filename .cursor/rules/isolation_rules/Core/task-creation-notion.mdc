@@ -47,6 +47,7 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 
 4. **Update Config**
    - Follow notion-memory-bank-ops.mdc config rules. Read current file; from the post-create `notion-fetch`, write `taskId`, `taskName`, `issueId`, and `issueUrl` per notion-verification step 6 whenever any value differs from current (new tasks usually have empty issue fields → config gets `null` for both). If all unchanged, do NOT write.
+   - If **`taskId`** changed from a previous value: set **`creativePageId`**, **`reflectionPageId`**, and **`archivePageId`** to **`null`** so stale Task subpage IDs are not reused (same as **`/change-task`** when switching tasks).
 
 ## VAN-Specific
 

@@ -61,6 +61,7 @@ After determining complexity level, load:
      - If description clearly differs from current task (different topic/intent): ask: "Current task (<taskId>: <title>) doesn't match your description. Is this a new task? Should I create it?"
      - If user confirms new task: follow task-creation-notion.mdc, update config
      - If user says no: continue with existing task
+   - **Task-scoped page IDs when `taskId` changes:** Whenever the primary **`taskId`** becomes a **different** value than before this run (including: task created from null/empty **`taskId`**, or user-confirmed new task after description mismatch), set **`creativePageId`**, **`reflectionPageId`**, and **`archivePageId`** to **`null`** in `.cursor/notion-memory-bank.json` before Memory Bank verification. Those keys refer to pages under a specific Task; keeping old IDs would point at the wrong task. (**`/change-task`** applies the same rule when switching primary Task ID.) Write the file with `JSON.stringify(obj, null, 2)` when any value changes.
 
 3. **Memory Bank Verification** (MANDATORY – follow notion-verification.mdc)
    - [ ] Read config: projectId, projectName, taskId, taskName, issueId, issueUrl, projectsDataSourceUrl, tasksDataSourceUrl, activeContextPageId, progressPageId

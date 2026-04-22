@@ -69,7 +69,7 @@ Do **not** invent `collection://` UUIDs; they must come from `notion-fetch` of t
 1. If ID is set: `notion-fetch` to verify page exists and is not deleted. **Stale check**: If page parent ≠ resolved Task page ID → treat as stale, clear ID in config, then treat as null.
 2. If ID is null or page is deleted/stale: `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative <taskId>" } }]` or `pages: [{ properties: { title: "Reflection <taskId>" } }]` (e.g. `Creative 1391`; use string interpolation so number or string `taskId` works). Extract new ID, update config only if the new value differs from current. **MUST output in chat (do not skip):** After create, output the created content in chat (you have it—no notion-fetch). Follow notion-output-after-write skill.
 
-**Archive subpage (no config key):** There is **no** `archivePageId` in JSON. For `/archive`, **search first** under the resolved Task page (`notion-search` with `page_url` = Task page URL, `query`: `Archive <taskId>`) and reuse that page if found; otherwise `notion-create-pages` with `title: "Archive <taskId>"` under the Task. Do not write an archive id to config.
+**Archive subpage:** Some configs include optional **`archivePageId`** (see `.cursor/notion-memory-bank.json.example`). If set: same **stale check** as creative/reflection (parent must be the resolved Task page). When **`taskId`** changes, clear **`archivePageId`** with **`creativePageId`** / **`reflectionPageId`** — see **`/van`** Step 2 and **`/change-task`** Step 3. For **`/archive`**, **search first** under the resolved Task page (`notion-search` with `page_url` = Task page URL, `query`: `Archive <taskId>`) and reuse that page if found; otherwise `notion-create-pages` with `title: "Archive <taskId>"` under the Task. Only write **`archivePageId`** to config when resolving a known-good page id (same merge rules as other ids).
 
 ## Write Tasks / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
@@ -79,11 +79,11 @@ Do **not** invent `collection://` UUIDs; they must come from `notion-fetch` of t
 - **Subpage bodies:** For Project Memory Bank subpages (activeContext, progress, productContext, systemPatterns, techContext, styleGuide), follow `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**—never begin `new_str` with `#` that duplicates the page title; start at `##`.
 - **MUST output in chat (do not skip):** After each update, output the modified content in chat (you have `new_str`—no notion-fetch). Follow notion-output-after-write skill.
 
-## Task Subpages (Creative, Reflection)
+## Task Subpages (Creative, Reflection, Archive)
 
-- Use `creativePageId`, `reflectionPageId` if set
+- Use `creativePageId`, `reflectionPageId` if set; optionally `archivePageId` when present in config.
 - If null: Follow **Create Missing Subpages** above (creative/reflection). Config update is REQUIRED when an id is assigned.
-- **Archive:** Not stored in config; see **Archive subpage (no config key)** above.
+- **Archive:** Prefer search under Task; optional `archivePageId` when valid — see **Archive subpage** above.
 
 ## Update Task Status
 

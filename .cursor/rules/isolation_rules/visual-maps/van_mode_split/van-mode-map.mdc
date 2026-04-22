@@ -77,6 +77,8 @@ graph TD
 
 **When using Notion as Memory Bank**, execute this step **before** Memory Bank Verification. See `van.md` Step 2.
 
+**When the primary `taskId` changes** (new task created or user confirms a new task after a description mismatch): clear **`creativePageId`**, **`reflectionPageId`**, and **`archivePageId`** in config before verification — same task-scoped reset as **`/change-task`** when switching Task ID.
+
 ```mermaid
 graph TD
     TaskStart["Read config:<br>projectId, taskId"] --> TaskIdCheck{"taskId<br>null/empty?"}
