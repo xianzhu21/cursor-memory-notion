@@ -6,11 +6,11 @@ This command facilitates structured reflection on completed implementation, docu
 
 Reads from (resolve taskId via notion-search, then notion-fetch):
 - Task page (`taskId`, e.g. `588`) - Completed implementation details
-- progress page (`progressPageId`) - Implementation status and observations
-- creative page (`creativePageId`) - Design decisions (Level 3-4)
+- progress page (`progressPageUrl`) - Implementation status and observations
+- creative page (`creativePageUrl`) - Design decisions (Level 3-4)
 
 Creates (notion-create-pages):
-- reflection page under Task (`reflectionPageId` or create under resolved Task)
+- reflection page under Task (`reflectionPageUrl` or create under resolved Task)
 
 Updates (notion-update-page):
 - Task page (`taskId`) - Add "# Reflection" at the **end** of the document (level 1 heading; no subpage text, no separator)
@@ -85,8 +85,8 @@ Load: .cursor/rules/isolation_rules/Level4/reflection-comprehensive.mdc
    - Document technical improvements
 
 4. **Create Reflection Document**
-   - If `reflectionPageId` is set: notion-fetch to verify page exists, is not deleted, and parent = Task page. If parent ≠ Task page (stale), clear reflectionPageId in config and treat as null.
-   - If `reflectionPageId` is null or page is deleted/stale: notion-create-pages under Task with `title: "Reflection <taskId>"` (e.g. `Reflection 1391`). Update config per notion-memory-bank-ops.mdc (read file, write only if reflectionPageId differs).
+   - If `reflectionPageUrl` is set: notion-fetch to verify page exists, is not deleted, and parent = Task page. If parent ≠ Task page (stale), clear reflectionPageUrl in config and treat as null.
+   - If `reflectionPageUrl` is null or page is deleted/stale: notion-create-pages under Task with `title: "Reflection <taskId>"` (e.g. `Reflection 1391`). Update config per notion-memory-bank-ops.mdc (read file, write only if reflectionPageUrl differs).
    - Structure: Summary, What Went Well, Challenges, Lessons Learned, Process Improvements, Technical Improvements (no ## Next Steps section)
 
 5. **Update Memory Bank**

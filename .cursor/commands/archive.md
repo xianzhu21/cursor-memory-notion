@@ -6,17 +6,17 @@ This command creates comprehensive archive documentation and updates the Memory 
 
 Reads from (resolve taskId via notion-search, then notion-fetch):
 - Task page (`taskId`, e.g. `588`) - Complete task details and checklists
-- reflection page (`reflectionPageId`) - Reflection document
-- progress page (`progressPageId`) - Implementation status
-- creative page (`creativePageId`) - Creative phase documents (Level 3-4)
+- reflection page (`reflectionPageUrl`) - Reflection document
+- progress page (`progressPageUrl`) - Implementation status
+- creative page (`creativePageUrl`) - Creative phase documents (Level 3-4)
 
 Creates (notion-create-pages):
-- archive page under Task (`archivePageId` or create under resolved Task)
+- archive page under Task (`archivePageUrl` or create under resolved Task)
 
 Updates (notion-update-page):
 - Task page (`taskId`) - Mark task COMPLETE
-- progress page (`progressPageId`) - Add archive reference
-- activeContext page (`activeContextPageId`) - **Remove** the archived task’s `## Task <taskId> — …` section; preserve other in-flight sections (`Core/memory-bank-paths.mdc` **Active Context: multiple in-flight tasks**)
+- progress page (`progressPageUrl`) - Add archive reference
+- activeContext page (`activeContextPageUrl`) - **Remove** the archived task’s `## Task <taskId> — …` section; preserve other in-flight sections (`Core/memory-bank-paths.mdc` **Active Context: multiple in-flight tasks**)
 
 ## Progressive Rule Loading
 
@@ -58,7 +58,7 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
 ## Workflow
 
 1. **Verify Reflection Complete**
-   - notion-fetch reflection page (`reflectionPageId`)
+   - notion-fetch reflection page (`reflectionPageUrl`)
    - Verify reflection is complete
    - If not complete, return to `/reflect` command
 
@@ -109,8 +109,8 @@ Load: .cursor/rules/isolation_rules/Level4/archive-comprehensive.mdc
    ```
 
 4. **Update Memory Bank**
-   - If `archivePageId` is set: notion-fetch to verify parent = Task page. If stale (parent ≠ Task), clear in config and treat as null.
-   - notion-create-pages: archive page under Task with `title: "Archive <taskId>"` (e.g. `Archive 1391`). Or use existing `archivePageId` if valid.
+   - If `archivePageUrl` is set: notion-fetch to verify parent = Task page. If stale (parent ≠ Task), clear in config and treat as null.
+   - notion-create-pages: archive page under Task with `title: "Archive <taskId>"` (e.g. `Archive 1391`). Or use existing `archivePageUrl` if valid.
    - **MANDATORY** notion-update-page Task page properties (do NOT skip):
      - Status: "Done"
      - **Dates**: notion-fetch Task first. If `date:Dates:start` exists → keep it, set `date:Dates:end` = today. If empty → `date:Dates:start` = today, `date:Dates:end` = today. Run `date +%Y-%m-%d` for today. Use `update_properties` with `date:Dates:start`, `date:Dates:end`, `date:Dates:is_datetime` (0).

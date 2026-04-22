@@ -37,17 +37,17 @@ Do **not** load **`/van`** mode maps, **`task-creation-notion.mdc`** (unless you
    - If **no Task ID** is given: ask once for the **Notion Task ID** (the value of the **Task ID** property). **Do not** invent an id. **Do not** create a new task here—if `taskId` is `null`/`""` and the user wants a **new** row, tell them to run **`/van [description]`**.
 
 2. **Read config and remember previous primary task (optional)**
-   - Read **`.cursor/notion-memory-bank.json`**: `projectId`, `taskId` (old), `creativePageId`, `reflectionPageId`, `archivePageId` (if present), data source URLs, subpage ids.
+   - Read **`.cursor/notion-memory-bank.json`**: `projectId`, `taskId` (old), `creativePageUrl`, `reflectionPageUrl`, `archivePageUrl` (if present), data source URLs, Memory Bank subpage **`*PageUrl`** keys (see `.cursor/notion-memory-bank.json.example`).
    - Normalize old vs new **`taskId`** (string/number). If the new id equals the current primary **`taskId`** (after normalization), still run verification and **refresh** the loaded summary—skip unnecessary config writes.
 
 3. **Write new primary `taskId`**
    - Merge into config: set **`taskId`** to the user’s target (JSON number or string is fine per project rules).
-   - **Task-scoped subpages when the primary task changed:** If the normalized **new `taskId` ≠ old `taskId`**, set **`creativePageId`**, **`reflectionPageId`**, and **`archivePageId`** to **`null`** in config (they refer to pages under a **specific** task; keeping old ids would point at the wrong task). Write the file only when values change.
+   - **Task-scoped subpages when the primary task changed:** If the normalized **new `taskId` ≠ old `taskId`**, set **`creativePageUrl`**, **`reflectionPageUrl`**, and **`archivePageUrl`** to **`null`** in config (they refer to pages under a **specific** task; keeping old URLs would point at the wrong task). Write the file only when values change.
 
 4. **Notion verification (subset of `Core/notion-verification.mdc`)**
    Execute **steps 1, 2, 4, 5, 6 (partial), 7** of **`notion-verification.mdc`** with these constraints:
    - **Skip** verification **step 3** entirely (that step is **`/van`–only** task creation / description mismatch).
-   - **Step 4–7:** Same as verification: resolve **Project** and **Task**, recover bad **`collection://`** URLs if needed, **stale-check** project subpages (**activeContext**, **progress**, etc.), **fetch** Project and Task pages, **sync** `projectName`, `taskName`, `issueId`, `issueUrl` from Notion into config when they differ.
+   - **Step 4–7:** Same as verification: resolve **Project** and **Task**, recover bad **`collection://`** URLs if needed, **stale-check** project subpages (**activeContext**, **progress**, etc.), **fetch** Project and Task pages, **sync** `projectName`, `taskName`, `issueId`, `issueUrl`, `projectPageUrl`, `taskPageUrl` from Notion into config when they differ.
    - **Step 6 — do *not* do `van` Step 6 writes:** Do **not** update the Task page **complexity** property. Do **not** run **`/van`** routing or checklist.
    - **Progress page:** Do **not** use **`replace_content`** on **`Progress <projectId>`** for this command. **Do not** “reset” or rewrite the whole Progress narrative to match the new task. If verification’s general reconciliation would require a **large** Progress rewrite, **stop** at summarizing in chat instead (see step 5). If a **small** merge-safe fix is clearly needed for **this** `taskId` only (e.g. one line in a multi-task list), you **may** use **`update_content`** with targeted `old_str` / `new_str` per **`Core/memory-bank-paths.mdc`**.
    - **Active Context:** If you update Notion, follow **`Core/memory-bank-paths.mdc`** **Active Context: multiple in-flight tasks**: **add or update only** the **`## Task <taskId> — <taskName>`** block for the **new** primary task; **preserve** all other **`## Task …`** sections. Prefer **`update_content`**. If the block is missing, **append** it (do not clear the page).
@@ -58,10 +58,10 @@ Do **not** load **`/van`** mode maps, **`task-creation-notion.mdc`** (unless you
    - **Issue:** `issueId` / `issueUrl` from config after sync.
    - **Task page body:** Short extract of plan / checklist / **## VAN** / implementation notes—enough to reflect **where** the task left off (e.g. build completed).
    - **Active Context:** If the page has **`## Task <taskId> — …`**, quote or summarize that section.
-   - **Optional reads:** If **`creativePageId`** / **`reflectionPageId`** are non-null **after** resolution under the new task, **`notion-fetch`** those pages and add a **brief** note (headings only or 2–3 bullets each). If still null, state that no Creative/Reflection ids are configured for this task yet.
+   - **Optional reads:** If **`creativePageUrl`** / **`reflectionPageUrl`** are non-null **after** resolution under the new task, **`notion-fetch`** those pages and add a **brief** note (headings only or 2–3 bullets each). If still null, state that no Creative/Reflection **`*PageUrl`** values are configured for this task yet.
 
-6. **Re-resolve task subpage ids (populate config when safe)**
-   - Under the resolved **Task** page, discover children titled **`Creative <taskId>`** / **`Reflection <taskId>`** (same title pattern as **`Core/memory-bank-paths.mdc`**). If found and **parent** is the resolved Task page, set **`creativePageId`** / **`reflectionPageId`** in config. If not found, leave **`null`** ( **`/creative`** / **`/reflect`** may create them later).
+6. **Re-resolve task subpage URLs (populate config when safe)**
+   - Under the resolved **Task** page, discover children titled **`Creative <taskId>`** / **`Reflection <taskId>`** (same title pattern as **`Core/memory-bank-paths.mdc`**). If found and **parent** is the resolved Task page, set **`creativePageUrl`** / **`reflectionPageUrl`** in config. If not found, leave **`null`** ( **`/creative`** / **`/reflect`** may create them later).
 
 7. **Close out**
    - Confirm the updated **primary** `taskId` and that config was written with formatted JSON.

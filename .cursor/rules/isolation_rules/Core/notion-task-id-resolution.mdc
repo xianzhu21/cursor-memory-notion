@@ -47,7 +47,7 @@ The authoritative match is the **`Task ID`** value on the Tasks row (Notion **`a
 
 ## After a successful `Task ID` match (MANDATORY)
 
-1. **Config metadata drift** — `taskId` can be correct while **`taskName`**, **`issueId`**, or **`issueUrl`** in `.cursor/notion-memory-bank.json` still describe a **different** task. **Always** compare fetched **`Name`** / parsed **Issue ID** to config; if any differ, **update the config file** per `Core/notion-memory-bank-ops.mdc` (do not assume the row was already aligned).
+1. **Config metadata drift** — `taskId` can be correct while **`taskName`**, **`issueId`**, **`issueUrl`**, or **`taskPageUrl`** in `.cursor/notion-memory-bank.json` still describe a **different** task. **Always** compare fetched **`Name`** / parsed **Issue ID** / resolved Task URL to config; if any differ, **update the config file** per `Core/notion-memory-bank-ops.mdc` (do not assume the row was already aligned).
 2. **Relation list noise** — If **`notion-fetch`** on a relation URL returns **deleted**, **error**, or missing **`Task ID`**, **retry once** per `Core/notion-retry.mdc`, then **skip** that URL and continue. **Do not** accept a page without a matching **`Task ID`**.
 
 ## Role of `notion-search` (optional)

@@ -6,12 +6,12 @@ This command implements the planned changes following the implementation plan an
 
 Reads from (resolve taskId via notion-search, then notion-fetch):
 - Task page (`taskId`) - Implementation plan and checklists
-- creative page (`creativePageId`) - Design decisions (Level 3-4)
-- activeContext page (`activeContextPageId`) - Current project context
+- creative page (`creativePageUrl`) - Design decisions (Level 3-4)
+- activeContext page (`activeContextPageUrl`) - Current project context
 
 Updates (notion-update-page):
 - Task page (`taskId`) - Implementation progress, test results, and status
-- progress page (`progressPageId`) - Build status, test outcomes, and observations
+- progress page (`progressPageUrl`) - Build status, test outcomes, and observations
 - **Write in English** (Notion content rule)
 
 ## Progressive Rule Loading

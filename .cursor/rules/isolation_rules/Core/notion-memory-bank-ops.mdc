@@ -10,7 +10,7 @@ Use identifiers from `.cursor/notion-memory-bank.json`. **projectId** / **taskId
 
 **Config updates (MANDATORY):** Before writing `.cursor/notion-memory-bank.json`:
 1. **Read** the current file.
-2. For each field you intend to update, compare new value with current value. Includes `projectName`, `taskName`, `issueId`, `issueUrl` when fetched from Notion.
+2. For each field you intend to update, compare new value with current value. Includes `projectName`, `taskName`, `issueId`, `issueUrl`, `projectPageUrl`, `taskPageUrl` when fetched from Notion.
 3. **If all values are unchanged** → do NOT write the file (skip entirely).
 4. **If at least one value differs** → write only the changed fields, merge with existing content.
 5. **Format (MUST):** Serialize with `JSON.stringify(obj, null, 2)` – 2-space indentation, one key per line. Never write minified single-line JSON.
@@ -27,20 +27,20 @@ When `projectsDataSourceUrl` and/or `tasksDataSourceUrl` in `.cursor/notion-memo
 
 1. **Discover databases in the workspace** (no valid `data_source_url` required for this discovery step):
    - Use Notion MCP **workspace search** to find database pages: search by title keywords that match your **Projects** and **Tasks** databases (e.g. queries like `Projects`, `Tasks`, or the exact titles shown in Notion’s sidebar). Use the **find** skill behavior if loaded: prefer databases whose titles match the Memory Bank **Projects** / **Tasks** databases.
-   - From results, take the **database** entries (not ordinary pages) and note each database’s **Notion URL** (or page id usable with `notion-fetch`).
+   - From results, take the **database** entries (not ordinary pages) and note each database’s **`https://`…** Notion URL (for `notion-fetch` only).
 2. **Fetch each database** with `notion-fetch` using that database URL.
 3. **Extract** the data source id from the response: look for `<data-source url="collection://...">` (or equivalent MCP output). The config value MUST be the full `collection://...` string from that tag.
 4. **Assign**: Set `projectsDataSourceUrl` to the collection URL from your **Projects** database fetch; set `tasksDataSourceUrl` from your **Tasks** database fetch. If multiple databases match a keyword, pick the one whose schema matches Memory Bank expectations (**Project ID** / **Task ID**, relation between them); if ambiguous, **ask the user** which database to use.
-5. **Update config** per the rules above (read file, merge, write only if `projectsDataSourceUrl` and/or `tasksDataSourceUrl` changed). **Format:** `JSON.stringify(obj, null, 2)`.
+5. **Update config** per the rules above (read file, merge, write if `projectsDataSourceUrl` and/or `tasksDataSourceUrl` changed). **Format:** `JSON.stringify(obj, null, 2)`.
 6. **Retry** the operation that failed (e.g. `notion-search` with `data_source_url` = updated URL). Retry connection failures per `Core/notion-retry.mdc`.
 
-Do **not** invent `collection://` UUIDs; they must come from `notion-fetch` of the actual database.
+Do **not** invent `collection://…` values; they must come from `notion-fetch` of the actual database.
 
 ## Resolve Identifier to Page
 
 1. **Project**: Same order as **`Core/notion-verification.mdc`** step 4 — **Project ID** before **`projectName`**: `notion-query-database-view` filtered by **Project ID** when available; otherwise `notion-search` with **`data_source_url`** = `projectsDataSourceUrl`, **`query`** = string form of **`projectId`**, **`filters`**: `{}`, then verify **Project ID** matches `projectId` (normalize types). **Optional:** scoped search with **`query`** = **`projectName`** if the ID query is inconclusive; **always** verify **Project ID** on the accepted row. Avoid workspace-only search on a bare numeric **`projectId`** as the first choice. Use the page URL from the verified row.
 2. **Task**: Follow `Core/notion-task-id-resolution.mdc` (Project **`Tasks` relation** + **`notion-fetch`** each candidate and verify **`Task ID`** in `properties`, or a filtered Tasks query tool). Do **not** use semantic `notion-search` on `tasksDataSourceUrl` with `query` = `taskId` as the sole resolver.
-3. Then `notion-fetch` with the resolved page URL/ID.
+3. Then `notion-fetch` with the resolved **`https://`…** page URL.
 4. **Name lookup**: When `notion-fetch` returns Project or Task page, extract page title (e.g. `properties.title` or first heading). Store as `projectName` or `taskName` in config when updating – per config update rules below.
 5. **Task issue fields (Task fetch only)**: From the Task row properties (key often `"Issue ID"` in `notion-fetch` JSON), sync `issueId` and `issueUrl` per `Core/notion-verification.mdc` step 6 — **Issue ID** is usually **text**, often markdown `[KEY](url)`; separate **Issue URL** is optional. Write to config only when values differ from current.
 
@@ -51,39 +51,39 @@ Do **not** invent `collection://` UUIDs; they must come from `notion-fetch` of t
 ## Read ProjectBrief / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
 - projectBrief: Resolve `projectId` → `notion-fetch` (page body)
-- activeContext: If `activeContextPageId` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch. The page body may list **several** tasks (`## Task <taskId> — …` per `Core/memory-bank-paths.mdc`).
-- progress: If `progressPageId` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch.
-- productContext, systemPatterns, techContext, styleGuide: If respective page ID set → `notion-fetch`. If null → notion-verification creates them; then fetch.
+- activeContext: If `activeContextPageUrl` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch. The page body may list **several** tasks (`## Task <taskId> — …` per `Core/memory-bank-paths.mdc`).
+- progress: If `progressPageUrl` set → `notion-fetch`. If null → **create first** (notion-verification), then fetch.
+- productContext, systemPatterns, techContext, styleGuide: If respective **`*PageUrl`** is set → `notion-fetch`. If null → notion-verification creates them; then fetch.
 
-## Create Missing Subpages (MANDATORY when config IDs are null)
+## Create Missing Subpages (MANDATORY when config **`*PageUrl`** values are null)
 
 **Note:** For Project subpages (activeContext, progress, productContext, systemPatterns, techContext, styleGuide), use **notion-verification.mdc** which implements search-before-create to avoid duplicates. The steps below are for activeContext and progress only; notion-verification handles all six when running VAN or other commands that load it.
 
-**Project subpages** (activeContext, progress): Resolve `projectId` → get Project page ID. For each null ID:
-1. `notion-search` with `query: "Active Context <projectId>"` or `"Progress <projectId>"` (e.g. "Active Context 37"), `page_url: projectPageUrl` to find existing subpage. If found, use its ID. **Otherwise** `notion-create-pages` with `parent: { page_id: projectPageId }`, `pages: [{ properties: { title: "Active Context <projectId>" } }]` or `pages: [{ properties: { title: "Progress <projectId>" } }]` respectively.
-2. Extract created page ID from tool response (or use resolved ID from search)
-3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageId` or `progressPageId` (skip if value unchanged)
+**Project subpages** (activeContext, progress): Resolve `projectId` → get **`resolvedProjectPageUrl`** and in-session **`resolvedProjectPageId`** (from `notion-fetch` of that URL) for **`parent.page_id`**. For each null **`activeContextPageUrl` / `progressPageUrl`**:
+1. `notion-search` with `query: "Active Context <projectId>"` or `"Progress <projectId>"` (e.g. "Active Context 37"), `page_url: resolvedProjectPageUrl` (from resolution; not the config **`projectPageUrl`** field unless it points at the Project page) to find existing subpage. If found, store canonical **`https://`…** in **`activeContextPageUrl`** / **`progressPageUrl`**. **Otherwise** `notion-create-pages` with `parent: { page_id: resolvedProjectPageId }`, `pages: [{ properties: { title: "Active Context <projectId>" } }]` or `pages: [{ properties: { title: "Progress <projectId>" } }]` respectively, then **`notion-fetch`** the new page and store **`url`** in config.
+2. Prefer the canonical **`https://`…** from search or from a follow-up **`notion-fetch`** after create—do **not** persist bare internal page identifiers in **`*PageUrl`**.
+3. **Update** `.cursor/notion-memory-bank.json` with the new `activeContextPageUrl` or `progressPageUrl` (skip if value unchanged)
 4. **MUST output in chat (do not skip):** After create, output the created content in chat (you have it—no notion-fetch). Follow notion-output-after-write skill.
 
-**Task subpages** (creative, reflection): For each ID (`creativePageId`, `reflectionPageId`):
-1. If ID is set: `notion-fetch` to verify page exists and is not deleted. **Stale check**: If page parent ≠ resolved Task page ID → treat as stale, clear ID in config, then treat as null.
-2. If ID is null or page is deleted/stale: `notion-create-pages` with `parent: { page_id: taskPageId }`, `pages: [{ properties: { title: "Creative <taskId>" } }]` or `pages: [{ properties: { title: "Reflection <taskId>" } }]` (e.g. `Creative 1391`; use string interpolation so number or string `taskId` works). Extract new ID, update config only if the new value differs from current. **MUST output in chat (do not skip):** After create, output the created content in chat (you have it—no notion-fetch). Follow notion-output-after-write skill.
+**Task subpages** (creative, reflection): For each **`creativePageUrl` / `reflectionPageUrl`**:
+1. If set: `notion-fetch` to verify page exists and is not deleted. **Stale check**: If the page is not under the resolved Task (parent / ancestor does not match **resolvedTaskPageUrl** or the Task page from resolution) → treat as stale, clear the corresponding **`creativePageUrl`** or **`reflectionPageUrl`** in config, then treat as null.
+2. If null or page is deleted/stale: `notion-create-pages` with `parent: { page_id: resolvedTaskPageId }`, `pages: [{ properties: { title: "Creative <taskId>" } }]` or `pages: [{ properties: { title: "Reflection <taskId>" } }]` (e.g. `Creative 1391`; use string interpolation so number or string `taskId` works). Then **`notion-fetch`** the new page and store its **`https://`…** **`url`** in config, update only if the new value differs from current. **MUST output in chat (do not skip):** After create, output the created content in chat (you have it—no notion-fetch). Follow notion-output-after-write skill.
 
-**Archive subpage:** Some configs include optional **`archivePageId`** (see `.cursor/notion-memory-bank.json.example`). If set: same **stale check** as creative/reflection (parent must be the resolved Task page). When **`taskId`** changes, clear **`archivePageId`** with **`creativePageId`** / **`reflectionPageId`** — see **`/van`** Step 2 and **`/change-task`** Step 3. For **`/archive`**, **search first** under the resolved Task page (`notion-search` with `page_url` = Task page URL, `query`: `Archive <taskId>`) and reuse that page if found; otherwise `notion-create-pages` with `title: "Archive <taskId>"` under the Task. Only write **`archivePageId`** to config when resolving a known-good page id (same merge rules as other ids).
+**Archive subpage:** Some configs include optional **`archivePageUrl`** (see `.cursor/notion-memory-bank.json.example`). If set: same **stale check** as creative/reflection (parent must be the resolved Task page). When **`taskId`** changes, clear **`archivePageUrl`** with **`creativePageUrl`** / **`reflectionPageUrl`** — see **`/van`** Step 2 and **`/change-task`** Step 3. For **`/archive`**, **search first** under the resolved Task page (`notion-search` with `page_url` = Task page URL, `query`: `Archive <taskId>`) and reuse that page if found; otherwise `notion-create-pages` with `title: "Archive <taskId>"` under the Task. Only write **`archivePageUrl`** to config when resolving a known-good **`https://`…** URL (same merge rules as other **`*PageUrl`** keys).
 
 ## Write Tasks / ActiveContext / Progress / ProductContext / SystemPatterns / TechContext / StyleGuide
 
 - `notion-update-page` with `command: "replace_content"` and `new_str` = full Markdown content when replacing an entire page is safe.
 - **activeContext (multi-task):** If the fetched body has multiple `## Task …` sections, **do not** `replace_content` the whole page for a single-task update—use section-scoped `update_content` (or equivalent) per `Core/memory-bank-paths.mdc` **Active Context: multiple in-flight tasks**.
-- Use the resolved page ID from the identifier
+- Use the resolved **`https://`…** URL from the config **`*PageUrl`** (or from resolution when updating)
 - **Subpage bodies:** For Project Memory Bank subpages (activeContext, progress, productContext, systemPatterns, techContext, styleGuide), follow `Core/memory-bank-paths.mdc` **Subpage body (do not echo page title)**—never begin `new_str` with `#` that duplicates the page title; start at `##`.
 - **MUST output in chat (do not skip):** After each update, output the modified content in chat (you have `new_str`—no notion-fetch). Follow notion-output-after-write skill.
 
 ## Task Subpages (Creative, Reflection, Archive)
 
-- Use `creativePageId`, `reflectionPageId` if set; optionally `archivePageId` when present in config.
-- If null: Follow **Create Missing Subpages** above (creative/reflection). Config update is REQUIRED when an id is assigned.
-- **Archive:** Prefer search under Task; optional `archivePageId` when valid — see **Archive subpage** above.
+- Use `creativePageUrl`, `reflectionPageUrl` if set; optionally `archivePageUrl` when present in config.
+- If null: Follow **Create Missing Subpages** above (creative/reflection). Config update is REQUIRED when a **`*PageUrl`** value is assigned.
+- **Archive:** Prefer search under Task; optional `archivePageUrl` when valid — see **Archive subpage** above.
 
 ## Update Task Status
 

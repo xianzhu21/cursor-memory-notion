@@ -25,18 +25,19 @@ Create or preserve your config:
 cp .cursor/notion-memory-bank.json.example .cursor/notion-memory-bank.json
 ```
 
-Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notion-memory-bank.json.example` for the schema. The actual config is in `.gitignore` to avoid committing personal Notion workspace data.
+Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notion-memory-bank.json.example` for the schema. The actual config is in `.gitignore` to avoid committing personal Notion workspace data. The example uses **`null`** for every placeholder field—after copying, set at least **`projectId`**, **`projectsDataSourceUrl`**, and **`tasksDataSourceUrl`** (see below) before scoped Notion MCP calls will work.
 
 **Required:**
 - `projectId` – numeric project key: JSON **number** or **string** (e.g. `123` or `"123"`) — must match **Project ID** on the Project row
-- `tasksDataSourceUrl`, `projectsDataSourceUrl` – from `notion-fetch` on the databases (see below)
+- `tasksDataSourceUrl`, `projectsDataSourceUrl` – **`collection://…`** strings from `notion-fetch` on the databases (see below). Scoped Notion MCP tools need these; they are **not** normal browser links.
 
 **Optional:**
 - `taskId` – numeric task key: JSON **number** or **string** (e.g. `588` or `"588"`) — must match **Task ID** on the Task row. Leave as `null` or empty string `""` to have `/van [task description]` create a new task automatically (same flow as original cursor-memory-bank).
 - `issueId`, `issueUrl` – usually left `null`; **`/van`** (notion-verification) fills them from the Task row’s **Issue ID** / **Issue URL** properties when you fetch a task (e.g. Task ID `1430`). Override manually in JSON if needed.
-- Subpage IDs (`activeContextPageId`, `progressPageId`, etc.) – leave as `null` to have commands create them automatically.
+- `projectPageUrl`, `taskPageUrl` – optional **`https://`…** Notion links to the resolved Project and Task pages; notion-verification fills them on fetch so you can **Ctrl/Cmd+click** the URL inside the JSON file to open Notion in the browser.
+- Subpage fields (`activeContextPageUrl`, `progressPageUrl`, etc.) – usually **`null`** until subpages exist; when set, use full **`https://`…** Notion page URLs (from the browser address bar) so the JSON stays Ctrl/Cmd+clickable. The example file uses **`null`** until agents or you paste links after first fetch.
 
-**Data source URLs:** Fetch the Projects and Tasks databases with `notion-fetch` to get the `collection://` URLs from `<data-source>` tags. Use these for `projectsDataSourceUrl` and `tasksDataSourceUrl`.
+**Data source URLs:** Fetch the Projects and Tasks databases with `notion-fetch` (using each database’s **`https://`…** URL from the browser or search results) to get the `collection://` URLs from `<data-source>` tags. Use those strings for `projectsDataSourceUrl` and `tasksDataSourceUrl`.
 
 ## 4. Mapping (by ID)
 
@@ -44,18 +45,18 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 |--------------------|--------|------------|
 | tasks.md | Task page body (plan, checklist) | taskId |
 | projectbrief.md | Project page body | projectId |
-| activeContext.md | activeContext subpage under Project | activeContextPageId |
-| progress.md | progress subpage under Project | progressPageId |
+| activeContext.md | activeContext subpage under Project | activeContextPageUrl |
+| progress.md | progress subpage under Project | progressPageUrl |
+| creative/reflection/archive | Creative, Reflection, Archive subpages under Task | creativePageUrl, reflectionPageUrl, archivePageUrl |
 
 **Parallel tasks:** Config still has **one** `taskId` (primary task for `/van` and task-scoped logs). The **Active Context** page may list **multiple** in-flight tasks using merge-safe `## Task <taskId> — <taskName>` sections—see `Core/memory-bank-paths.mdc` (**Active Context: multiple in-flight tasks**).
-| creative/reflection/archive | Creative, Reflection, Archive subpages under Task | creativePageId, reflectionPageId, archivePageId |
 
 ## 5. notion-search Lookup
 
 `notion-search` is **semantic search**, not exact property match. When resolving `projectId` or `taskId`:
 
 - **Improve accuracy**: Use **Project ID** on **Projects** and **Task ID** on **Tasks** (numeric values). After resolving, verify MCP properties: `userDefined:Project ID` and `userDefined:Task ID`.
-- **If results are wrong**: After the first successful fetch, you can store the resolved page URL or ID in config (e.g. as a cached value) and use `notion-fetch` directly with that ID for subsequent operations, bypassing search.
+- **If results are wrong**: After the first successful fetch, store the resolved page **`https://`…** URL in config (e.g. in the matching **`*PageUrl`** field) and use `notion-fetch` with that URL for subsequent operations, bypassing search.
 
 ## 6. Command Usage
 
@@ -85,5 +86,5 @@ When an agent runs **notion-verification** (e.g. during `/van`), it should follo
 
 If you have existing subpages with old names (`Active Context`, `Progress` without projectId; `Creative`, `Reflection`, `Archive` without taskId):
 
-- **Option A (recommended)**: Clear `activeContextPageId` and `progressPageId` in config, then run `/van`. New pages will be created with correct names (`Active Context <projectId>`, `Progress <projectId>` — e.g. `Active Context 37`). For Task subpages: clear `creativePageId`, `reflectionPageId`, and `archivePageId` if desired; new pages will be created with correct names when you run `/creative`, `/reflect`, or `/archive`. You can delete or archive the old pages in Notion.
+- **Option A (recommended)**: Clear `activeContextPageUrl` and `progressPageUrl` in config, then run `/van`. New pages will be created with correct names (`Active Context <projectId>`, `Progress <projectId>` — e.g. `Active Context 37`). For Task subpages: clear `creativePageUrl`, `reflectionPageUrl`, and `archivePageUrl` if desired; new pages will be created with correct names when you run `/creative`, `/reflect`, or `/archive`. You can delete or archive the old pages in Notion.
 - **Option B**: Manually rename pages in Notion to match the new convention, then update config if needed. Page IDs stay the same; only titles change.

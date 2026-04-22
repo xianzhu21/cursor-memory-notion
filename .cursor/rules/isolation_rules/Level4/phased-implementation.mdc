@@ -536,7 +536,7 @@ flowchart TD
 
 ### Memory Bank Updates
 
-**Notion backend:** Use `notion-update-page` on resolved page IDs from config. projectbrief → Project page body (`projectId`); activeContext → `activeContextPageId`; systemPatterns → `systemPatternsPageId`; techContext → `techContextPageId`; progress → `progressPageId`. If an ID is null, ensure notion-verification has created the subpage.
+**Notion backend:** Use `notion-update-page` on resolved **`*PageUrl`** **`https://`…** values from config. projectbrief → Project page body (`projectId`); activeContext → `activeContextPageUrl`; systemPatterns → `systemPatternsPageUrl`; techContext → `techContextPageUrl`; progress → `progressPageUrl`. If a **`*PageUrl`** is null, ensure notion-verification has created the subpage.
 
 Update the following Memory Bank files during phased implementation:
 
@@ -545,22 +545,22 @@ Update the following Memory Bank files during phased implementation:
    - Document phase-specific objectives
    - Link to phase plans
 
-2. **activeContext.md** (activeContextPageId)
+2. **activeContext.md** (activeContextPageUrl)
    - Update with current implementation phase
    - Document active implementation tasks
    - Highlight current focus areas
 
-3. **systemPatterns.md** (systemPatternsPageId)
+3. **systemPatterns.md** (systemPatternsPageUrl)
    - Document implementation patterns used
    - Update with architectural decisions made during implementation
    - Record any pattern adaptations
 
-4. **techContext.md** (techContextPageId)
+4. **techContext.md** (techContextPageUrl)
    - Update with implementation technologies
    - Document technical constraints encountered
    - Record technical decisions made
 
-5. **progress.md** (progressPageId)
+5. **progress.md** (progressPageUrl)
    - Update implementation progress by phase
    - Document completed components
    - Track overall implementation status

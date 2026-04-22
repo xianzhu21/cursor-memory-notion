@@ -34,20 +34,20 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
    - Pick the result whose `userDefined:Project ID` matches `projectId`; if multiple results, verify before using. Get project page URL. If no matching result, fail – do not create task under wrong project.
 
 2. **Create Task**
-   - Extract `data_source_id` from `tasksDataSourceUrl` (UUID after `collection://`)
+   - Extract `data_source_id` from `tasksDataSourceUrl` (the path segment after `collection://`—copy verbatim from config, do not invent values)
    - Set today's date as `YYYY-MM-DD` for Dates property. **Get today**: run `date +%Y-%m-%d` to avoid stale session date.
    - `notion-create-pages` with:
-     - `parent`: `{ "type": "data_source_id", "data_source_id": "<uuid>" }`
+     - `parent`: `{ "type": "data_source_id", "data_source_id": "<same segment as in tasksDataSourceUrl>" }`
      - `pages`: `[{ "properties": { "Name": "<title>", "Project": "<project page URL>", "Status": "Not Started", "date:Dates:start": "<today YYYY-MM-DD>", "date:Dates:is_datetime": 0 } }]`
    - If your schema uses a different date property name (e.g. "Due"), replace "Dates" accordingly
 
 3. **Extract taskId**
-   - `notion-fetch` the created page (from create response `url` or `id`)
+   - `notion-fetch` the created page (prefer create response **`url`** as **`https://`…**; use any internal identifier only to reach that fetch if needed)
    - Read `userDefined:Task ID` (numeric; store in config as JSON **number** or **string**, e.g. `1385` or `"1385"` — match your `projectId` style). If the property appears as `userDefined:ID` in MCP output, use that key — same numeric convention as **Project ID**.
 
 4. **Update Config**
    - Follow notion-memory-bank-ops.mdc config rules. Read current file; from the post-create `notion-fetch`, write `taskId`, `taskName`, `issueId`, and `issueUrl` per notion-verification step 6 whenever any value differs from current (new tasks usually have empty issue fields → config gets `null` for both). If all unchanged, do NOT write.
-   - If **`taskId`** changed from a previous value: set **`creativePageId`**, **`reflectionPageId`**, and **`archivePageId`** to **`null`** so stale Task subpage IDs are not reused (same as **`/change-task`** when switching tasks).
+   - If **`taskId`** changed from a previous value: set **`creativePageUrl`**, **`reflectionPageUrl`**, and **`archivePageUrl`** to **`null`** so stale Task subpage URLs are not reused (same as **`/change-task`** when switching tasks).
 
 ## VAN-Specific
 

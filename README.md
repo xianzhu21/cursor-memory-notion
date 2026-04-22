@@ -120,9 +120,10 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 - `taskName` – Task page title (auto-populated by notion-verification)
 - `issueId` – External tracker key from the Task’s **Issue ID** property (auto-populated by notion-verification on `/van`, e.g. `XHMI-1430`)
 - `issueUrl` – Issue browse URL from **Issue URL** and/or link in **Issue ID** (auto-populated by notion-verification)
-- `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database collection URLs
-- `activeContextPageId`, `progressPageId` – Optional subpage IDs under Project
-- `creativePageId`, `reflectionPageId`, `archivePageId` – Optional subpage IDs under Task
+- `projectPageUrl`, `taskPageUrl` – Optional **`https://`…** links to the resolved Project and Task pages (notion-verification)
+- `activeContextPageUrl`, `progressPageUrl`, `productContextPageUrl`, `systemPatternsPageUrl`, `techContextPageUrl`, `styleGuidePageUrl` – Optional Memory Bank subpage **`https://`…** Notion URLs under Project (browser or MCP **`url`**—agents normalize legacy bare ids to **`https://`…** on verification)
+- `creativePageUrl`, `reflectionPageUrl`, `archivePageUrl` – Optional Task subpage **`https://`…** URLs under Task
+- `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database **`collection://…`** data source URLs (required for MCP scoped search / task create). In `.cursor/notion-memory-bank.json.example`, these keys appear **last** after subpage **`*PageUrl`** keys.
 
 **Create a new task:** Run `/van [task description]` with `taskId` null – a task is created in Notion and config is updated (same entry point as upstream Memory Bank: VAN initializes task context).
 

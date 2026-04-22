@@ -592,7 +592,7 @@ flowchart TD
 
 ### Memory Bank Updates
 
-**Notion backend:** Use `notion-update-page` on resolved page IDs from config. projectbrief → Project page body (`projectId`); productContext → `productContextPageId`; activeContext → `activeContextPageId`; systemPatterns → `systemPatternsPageId`; techContext → `techContextPageId`; progress → `progressPageId`. If an ID is null, ensure notion-verification has created the subpage.
+**Notion backend:** Use `notion-update-page` on resolved **`*PageUrl`** **`https://`…** values from config. projectbrief → Project page body (`projectId`); productContext → `productContextPageUrl`; activeContext → `activeContextPageUrl`; systemPatterns → `systemPatternsPageUrl`; techContext → `techContextPageUrl`; progress → `progressPageUrl`. If a **`*PageUrl`** is null, ensure notion-verification has created the subpage.
 
 Specific updates to make to Memory Bank files:
 
@@ -601,27 +601,27 @@ Specific updates to make to Memory Bank files:
    - Document key achievements
    - Incorporate lessons learned
 
-2. **productContext.md** (productContextPageId)
+2. **productContext.md** (productContextPageUrl)
    - Update with business insights
    - Document market/user insights
    - Include value delivery insights
 
-3. **activeContext.md** (activeContextPageId)
+3. **activeContext.md** (activeContextPageUrl)
    - Update with current status
    - Document action items
    - Include next steps
 
-4. **systemPatterns.md** (systemPatternsPageId)
+4. **systemPatterns.md** (systemPatternsPageUrl)
    - Update with architectural insights
    - Document successful patterns
    - Include technical knowledge
 
-5. **techContext.md** (techContextPageId)
+5. **techContext.md** (techContextPageUrl)
    - Update with implementation insights
    - Document technology stack insights
    - Include performance and security insights
 
-6. **progress.md** (progressPageId)
+6. **progress.md** (progressPageUrl)
    - Update with final status
    - Document achievements
    - Include project metrics

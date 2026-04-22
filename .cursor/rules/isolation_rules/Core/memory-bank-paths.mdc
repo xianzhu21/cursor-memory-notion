@@ -29,27 +29,33 @@ Read `.cursor/notion-memory-bank.json`:
 
 **Config write format (MUST):** When writing `.cursor/notion-memory-bank.json`, use formatted JSON: 2-space indentation, one key per line. Parse existing content, merge changes, then serialize with `JSON.stringify(obj, null, 2)` – never minified single-line JSON.
 
-**Migration:** Existing configs without the new keys (productContextPageId, systemPatternsPageId, techContextPageId, styleGuidePageId, projectName, taskName, issueId, issueUrl) work as-is; missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`). `projectName`, `taskName`, `issueId`, and `issueUrl` are populated when notion-verification fetches Project and Task pages.
+**Recommended key order** (see `.cursor/notion-memory-bank.json.example`): identifiers and **`projectPageUrl` / `taskPageUrl`** first; then Memory Bank subpage **`*PageUrl`** keys; last **`projectsDataSourceUrl` / `tasksDataSourceUrl`** (`collection://` for MCP).
+
+**Migration:** Older configs may still use `activeContextPageId`, `progressPageId`, etc. — migrate those keys to **`activeContextPageUrl`**, **`progressPageUrl`**, … If the old value was a bare Notion page identifier, **`notion-fetch`** it once and store only the canonical **`https://`…** **`url`** in the **`*PageUrl`** field. Missing keys are treated as null. Subpages are created on first use when notion-verification runs (e.g. `/van`). `projectName`, `taskName`, `issueId`, `issueUrl`, `projectPageUrl`, and `taskPageUrl` are populated when notion-verification fetches Project and Task pages. Legacy configs may still contain **`projectsDatabasePageUrl`** / **`tasksDatabasePageUrl`**; they are **not** in the example schema—omit them from new writes and remove them when normalizing config to match **`.cursor/notion-memory-bank.json.example`**.
+
+**`*PageUrl` / `projectPageUrl` / `taskPageUrl` (human-edited JSON):** Store **only** full **`https://`…** Notion page URLs (browser address bar or MCP **`url`** on `notion-fetch`). Do **not** put bare Notion page identifiers in these keys—agents upgrade any legacy bare value to **`https://`…** on the next verification pass.
 
 | Key | Required | Description |
 |-----|----------|-------------|
 | projectId | Yes | Numeric key: JSON **number** or **string** (e.g. `123` or `"123"`) — must match **Project ID** on the Project row |
 | projectName | No | Page title of Project (populated when notion-verification fetches Project) |
+| projectPageUrl | No | **`https://`…** Notion URL for the resolved Project page; synced on Project fetch (handy in the JSON file: Ctrl/Cmd+click opens Notion) |
 | taskId | No* | Numeric key: JSON **number** or **string** (e.g. `588` or `"588"`) — must match **Task ID** on the Task row; null → `/van [description]` creates one |
 | taskName | No | Page title of Task (populated when notion-verification fetches Task) |
+| taskPageUrl | No | **`https://`…** Notion URL for the resolved Task page; synced on Task fetch (same editor link behavior) |
 | issueId | No | External tracker key from Task's **Issue ID** text (plain key, or link **label** when value is `[KEY](url)`); synced on Task fetch |
 | issueUrl | No | Browse URL: parsed from markdown in **Issue ID**, or from optional separate **Issue URL** if the schema has it; synced on Task fetch |
-| projectsDataSourceUrl | Yes | Projects data source (`collection://...` from `notion-fetch` of the Projects **database**). If invalid, recover per `Core/notion-memory-bank-ops.mdc` (**Recover invalid or missing data source URLs**) |
-| tasksDataSourceUrl | Yes | Tasks data source (`collection://...` from `notion-fetch` of the Tasks **database**). Same recovery if invalid |
-| activeContextPageId | No | activeContext subpage ID; if null, create under Project |
-| progressPageId | No | progress subpage ID; if null, create under Project |
-| productContextPageId | No | productContext subpage ID; if null, create under Project (Level 4) |
-| systemPatternsPageId | No | systemPatterns subpage ID; if null, create under Project (Level 4) |
-| techContextPageId | No | techContext subpage ID; if null, create under Project (Level 4) |
-| styleGuidePageId | No | style-guide subpage ID; if null, create under Project (creative UI/UX) |
-| creativePageId | No | Creative subpage ID; if null, create under Task |
-| reflectionPageId | No | Reflection subpage ID; if null, create under Task |
-| archivePageId | No | Optional archive subpage ID under Task (some workflows); clear when **`taskId`** changes — see **`/van`** Step 2 and **`/change-task`** Step 3 |
+| activeContextPageUrl | No | activeContext subpage: canonical **`https://`…** Notion page URL; if null, create under Project |
+| progressPageUrl | No | progress subpage: **`https://`…** URL; if null, create under Project |
+| productContextPageUrl | No | productContext subpage: **`https://`…** URL; if null, create under Project (Level 4) |
+| systemPatternsPageUrl | No | systemPatterns subpage: **`https://`…** URL; if null, create under Project (Level 4) |
+| techContextPageUrl | No | techContext subpage: **`https://`…** URL; if null, create under Project (Level 4) |
+| styleGuidePageUrl | No | style-guide subpage: **`https://`…** URL; if null, create under Project (creative UI/UX) |
+| creativePageUrl | No | Creative subpage: **`https://`…** URL; if null, create under Task |
+| reflectionPageUrl | No | Reflection subpage: **`https://`…** URL; if null, create under Task |
+| archivePageUrl | No | Optional archive subpage: **`https://`…** URL; clear when **`taskId`** changes — see **`/van`** Step 2 and **`/change-task`** Step 3 |
+| projectsDataSourceUrl | Yes | Projects data source (`collection://...` from `notion-fetch` of the Projects **database**). **MCP** scoped tools need this string—not a browser URL alone. If invalid, recover per `Core/notion-memory-bank-ops.mdc` (**Recover invalid or missing data source URLs**) |
+| tasksDataSourceUrl | Yes | Tasks data source (`collection://...` from `notion-fetch` of the Tasks **database**). Same as **projectsDataSourceUrl** |
 
 ## Subpage Naming Convention
 
@@ -64,13 +70,15 @@ Notion already shows the page **title** at the top. **Do not** put a level-1 hea
 - **activeContext / progress** (e.g. `/van`, `/archive`): Start the written body with `##` sections (e.g. `## Current focus (YYYY-MM-DD)`), not `# Active Context <projectId>` or `# Progress <projectId>`.
 - **Cleanup**: If `notion-fetch` shows the body opening with `#` whose text matches `properties.title` (same wording, ignoring trivial whitespace), remove that heading (and one following blank line if present) via `notion-update-page` with `command: "update_content"`, preserving the rest.
 
-## Resolving Page IDs
+## Resolving pages (Project, Task, and `*PageUrl`)
 
 **Canonical procedure:** Resolve Project and Task rows using **`Core/notion-verification.mdc` step 4** and (for **Task**) **`Core/notion-task-id-resolution.mdc`**. This section summarizes; it must **not** contradict those rules.
 
 1. **Project (by projectId):** **Project ID** is the source of truth (same idea as **Task ID** for tasks): **`projectName`** is metadata only—never pick a row by title without verifying **Project ID**. Same order as **`notion-verification.mdc` step 4**: `notion-query-database-view` with a view filtered by **Project ID** when available; otherwise `notion-search` with **`data_source_url`** = `projectsDataSourceUrl`, **`query`** = string form of **`projectId`**, **`filters`**: `{}`, then verify **Project ID** matches `projectId` (normalize number vs string). **Optional helper** if that path is inconclusive or returns nothing: repeat scoped search with **`query`** = config **`projectName`** (full title), then **still** verify **Project ID** before accepting. Avoid **workspace-only** semantic search (no `data_source_url`) on a bare numeric **`projectId`** as the first choice. Then `notion-fetch` with the page URL.
 2. **Task (by taskId):** **MUST** follow **`Core/notion-task-id-resolution.mdc`** (resolve Project first → **`Tasks`** relation or filtered Tasks query → **`notion-fetch`** candidates → match **`Task ID`** in **`properties`**). Do **not** use `notion-search` with **`data_source_url`** = `tasksDataSourceUrl` and **`query`** = numeric **`taskId`** as the **sole** or **primary** resolver. **Note:** If your Tasks database still uses a property named **ID** (not **Task ID**), the MCP key may be `userDefined:ID` — confirm on a `notion-fetch` of a Task row; values are numeric like **Project ID**.
-3. **Subpages**: Use explicit page IDs if set; otherwise create under Project or Task with `notion-create-pages`.
+3. **Subpages**: Use the corresponding **`*PageUrl`** **`https://`…** value from config if set; otherwise create under Project or Task with `notion-create-pages`.
+4. **`notion-create-pages` parent:** Notion’s create API uses **`parent: { page_id: "…" }`**. Derive that value **only in-session**: `notion-fetch` the parent’s **`https://`…** URL (**`projectPageUrl` / `taskPageUrl`** or resolution result), read the returned **`id`**, pass it as **`page_id`**, and **do not** write that raw value into **`*PageUrl`** / **`projectPageUrl`** / **`taskPageUrl`**—after creating a child, `notion-fetch` the new page and persist its **`https://`…** **`url`** in config.
+5. **`notion-fetch` / `notion-update-page` targets:** Use the **`https://`…** string from **`*PageUrl`** (or from resolution) first. If **`notion-update-page`** rejects the URL form, `notion-fetch` that URL, use the returned **`id` only for that tool call**, then **`notion-fetch`** again if you need the canonical **`https://`…** to write back to JSON.
 
 **Identifier is source of truth:** If projectId or taskId cannot be resolved (no matching result), report verification incomplete. Do NOT use projectName/taskName as fallback. See `Core/notion-verification.mdc` step 4.
 
@@ -82,15 +90,15 @@ Notion already shows the page **title** at the top. **Do not** put a level-1 hea
 |---------------------|-----------------|------------|
 | tasks.md | Current Task page body | taskId (number or string, e.g. `588`) |
 | projectbrief.md | Project page body | projectId (number or string, e.g. `123`) |
-| activeContext.md | activeContext subpage under Project | activeContextPageId |
-| progress.md | progress subpage under Project | progressPageId |
-| productContext.md | productContext subpage under Project | productContextPageId |
-| systemPatterns.md | systemPatterns subpage under Project | systemPatternsPageId |
-| techContext.md | techContext subpage under Project | techContextPageId |
-| style-guide.md | style-guide subpage under Project | styleGuidePageId |
-| creative/creative-[name].md | Creative subpage under Task | creativePageId |
-| reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageId |
-| archive/archive-[id].md | Archive subpage under Task | optional `archivePageId` if used; otherwise resolve via Task child titled `Archive <taskId>` or Task body `<page>` links |
+| activeContext.md | activeContext subpage under Project | activeContextPageUrl |
+| progress.md | progress subpage under Project | progressPageUrl |
+| productContext.md | productContext subpage under Project | productContextPageUrl |
+| systemPatterns.md | systemPatterns subpage under Project | systemPatternsPageUrl |
+| techContext.md | techContext subpage under Project | techContextPageUrl |
+| style-guide.md | style-guide subpage under Project | styleGuidePageUrl |
+| creative/creative-[name].md | Creative subpage under Task | creativePageUrl |
+| reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageUrl |
+| archive/archive-[id].md | Archive subpage under Task | optional `archivePageUrl` if used; otherwise resolve via Task child titled `Archive <taskId>` or Task body `<page>` links |
 
 ## Active Context: multiple in-flight tasks
 
@@ -116,9 +124,9 @@ Optional: **`Progress <projectId>`** may mirror a project-wide `## In progress` 
 
 ## MCP Tool Usage
 
-- **Read**: Resolve identifier → `notion-fetch` with page ID or URL.
-- **Update content**: `notion-update-page` with `command: "replace_content"` or `replace_content_range` or `insert_content_after`.
-- **Create page**: `notion-create-pages` with `parent: { page_id: "..." }` and `properties: { title: "..." }`, `content: "..."`.
+- **Read**: Resolve identifier → `notion-fetch` with the **`https://`…** **`*PageUrl`** (or the resolved Project/Task URL from step 4).
+- **Update content**: `notion-update-page` with `command: "replace_content"` or `replace_content_range` or `insert_content_after`, targeting the same page as **`notion-fetch`** (see **Resolving pages** item 5 if the URL form is rejected).
+- **Create page**: `notion-create-pages` with `parent: { page_id: "<from notion-fetch of parent https URL>" }` and `properties: { title: "..." }`, `content: "..."` (see **Resolving pages** item 4—never persist this **`page_id`** into **`*PageUrl`**; store the child’s **`https://`…** after fetch).
 - **MUST output in chat (do not skip):** After each `notion-update-page` or `notion-create-pages`, output the modified content in chat. You already have it (e.g. `new_str`, `properties`)—no `notion-fetch` needed. Follow `notion-output-after-write` skill for format (Original → Modified).
 - **Retry on failure**: If a Notion MCP call fails due to connection/disconnection, retry per `Core/notion-retry.mdc` (max 2 retries, 5–10 s delay) before reporting failure.
 

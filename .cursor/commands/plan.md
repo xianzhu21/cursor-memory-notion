@@ -6,7 +6,7 @@ This command creates detailed implementation plans based on complexity level det
 
 Reads from (resolve projectId / taskId via notion-search, then notion-fetch):
 - Task page (`taskId`) - Task requirements and complexity level
-- activeContext page (`activeContextPageId`) - Current project context
+- activeContext page (`activeContextPageUrl`) - Current project context
 - Project page body (`projectId`) - Project foundation (if exists; `projectbrief.md` equivalent)
 
 Updates (notion-update-page):

@@ -6,10 +6,10 @@ This command performs structured design exploration for components flagged durin
 
 Reads from (resolve taskId via notion-search, then notion-fetch):
 - Task page (`taskId`, e.g. `588`) - Components requiring creative phases
-- activeContext page (`activeContextPageId`) - Current project context
+- activeContext page (`activeContextPageUrl`) - Current project context
 
 Creates (notion-create-pages):
-- creative page under Task (`creativePageId` or create under resolved Task)
+- creative page under Task (`creativePageUrl` or create under resolved Task)
 
 Updates (notion-update-page):
 - Task page (`taskId`) - Records design decisions
@@ -75,8 +75,8 @@ Load: .cursor/rules/isolation_rules/Phases/CreativePhase/creative-phase-algorith
    - **🎨🎨🎨 EXITING CREATIVE PHASE**
 
 4. **Document Decisions**
-   - If `creativePageId` is set: notion-fetch to verify parent = Task page. If stale (parent ≠ Task), clear in config and treat as null.
-   - notion-create-pages: creative page under Task with `title: "Creative <taskId>"` (e.g. `Creative 1391`). Or use existing `creativePageId` if valid.
+   - If `creativePageUrl` is set: notion-fetch to verify parent = Task page. If stale (parent ≠ Task), clear in config and treat as null.
+   - notion-create-pages: creative page under Task with `title: "Creative <taskId>"` (e.g. `Creative 1391`). Or use existing `creativePageUrl` if valid.
    - notion-update-page: Task page with design decisions
 
 5. **Update Task Page Workflow Sections**
