@@ -10,7 +10,7 @@ Shared workflow for creating a task in the Tasks database. Used by `/van` when `
 
 ## Prerequisites
 
-- Config: `projectId`, `tasksDataSourceUrl`, `projectsDataSourceUrl` from `.cursor/notion-memory-bank.json`
+- Config: `projectId`, `projectName` (recommended), `tasksDataSourceUrl`, `projectsDataSourceUrl` from `.cursor/notion-memory-bank.json`
 - Task title from user: `/van [description]`
 
 ## Tasks DB Schema (Common Case)
@@ -30,8 +30,7 @@ For typical Tasks databases, use these property names. Fetch schema if your DB d
 ## Workflow
 
 1. **Resolve Project**
-   - `notion-search` with `data_source_url` = `projectsDataSourceUrl`, `query` = `projectId` (exact value, e.g. `37` or `123`). Do NOT use projectName or description – that can return a different project.
-   - Pick the result whose `userDefined:Project ID` matches `projectId`; if multiple results, verify before using. Get project page URL. If no matching result, fail – do not create task under wrong project.
+   - Same rules as **`Core/notion-verification.mdc`** step 4 (**URL** **`projectPageUrl`** **> title** **`projectName`**; duplicate titles → **Project ID** tiebreaker via config **`projectId`**). **`notion-fetch`** the accepted Project page and use its **`https://`…** URL for the **Project** relation on the new task. If resolution fails, **do not** create a task under the wrong project.
 
 2. **Create Task**
    - Extract `data_source_id` from `tasksDataSourceUrl` (the path segment after `collection://`—copy verbatim from config, do not invent values)

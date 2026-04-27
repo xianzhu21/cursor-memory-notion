@@ -13,7 +13,7 @@ Use this command when you already have a **Task ID** in Notion and want to **swi
 
 ## Memory Bank integration (Notion)
 
-**CRITICAL:** Read and write **`.cursor/notion-memory-bank.json`** with **`JSON.stringify(obj, null, 2)`** (2-space indent). Resolve **Task** rows by **`Task ID`** per **`Core/notion-task-id-resolution.mdc`** — not semantic **`notion-search`** on the Tasks data source with a bare numeric id as the only proof.
+**CRITICAL:** Read and write **`.cursor/notion-memory-bank.json`** with **`JSON.stringify(obj, null, 2)`** (2-space indent). Resolve the Task with **`Core/notion-task-id-resolution.mdc`**: **`taskPageUrl`**, then **`taskName`** / **issue** keyword (**candidate** fetches). After a **`taskId`** switch, **`taskPageUrl`** and **`taskName`** are nulled (step 3)—if verification cannot resolve, follow that file’s **incomplete** ask (e.g. paste a **Notion task `https://…` URL** or set **`taskName`** to the **exact** title). Do **not** use semantic **`notion-search`** on the Tasks data source with a bare numeric id as the only proof.
 
 ## Progressive rule loading
 
@@ -33,7 +33,7 @@ Do **not** load **`/van`** mode maps, **`task-creation-notion.mdc`** (unless you
 ## Workflow
 
 1. **Resolve target Task ID**
-   - Accept **`/change-task <id>`** or a clear numeric **Task ID** in the user message.
+   - Accept **`/change-task <id>`** or a clear numeric **Task ID** in the user message. **Recommended:** a **Notion task page `https://`…** URL in the same message, or the **exact** task **title**, so the title tier can resolve after URLs are cleared.
    - If **no Task ID** is given: ask once for the **Notion Task ID** (the value of the **Task ID** property). **Do not** invent an id. **Do not** create a new task here—if `taskId` is `null`/`""` and the user wants a **new** row, tell them to run **`/van [description]`**.
 
 2. **Read config and remember previous primary task (optional)**
@@ -42,7 +42,7 @@ Do **not** load **`/van`** mode maps, **`task-creation-notion.mdc`** (unless you
 
 3. **Write new primary `taskId`**
    - Merge into config: set **`taskId`** to the user’s target (JSON number or string is fine per project rules).
-   - **Task-scoped subpages when the primary task changed:** If the normalized **new `taskId` ≠ old `taskId`**, set **`creativePageUrl`**, **`reflectionPageUrl`**, and **`archivePageUrl`** to **`null`** in config (they refer to pages under a **specific** task; keeping old URLs would point at the wrong task). Write the file only when values change.
+   - **Task-scoped URLs and name when the primary task changed:** If the normalized **new `taskId` ≠ old `taskId`**, set **`taskPageUrl`**, **`taskName`**, **`creativePageUrl`**, **`reflectionPageUrl`**, and **`archivePageUrl`** to **`null`** in config (stale **URL** or **name** mis-resolves under **URL** > **title** resolution for the new id). Write the file only when values change.
 
 4. **Notion verification (subset of `Core/notion-verification.mdc`)**
    Execute **steps 1, 2, 4, 5, 6 (partial), 7** of **`notion-verification.mdc`** with these constraints:

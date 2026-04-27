@@ -1,55 +1,56 @@
 ---
-description: Resolve Tasks rows by Task ID property; do not rely on semantic search as proof of match.
+description: Resolve Tasks by URL then title; taskId for duplicate-title tiebreak and config; /van and /change-task.
 globs: notion-task-id-resolution.mdc
 alwaysApply: false
 ---
 
-# NOTION TASK ID RESOLUTION (MEMORY BANK)
+# NOTION TASK RESOLUTION (MEMORY BANK)
 
-Use when resolving **config `taskId`** to a row in the Memory Bank **Tasks** data source (`tasksDataSourceUrl`).
+Use when resolving **config** to the correct **Tasks** row (`tasksDataSourceUrl`) under the **already-resolved Project**. **`/van`**, **`/change-task`**, and verification use the same rules.
 
-## Scope first (correctness + time)
+**Project** row: **`Core/notion-verification.mdc` step 4** (**URL** > **title**; **`projectId`** for duplicate-title tiebreak and sync).
 
-**Always resolve the Project row before resolving the Task.** Then work **only** against tasks **related to that Project** (the Project page’s **`Tasks`** relation, or a database query/view **filtered by that Project**). That keeps the candidate set small, avoids misleading hits from unrelated tasks, and usually **reduces `notion-fetch` calls** compared to workspace-wide discovery.
+**Task** row: **URL** > **title** (two steps). If neither yields a row, **verification incomplete**—ask the user to set **`taskPageUrl`** and/or **`taskName`**, or paste a task **Notion `https://…` URL** in chat.
 
-## Latency defaults (MANDATORY)
+## `taskId` in config
 
-These defaults **do not** relax **`Task ID`** as the source of truth; they reduce wasted turns.
+- **`config.taskId` MUST** match the resolved Task for Memory Bank, **`/change-task`**, and **`/archive`**.
 
-1. **Reuse the Project URL in-session** — If the Project page URL was already resolved earlier in the same command/session, **`notion-fetch` it directly**; do not repeat Project discovery search.
-2. **Project discovery order** — **`projectId` / Project ID** outranks **`projectName`** (same priority idea as **Task ID** vs task title). Prefer, in order: (a) `notion-query-database-view` (or any MCP tool) **filtered by `Project ID`** = config `projectId` when available; (b) else `notion-search` with **`data_source_url`** = config `projectsDataSourceUrl`, **`query`** = string form of **`projectId`**, **`filters`**: `{}`, small `page_size` — verify **`Project ID`** on the hit matches `projectId`; (c) **optional** scoped search with **`query`** = **`projectName`** only if (a)/(b) fail or are ambiguous—**still** verify **`Project ID`** before accepting; (d) avoid workspace-only semantic search on a **bare numeric** `projectId` as the first choice (noisy).
-3. **Task discovery from relation** — After step 2 below, **`notion-fetch` every URL in the Project’s `Tasks` relation in parallel in a single assistant step** (one batch of tool calls). Pick the page whose **`properties` → `Task ID`** matches config `taskId` (normalize string vs number). **Do not** begin resolution with `notion-search` on **`tasksDataSourceUrl`** using **`query`** = numeric `taskId` (see “Why semantic search is unsafe”).
-4. **Large relation lists** — If parallel fetch of the full list would exceed practical MCP/tool limits, **chunk** URLs (e.g. batches of 10–25) and run parallel `notion-fetch` per chunk until a **`Task ID`** match; or use a **filtered query** / subtree keyword shortcut (see **Resolution procedure** step 3), then **`notion-fetch`** only returned URLs and verify **`Task ID`**.
+- After **`notion-fetch`** from a **URL**- or **title**-selected page, read **`properties` → `Task ID`** and sync if needed.
 
-## Why semantic search is unsafe for Task ID
+- **Duplicate display names** among **title**-tier candidates: keep the row where **`Task ID` = `taskId`** (normalized). If no candidate matches, **incomplete**.
 
-`notion-search` with `data_source_url` = `tasksDataSourceUrl` is **semantic / keyword** search over titles and bodies. A query like `"1434"` can return a task whose **body mentions** 1434 (e.g. config notes) while **another** row owns **`Task ID` = 1434** in Notion.
+## Resolution: **URL** > **title**
 
-**Do not** treat a semantic search hit as confirmation that `taskId` resolved. **Do not** use scoped `notion-search` on the Tasks data source as the **only** resolver for numeric **Task ID**.
+| Step | When | Action |
+|------|------|--------|
+| **1 — URL** | **`taskPageUrl`** or a pasted task **`https://`…** in the message | **`notion-fetch`**; verify (Project link when checkable; **Task ID** in properties if needed) |
+| **2 — Title** | **`taskName`** and/or **issue** keyword | Project **`notion-search`** with **`page_url`** = Project, relation URLs merged and deduped, then **`notion-fetch`** on **candidate** pages only; match **name**; duplicate names → tiebreak with config **`taskId`** |
 
-## Source of truth
+**If** step 1 is skipped and **`taskName`** and issue keyword are both empty, **or** step 2 finds no candidate: **incomplete** (ask for **URL** / **name** as above).
 
-The authoritative match is the **`Task ID`** value on the Tasks row (Notion **`auto_increment_id`**; integer in `notion-fetch` output). After opening a candidate task page, **read `Task ID` from `properties`** and compare to config `taskId` (normalize `1434` vs `"1434"`).
+## Scope
 
-## Resolution procedure (execute in order)
+Resolve **Project** first. Restrict search to that project: set **`page_url`** on **`notion-search`**, not workspace-wide **Tasks** DB only.
 
-1. **Resolve the Project row** for `projectId` (per `Core/notion-verification.mdc` step 4 / `Core/notion-memory-bank-ops.mdc` — Project ID rules unchanged).
+## Title step detail
 
-2. **`notion-fetch` the Project page**. From `properties`, read the **`Tasks`** relation (URLs of linked Task pages), if present. If the relation is **missing** or yields **no** URLs, **skip** step 3’s parallel fetch over an empty list and go to **step 4** (filtered query / structured candidates).
+- **`notion-search`**: **`page_url`** = Project **`https://`…** URL, **`query`** = **`taskName`** or issue key.
+- Merge with **`Tasks`** relation URLs; dedupe; fetch **candidates**; **Duplicate titles** → accept row with **`Task ID`** = config **`taskId`**.
+- **Do not** use **`data_source_url`** = **`tasksDataSourceUrl`** with **`query`** = bare numeric **`taskId`** as the **sole** resolver (semantic; wrong row risk).
 
-3. **Prove `Task ID` on candidates:** From the **`Tasks`** URL list, **`notion-fetch` each Task page** and compare **`properties` → `Task ID`** to config `taskId`. **Default execution:** parallel **`notion-fetch`** for **all** relation URLs in one step (see **Latency defaults**). The first matching page is the resolved task.
+## `notion-search` and numeric queries
 
-   **If the relation list is long:** Prefer **`notion-query-database-view`** (or any MCP tool) with a **Project** filter limited to the resolved Project, returning task URLs—then **`notion-fetch`** (parallel batches) until **`Task ID`** matches. **Optional shortcut:** `notion-search` with **`page_url`** = resolved **Project page URL** (search **under that project**, not `data_source_url` = whole Tasks DB) and `query` = **issue key** from config `issueId` / user hint may surface **fewer** URLs to fetch first—**still** verify **`Task ID`** on every accepted row. **Serial iteration** (fetch one-by-one until match) is allowed only when parallel batching is impractical; it is **not** the default when the relation list is small (typical **≤ ~30** tasks).
+Using **`tasksDataSourceUrl`** with **`query`** like `"1434"` can return pages that **mention** 1434 in the body, not the row with **`Task ID` = 1434**. Prefer **URL**, project-scoped **title** search, then **`notion-fetch`** to read **Task ID** in **`properties`**.
 
-4. **If no match** (relation empty, tasks not linked to the project, or list incomplete): Prefer any MCP tool that can **query or filter the Tasks data source by `Task ID` = config `taskId`** (exact match), optionally **and** Project = resolved Project. If no such tool exists, gather additional candidate URLs only from **structured** sources (e.g. other relations), then **`notion-fetch` each** and verify **`Task ID`** as above.
+## Procedure (order)
 
-5. **If still unresolved**: Report verification incomplete per `Core/notion-verification.mdc` step 4. Do **not** pick a page because its title or body “sounds” correct without a **`Task ID`** match.
+1. **Project** resolved (`notion-verification.mdc`).
+2. **URL:** Known task **`https://`…**? **`notion-fetch`**; on success, **done**; wrong/stale and no **title** hints → **incomplete** with the ask in the opening paragraph.
+3. **Title:** **`taskName`** and/or **issue** keyword: collect **candidates**; **fetch**; **match**; duplicate **names** → **`taskId`** tiebreak.
+4. **Else** **incomplete** with the same **ask**. For **`/change-task`**, pasting the task **`https://…`** in the same message after clearing URL fields helps.
 
-## After a successful `Task ID` match (MANDATORY)
+## After a successful match
 
-1. **Config metadata drift** — `taskId` can be correct while **`taskName`**, **`issueId`**, **`issueUrl`**, or **`taskPageUrl`** in `.cursor/notion-memory-bank.json` still describe a **different** task. **Always** compare fetched **`Name`** / parsed **Issue ID** / resolved Task URL to config; if any differ, **update the config file** per `Core/notion-memory-bank-ops.mdc` (do not assume the row was already aligned).
-2. **Relation list noise** — If **`notion-fetch`** on a relation URL returns **deleted**, **error**, or missing **`Task ID`**, **retry once** per `Core/notion-retry.mdc`, then **skip** that URL and continue. **Do not** accept a page without a matching **`Task ID`**.
-
-## Role of `notion-search` (optional)
-
-`notion-search` MAY suggest **candidate** task URLs when **`page_url`** is the **resolved Project page** (project subtree) and the query is a **keyword** (e.g. Jira key from `issueId`), not as a substitute for reading **`Task ID`**. **Do not** use `data_source_url` = `tasksDataSourceUrl` with `query` = bare numeric **`taskId`** as the primary resolver. **Every** candidate must be **`notion-fetch`’d** and accepted **only** when **`Task ID`** in `properties` matches config `taskId`.
+1. **Config drift** — Update **`taskId`**, **`taskName`**, **`taskPageUrl`**, **`issueId`**, **`issueUrl`** per **`Core/notion-memory-bank-ops.mdc`**.
+2. **Errors** — Missing **Task ID** after retry: try next **candidate** or **incomplete**.

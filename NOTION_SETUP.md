@@ -12,7 +12,8 @@ This project uses **Notion** as the Memory Bank backend. **Projects** and **Task
 - **Projects**: `projectId` matches **Project ID** (numbers only — in JSON you may use a number `123` or string `"123"`).
 - **Tasks**: `taskId` matches **Task ID** (same style as Project ID — e.g. `588` or `"588"`).
 
-Example: `projectId` `123` or `"123"` → **Projects** by **Project ID**; `taskId` `588` or `"588"` → **Tasks** by **Task ID**.
+- **Project** resolution: **`Core/notion-verification.mdc`** — **URL** > **title** (same token idea as **Task**; **`projectId`** for duplicate-title tiebreaks).
+- **Task** resolution: **`Core/notion-task-id-resolution.mdc`** — **URL** > **title**. Keep **`projectId`** and **`taskId`** in config for **duplicate-title** tiebreaks, **`/change-task`**, and Memory Bank invariants. Prefer **`taskPageUrl`**, **`taskName`**, or a pasted task **Notion `https://…` URL** so the row can be found without many **`notion-fetch`** calls.
 
 ## 3. Configure Identifiers
 
@@ -28,7 +29,8 @@ cp .cursor/notion-memory-bank.json.example .cursor/notion-memory-bank.json
 Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notion-memory-bank.json.example` for the schema. The actual config is in `.gitignore` to avoid committing personal Notion workspace data. The example uses **`null`** for every placeholder field—after copying, set at least **`projectId`**, **`projectsDataSourceUrl`**, and **`tasksDataSourceUrl`** (see below) before scoped Notion MCP calls will work.
 
 **Required:**
-- `projectId` – numeric project key: JSON **number** or **string** (e.g. `123` or `"123"`) — must match **Project ID** on the Project row
+- `projectId` – numeric project key: JSON **number** or **string** (e.g. `123` or `"123"`) — must match **Project ID** on the Project row (also used to disambiguate duplicate project titles)
+- `projectPageUrl`, `taskPageUrl`, `projectName`, `taskName` – **strongly recommended**: browse **URLs** (cheapest), else exact **titles** for the **URL** > **title** resolution in Core rules. **`projectId`** / **`taskId`** disambiguate **duplicate titles** and stay in config for invariants.
 - `tasksDataSourceUrl`, `projectsDataSourceUrl` – **`collection://…`** strings from `notion-fetch` on the databases (see below). Scoped Notion MCP tools need these; they are **not** normal browser links.
 
 **Optional:**
@@ -39,7 +41,7 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 
 **Data source URLs:** Fetch the Projects and Tasks databases with `notion-fetch` (using each database’s **`https://`…** URL from the browser or search results) to get the `collection://` URLs from `<data-source>` tags. Use those strings for `projectsDataSourceUrl` and `tasksDataSourceUrl`.
 
-## 4. Mapping (by ID)
+## 4. Mapping (config → Notion)
 
 | cursor-memory-bank | Notion | Config Key |
 |--------------------|--------|------------|
@@ -53,10 +55,9 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 
 ## 5. notion-search Lookup
 
-`notion-search` is **semantic search**, not exact property match. When resolving `projectId` or `taskId`:
+`notion-search` is **semantic search**, not exact property match. **Do not** use **`data_source_url`** = Projects DB with **`query`** = bare numeric **`projectId`**, or **`data_source_url`** = Tasks DB with **`query`** = bare numeric **`taskId`**, as the **sole** way to pick a row—use **URL** and **name** resolution in the Core rules first.
 
-- **Improve accuracy**: Use **Project ID** on **Projects** and **Task ID** on **Tasks** (numeric values). After resolving, verify MCP properties: `userDefined:Project ID` and `userDefined:Task ID`.
-- **If results are wrong**: After the first successful fetch, store the resolved page **`https://`…** URL in config (e.g. in the matching **`*PageUrl`** field) and use `notion-fetch` with that URL for subsequent operations, bypassing search.
+- **Improve accuracy**: Prefer **project** / **task titles** in config (**`projectName`**, **`taskName`**) for the first lookup under the rules above; confirm **Project ID** / **Task ID** on **`notion-fetch`** results. After the first successful resolve, store **`projectPageUrl`** / **`taskPageUrl`** and reuse **`notion-fetch`** on those URLs to avoid repeat search.
 
 ## 6. Command Usage
 
@@ -64,7 +65,7 @@ Same as original cursor-memory-bank: `/van` → `/plan` → `/creative` → `/bu
 
 **First run:** Set `taskId` to `null` in config. Run `/van Add user authentication to the application` – a new task is created in Notion and `taskId` is updated automatically.
 
-**Switch task (existing Task ID):** Prefer **`/change-task <Task ID>`** — updates config, verifies Project/Task, syncs metadata, and **loads** task progress into chat **without** full **`/van`** (avoids complexity routing and whole-page **Progress** resets). Alternatively set `taskId` in `.cursor/notion-memory-bank.json` and run **`/van`** if you need full initialization. For a **new** task from description, use **`/van [description]`** (or clear `taskId` first per task-creation flow).
+**Switch task (existing Task ID):** **`/change-task <Task ID>`** updates config and runs verification. Include a **Notion task page `https://…` URL** in the same message or set **`taskName`** in config to the **exact** title when **`taskPageUrl`** was cleared—per **`Core/notion-task-id-resolution.mdc`**. Alternatively set `taskId` in `.cursor/notion-memory-bank.json` and run **`/van`** (with a description line, URL, or ID) for full init. For a **new** task from description, use **`/van [description]`** (or clear `taskId` first per task-creation flow).
 
 ## 7. Token Optimization
 
