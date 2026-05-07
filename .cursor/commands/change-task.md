@@ -37,7 +37,7 @@ Do **not** load **`/van`** mode maps, **`task-creation-notion.mdc`** (unless you
    - If **no Task ID** is given: ask once for the **Notion Task ID** (the value of the **Task ID** property). **Do not** invent an id. **Do not** create a new task here—if `taskId` is `null`/`""` and the user wants a **new** row, tell them to run **`/van [description]`**.
 
 2. **Read config and remember previous primary task (optional)**
-   - Read **`.cursor/notion-memory-bank.json`**: `projectId`, `taskId` (old), `creativePageUrl`, `reflectionPageUrl`, `archivePageUrl` (if present), data source URLs, Memory Bank subpage **`*PageUrl`** keys (see `.cursor/notion-memory-bank.json.example`).
+   - Read **`.cursor/notion-memory-bank.json`**: same key order as **`.cursor/notion-memory-bank.json.example`** — `taskId` (old), `taskName`, `taskPageUrl`, `issueId`, `issueUrl`, `creativePageUrl`, `reflectionPageUrl`, `archivePageUrl`, `projectId`, `projectName`, `projectPageUrl`, project subpage **`*PageUrl`** keys, `projectsDataSourceUrl`, `tasksDataSourceUrl`.
    - Normalize old vs new **`taskId`** (string/number). If the new id equals the current primary **`taskId`** (after normalization), still run verification and **refresh** the loaded summary—skip unnecessary config writes.
 
 3. **Write new primary `taskId`**

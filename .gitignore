@@ -72,6 +72,7 @@ pids
 # Cursor specific
 .cursor/hooks/
 .cursor/notion-memory-bank.json 
+.cursor/rules/agent-rules
 
 #claude.code specific
 .claude/

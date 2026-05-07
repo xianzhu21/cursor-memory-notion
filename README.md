@@ -113,17 +113,18 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 
 **Identifier convention:** `projectId` and `taskId` are numeric keys (JSON **number** or **string** — both OK). They match **Project ID** and **Task ID** on each row. Resolve via `notion-search` and verify `userDefined:Project ID` / `userDefined:Task ID` on the result.
 
-**Config keys** (in `.cursor/notion-memory-bank.json`):
-- `projectId` – Current project (required)
-- `projectName` – Project page title (auto-populated by notion-verification)
+**Config keys** (in `.cursor/notion-memory-bank.json`; same order as `.cursor/notion-memory-bank.json.example`):
 - `taskId` – Current task; set to `null` or `""` to have `/van [description]` create one automatically
 - `taskName` – Task page title (auto-populated by notion-verification)
+- `taskPageUrl` – Optional **`https://`…** link to the resolved Task page (notion-verification)
 - `issueId` – External tracker key from the Task’s **Issue ID** property (auto-populated by notion-verification on `/van`, e.g. `XHMI-1430`)
 - `issueUrl` – Issue browse URL from **Issue URL** and/or link in **Issue ID** (auto-populated by notion-verification)
-- `projectPageUrl`, `taskPageUrl` – Optional **`https://`…** links to the resolved Project and Task pages (notion-verification)
-- `activeContextPageUrl`, `progressPageUrl`, `productContextPageUrl`, `systemPatternsPageUrl`, `techContextPageUrl`, `styleGuidePageUrl` – Optional Memory Bank subpage **`https://`…** Notion URLs under Project (browser or MCP **`url`**—agents normalize legacy bare ids to **`https://`…** on verification)
 - `creativePageUrl`, `reflectionPageUrl`, `archivePageUrl` – Optional Task subpage **`https://`…** URLs under Task
-- `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database **`collection://…`** data source URLs (required for MCP scoped search / task create). In `.cursor/notion-memory-bank.json.example`, these keys appear **last** after subpage **`*PageUrl`** keys.
+- `projectId` – Current project (required)
+- `projectName` – Project page title (auto-populated by notion-verification)
+- `projectPageUrl` – Optional **`https://`…** link to the resolved Project page (notion-verification)
+- `activeContextPageUrl`, `progressPageUrl`, `productContextPageUrl`, `systemPatternsPageUrl`, `techContextPageUrl`, `styleGuidePageUrl` – Optional Memory Bank subpage **`https://`…** Notion URLs under Project (browser or MCP **`url`**—agents normalize legacy bare ids to **`https://`…** on verification)
+- `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database **`collection://…`** data source URLs (required for MCP scoped search / task create). In the example file, these keys appear **last** after subpage **`*PageUrl`** keys.
 
 **Create a new task:** Run `/van [task description]` with `taskId` null – a task is created in Notion and config is updated (same entry point as upstream Memory Bank: VAN initializes task context).
 
