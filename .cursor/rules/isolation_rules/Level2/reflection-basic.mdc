@@ -157,10 +157,10 @@ Reflection integrates with Memory Bank:
 ```mermaid
 graph TD
     Reflection["Enhancement<br>Reflection"] --> Archive["Add to<br>Archive"]
-    Reflection --> ProgressUpdate["Update<br>progress.md"]
+    Reflection --> ProgressUpdate["Update<br>Progress subpage"]
     Reflection --> ActionItems["Document<br>Action Items"]
     
-    ActionItems --> Tasks["Add to<br>tasks.md"]
+    ActionItems --> Tasks["Add to<br>Task page body"]
     Archive & ProgressUpdate & Tasks --> CrossLinks["Create<br>Cross-Links"]
 ```
 

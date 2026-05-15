@@ -48,7 +48,7 @@ Version 0.8 moves from cursor custom modes to cursor commands.  Memory Bank oper
 5. **`/reflect`** - Reviews completed work and documents lessons learned
 6. **`/archive`** - Creates comprehensive documentation and updates Memory Bank
 
-Each command reads from and updates a shared **Memory Bank** – either Notion pages (this fork) or local `memory-bank/` files – maintaining persistent context across the entire workflow.
+Each command reads from and updates a shared **Memory Bank** – either Notion pages (this fork) or a **file-based Memory Bank** (`memory-bank/` + `tasks.md`) – maintaining persistent context across the entire workflow.
 
 ### Token-Optimized Architecture
 
@@ -67,7 +67,7 @@ See the [Memory Bank Optimizations](MEMORY_BANK_OPTIMIZATIONS.md) document for d
 Memory Bank transforms development into a structured, phase-based process:
 
 - **Graph-Based Command Integration**: Commands are interconnected nodes in a development workflow
-- **Workflow Progression**: Commands transition from one to another in a logical sequence (`/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive`)
+- **Workflow Progression**: Commands chain by **complexity** (see [Complexity Levels](#complexity-levels)); the **longest** path is `/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive` (Level 1 skips `/plan` and `/creative`)
 - **Shared Memory**: Persistent state maintained across command transitions via Memory Bank (Notion or files)
 - **Adaptive Behavior**: Each command adjusts its recommendations based on project complexity level
 - **Progressive Rule Loading**: Commands load only necessary rules, reducing context window usage
@@ -101,7 +101,7 @@ For a detailed explanation of how Memory Bank implements these principles, see t
 
 **This fork uses Notion as the default Memory Bank backend.** All operations use Notion MCP (`notion-fetch`, `notion-update-page`, `notion-create-pages`).
 
-**Setup:** Copy `.cursor/notion-memory-bank.json.example` to `.cursor/notion-memory-bank.json`, then configure your `projectId` and data source URLs. Set `taskId` to `null` for first run – `/van [task description]` will create a new task automatically (same flow as original cursor-memory-bank). See **[NOTION_SETUP.md](NOTION_SETUP.md)** for details. If `collection://` URLs are wrong, **[NOTION_SETUP.md](NOTION_SETUP.md)** §8 and `notion-memory-bank-ops.mdc` describe finding the databases and updating the URLs.
+**Setup:** Copy `.cursor/notion-memory-bank.json.example` to `.cursor/notion-memory-bank.json`, then configure your `projectId` and data source URLs. Set `taskId` to `null` for first run – `/van [task description]` will create a new task automatically (same flow as a **file-based Memory Bank**). See **[NOTION_SETUP.md](NOTION_SETUP.md)** for details. If `collection://` URLs are wrong, **[NOTION_SETUP.md](NOTION_SETUP.md)** section 8 and `notion-memory-bank-ops.mdc` describe finding the databases and updating the URLs.
 
 ### Notion Backend
 
@@ -111,7 +111,7 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 - **Tasks database** – Holds task pages (plan, checklist, creative/reflection/archive subpages)
 - **Relation** – Tasks link to Projects via a bidirectional relation
 
-**Identifier convention:** `projectId` and `taskId` are numeric keys (JSON **number** or **string** — both OK). They match **Project ID** and **Task ID** on each row. Resolve via `notion-search` and verify `userDefined:Project ID` / `userDefined:Task ID` on the result.
+**Identifier convention:** `projectId` and `taskId` are numeric keys (JSON **number** or **string** — both OK). They match **Project ID** and **Task ID** on each row. **Resolution** follows Core rules (**URL** > **title** in `notion-verification.mdc` / `notion-task-id-resolution.mdc`); use `notion-search` and property checks as helpers, not as a bare-ID-only resolver.
 
 **Config keys** (in `.cursor/notion-memory-bank.json`; same order as `.cursor/notion-memory-bank.json.example`):
 - `taskId` – Current task; set to `null` or `""` to have `/van [description]` create one automatically
@@ -126,7 +126,7 @@ The Notion backend stores Memory Bank data in your Notion workspace:
 - `activeContextPageUrl`, `progressPageUrl`, `productContextPageUrl`, `systemPatternsPageUrl`, `techContextPageUrl`, `styleGuidePageUrl` – Optional Memory Bank subpage **`https://`…** Notion URLs under Project (browser or MCP **`url`**—agents normalize legacy bare ids to **`https://`…** on verification)
 - `projectsDataSourceUrl`, `tasksDataSourceUrl` – Database **`collection://…`** data source URLs (required for MCP scoped search / task create). In the example file, these keys appear **last** after subpage **`*PageUrl`** keys.
 
-**Create a new task:** Run `/van [task description]` with `taskId` null – a task is created in Notion and config is updated (same entry point as upstream Memory Bank: VAN initializes task context).
+**Create a new task:** Run `/van [task description]` with `taskId` null – a task is created in Notion and config is updated (same entry point as a **file-based Memory Bank**: VAN initializes task context).
 
 ## Installation Instructions
 
@@ -186,7 +186,7 @@ See [COMMANDS_README.md](COMMANDS_README.md) for detailed command documentation.
 
 ### Quick Start
 
-1. **Initialize with `/van`** (same flow as original cursor-memory-bank):
+1. **Initialize with `/van`** (same flow as a **file-based Memory Bank**):
    ```
    /van Add user authentication to the application
    ```
@@ -233,7 +233,7 @@ See [COMMANDS_README.md](COMMANDS_README.md) for detailed command documentation.
 - Updates Task page or `memory-bank/tasks.md`
 
 **Next steps:**
-- Level 1 → `/build`
+- Level 1 → `/build` → `/reflect` → `/archive`
 - Level 2-4 → `/plan`
 
 #### `/plan` - Task Planning (Create or Update)
@@ -263,12 +263,12 @@ See [COMMANDS_README.md](COMMANDS_README.md) for detailed command documentation.
 ```
 
 **What it does:**
-- Reads components flagged for creative work from Task page or `memory-bank/tasks.md`
+- Reads components flagged for creative work from the **Task page body** (Notion) or `memory-bank/tasks.md` (file-based)
 - For each component, explores multiple design options
 - Analyzes pros/cons of each approach
 - Selects and documents recommended approach
-- Creates `memory-bank/creative/creative-[feature_name].md` documents
-- Updates `memory-bank/tasks.md` with design decisions
+- **Notion (this fork):** Writes design decisions to the Task **Creative** subpage (`creativePageUrl`) via Notion MCP; updates the Task page body as needed
+- **File-based:** Creates `memory-bank/creative/creative-[feature_name].md` and updates `memory-bank/tasks.md`
 
 **Next steps:**
 - After all creative phases complete → `/build`
@@ -282,12 +282,13 @@ See [COMMANDS_README.md](COMMANDS_README.md) for detailed command documentation.
 ```
 
 **What it does:**
-- Reads implementation plan from Task page or `memory-bank/tasks.md`
-- Reads creative phase documents (Level 3-4)
+- Reads implementation plan from the **Task page body** (Notion) or `memory-bank/tasks.md` (file-based)
+- Reads creative decisions from the **Creative** subpage / Task body (Notion) or creative markdown files (file-based, Level 3–4)
 - Implements changes systematically
 - Tests implementation
 - Documents commands executed and results
-- Updates `memory-bank/tasks.md` and `memory-bank/progress.md`
+- **Notion (this fork):** Updates Task page body, **Progress** (`progressPageUrl`), and other surfaces per loaded rules and `memory-bank-paths.mdc`
+- **File-based:** Updates `memory-bank/tasks.md` and `memory-bank/progress.md`
 
 **Next steps:**
 - After implementation complete → `/reflect`
@@ -307,8 +308,8 @@ See [COMMANDS_README.md](COMMANDS_README.md) for detailed command documentation.
 - Documents challenges encountered
 - Documents lessons learned
 - Documents process and technical improvements
-- Creates `memory-bank/reflection/reflection-[task_id].md`
-- Updates `memory-bank/tasks.md` with reflection status
+- **Notion (this fork):** Writes the structured reflection to the Task **Reflection** subpage (`reflectionPageUrl`); updates Task body / status as rules require
+- **File-based:** Creates `memory-bank/reflection/reflection-[task_id].md` and updates `memory-bank/tasks.md`
 
 **Next steps:**
 - After reflection complete → `/archive`
@@ -322,13 +323,11 @@ See [COMMANDS_README.md](COMMANDS_README.md) for detailed command documentation.
 ```
 
 **What it does:**
-- Reads reflection document and task details
-- Creates comprehensive archive document
-- Archives creative phase documents (Level 3-4)
-- Updates `memory-bank/tasks.md` marking task COMPLETE
-- Updates `memory-bank/progress.md` with archive reference
-- Resets `memory-bank/activeContext.md` for next task
-- Creates `memory-bank/archive/archive-[task_id].md`
+- Reads reflection content and task details (Reflection subpage or file)
+- Creates or updates the **archive** record (completion summary)
+- Archives or links prior creative material where applicable (Level 3–4)
+- **Notion (this fork):** Writes the **Archive** subpage (`archivePageUrl`) when used; updates Task status/properties; **removes** this task’s `## Task <taskId> — …` section from **Active Context** (`activeContextPageUrl`) per `memory-bank-paths.mdc`; refreshes **Progress** as needed
+- **File-based:** Updates `memory-bank/tasks.md`, `memory-bank/progress.md`, trims or resets `memory-bank/activeContext.md` for the next task, and creates `memory-bank/archive/archive-[task_id].md`
 
 **Next steps:**
 - After archiving complete → `/van` (for next task)
@@ -357,11 +356,20 @@ Here's a complete example workflow for a Level 3 feature:
 /archive
 ```
 
+**Level 1 (quick fix)** — same commands, shorter chain:
+
+```bash
+/van Fix null pointer in login handler
+/build
+/reflect
+/archive
+```
+
 ## Memory Bank Structure
 
-**Notion (this fork):** Task page body, Project brief, and subpages (Active Context, Progress, Creative, Reflection, Archive) under your Notion Project/Task. See [NOTION_SETUP.md](NOTION_SETUP.md) for mapping.
+**Notion (this fork):** Content lives in your **Tasks** and **Projects** databases: **Task page body** (plan, checklists), **Project page body** (brief), and subpages—**Active Context**, **Progress**, optional **Product / System / Tech** context and **Style Guide** on the Project, plus **Creative**, **Reflection**, and **Archive** on the Task. URLs and IDs live in `.cursor/notion-memory-bank.json` (`*_PageUrl`, `taskId`, `projectId`). See [NOTION_SETUP.md](NOTION_SETUP.md) for the full mapping table.
 
-All Memory Bank files are stored in the `memory-bank/` directory (file-based mode):
+All Memory Bank files for a **file-based Memory Bank** live under `memory-bank/` (plus `tasks.md` at the repo root when using that layout). **Notion** uses the same *roles* as pages—see the list above—not these paths on disk.
 
 ```mermaid
 graph LR
@@ -386,6 +394,8 @@ graph LR
 
 ### Core Files
 
+*(File-based layout. On **Notion**, each bullet is the equivalent page or Project subpage—see [NOTION_SETUP.md](NOTION_SETUP.md).)*
+
 - **`tasks.md`**: Central source of truth for task tracking, checklists, and component lists
 - **`activeContext.md`**: Maintains focus of current development phase
 - **`progress.md`**: Tracks implementation status and observations
@@ -395,6 +405,8 @@ graph LR
 - **`techContext.md`**: Technical context and technology stack
 
 ### Generated Files
+
+*(File-based paths. On **Notion**, use the Task **Creative** / **Reflection** / **Archive** subpages.)*
 
 - **`creative/creative-[feature_name].md`**: Design decision documents (Level 3-4)
 - **`reflection/reflection-[task_id].md`**: Reflection documents

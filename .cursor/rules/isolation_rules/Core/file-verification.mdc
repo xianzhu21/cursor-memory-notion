@@ -3,6 +3,9 @@ description: Optimized file verification
 globs: file-verification.mdc
 alwaysApply: false
 ---
+
+> **Notion backend (this repository):** Do **not** use this rule’s local `memory-bank/` or `tasks.md` creation scripts. Verify **`.cursor/notion-memory-bank.json`**, run **`Core/notion-verification.mdc`**, and ensure Notion Task / Project pages and subpages exist per **`Core/memory-bank-paths.mdc`**. The procedures below apply to **file-based** Memory Bank installs only.
+
 # OPTIMIZED FILE VERIFICATION SYSTEM
 
 > **TL;DR:** This system efficiently verifies and creates required Memory Bank file structures using batch operations and platform-optimized commands.

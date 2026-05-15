@@ -7,6 +7,10 @@ alwaysApply: false
 
 > **TL;DR:** This document outlines a structured yet efficient workflow for Level 2 (Simple Enhancement) tasks, including 6 key phases with milestone checkpoints and quality verification.
 
+## Notion backend (this repository)
+
+Memory Bank **storage** is **Notion** per **`Core/memory-bank-paths.mdc`**: **Task page body**, **Project page body**, **Active Context** (`activeContextPageUrl`), **Progress** (`progressPageUrl`). **Active Context:** follow **`## Active Context: Notion policy and multi-task`** — on archive, remove **only** the archived task’s **`## Task …`** block when using that layout; do **not** wipe unrelated parallel sections.
+
 ## 🔍 LEVEL 2 WORKFLOW OVERVIEW
 
 ```mermaid
@@ -37,7 +41,7 @@ graph TD
     Start["Start Level 2 Task"] --> Platform{"Detect<br>Platform"}
     Platform --> FileCheck["Critical File<br>Verification"]
     FileCheck --> LoadStructure["Load Memory<br>Bank Structure"]
-    LoadStructure --> TaskCreation["Create Task<br>in tasks.md"]
+    LoadStructure --> TaskCreation["Create Task<br>on Task page body"]
     TaskCreation --> SetupComplete["Initialization<br>Complete"]
 ```
 
@@ -45,7 +49,7 @@ graph TD
 1. Platform detection
 2. Critical file verification
 3. Memory Bank structure loading
-4. Task creation in tasks.md
+4. Task creation on **Task page body**
 5. Initial task scope definition
 
 **Milestone Checkpoint:**
@@ -54,7 +58,7 @@ graph TD
 - Platform detected and configured? [YES/NO]
 - Critical files verified? [YES/NO]
 - Memory Bank loaded? [YES/NO]
-- Task created in tasks.md? [YES/NO]
+- Task created on Task page body? [YES/NO]
 - Initial scope defined? [YES/NO]
 
 → If all YES: Proceed to Documentation Setup
@@ -66,23 +70,23 @@ graph TD
 ```mermaid
 graph TD
     Start["Begin Documentation<br>Setup"] --> LoadTemplate["Load Basic<br>Documentation Templates"]
-    LoadTemplate --> UpdateProject["Update<br>projectbrief.md"]
-    UpdateProject --> UpdateContext["Update<br>activeContext.md"]
+    LoadTemplate --> UpdateProject["Update<br>Project page body"]
+    UpdateProject --> UpdateContext["Update<br>Active Context"]
     UpdateContext --> SetupComplete["Documentation<br>Setup Complete"]
 ```
 
 **Steps:**
 1. Load basic documentation templates
-2. Update projectbrief.md with enhancement details
-3. Update activeContext.md with current focus
+2. Update **Project page body** with enhancement details
+3. Update **Active Context** subpage (`activeContextPageUrl`) with current focus
 4. Create minimal documentation structure
 
 **Milestone Checkpoint:**
 ```
 ✓ DOCUMENTATION CHECKPOINT
 - Documentation templates loaded? [YES/NO]
-- projectbrief.md updated? [YES/NO]
-- activeContext.md updated? [YES/NO]
+- Project page body updated? [YES/NO]
+- Active Context subpage updated? [YES/NO]
 - Documentation structure created? [YES/NO]
 
 → If all YES: Proceed to Task Planning
@@ -95,7 +99,7 @@ graph TD
 graph TD
     Start["Begin Task<br>Planning"] --> Requirements["Define Clear<br>Requirements"]
     Requirements --> SubTasks["Break Down<br>Into Subtasks"]
-    SubTasks --> TasksUpdate["Update tasks.md<br>With Subtasks"]
+    SubTasks --> TasksUpdate["Update Task page body<br>With Subtasks"]
     TasksUpdate --> TimeEstimate["Create Time<br>Estimates"]
     TimeEstimate --> PlanComplete["Planning<br>Complete"]
 ```
@@ -103,7 +107,7 @@ graph TD
 **Steps:**
 1. Define clear requirements
 2. Break down into subtasks
-3. Update tasks.md with subtasks
+3. Update **Task page body** with subtasks
 4. Create time estimates
 5. Document dependencies and constraints
 
@@ -112,7 +116,7 @@ graph TD
 ✓ PLANNING CHECKPOINT
 - Requirements clearly defined? [YES/NO]
 - Task broken down into subtasks? [YES/NO]
-- tasks.md updated with subtasks? [YES/NO]
+- Task page body updated with subtasks? [YES/NO]
 - Time estimates created? [YES/NO]
 - Dependencies documented? [YES/NO]
 
@@ -125,9 +129,9 @@ graph TD
 ```mermaid
 graph TD
     Start["Begin<br>Implementation"] --> SubTask1["Complete<br>Subtask 1"]
-    SubTask1 --> UpdateStatus1["Update Status<br>in tasks.md"]
+    SubTask1 --> UpdateStatus1["Update Status<br>on Task page body"]
     UpdateStatus1 --> SubTask2["Complete<br>Subtask 2"]
-    SubTask2 --> UpdateStatus2["Update Status<br>in tasks.md"]
+    SubTask2 --> UpdateStatus2["Update Status<br>on Task page body"]
     UpdateStatus2 --> FinalSubTask["Complete<br>Final Subtask"]
     FinalSubTask --> Verification["Perform<br>Verification"]
     Verification --> ImplComplete["Implementation<br>Complete"]
@@ -135,7 +139,7 @@ graph TD
 
 **Steps:**
 1. Implement first subtask
-2. Update status in tasks.md
+2. Update status on **Task page body**
 3. Implement remaining subtasks
 4. Regular status updates after each subtask
 5. Verify complete implementation
@@ -147,7 +151,7 @@ graph TD
 - Status updates maintained? [YES/NO]
 - Enhancement fully implemented? [YES/NO]
 - Basic verification performed? [YES/NO]
-- tasks.md fully updated? [YES/NO]
+- Task page body fully updated? [YES/NO]
 
 → If all YES: Proceed to Reflection
 → If any NO: Complete implementation steps
@@ -223,7 +227,7 @@ graph TD
 ✓ FINAL WORKFLOW VERIFICATION
 - All phases completed? [YES/NO]
 - All milestone checkpoints passed? [YES/NO]
-- tasks.md fully updated? [YES/NO]
+- Task page body fully updated? [YES/NO]
 - Reflection document created? [YES/NO]
 - Archive document created? [YES/NO]
 - Memory Bank fully updated? [YES/NO]
@@ -238,7 +242,7 @@ For minimal mode, use this streamlined workflow:
 
 ```
 1. INIT: Verify environment, create task entry
-2. DOCS: Update projectbrief and activeContext
+2. DOCS: Update Project page body and Active Context
 3. PLAN: Define requirements, subtasks, estimates
 4. IMPL: Complete subtasks, update status
 5. REFLECT: Document key insights and actions
@@ -266,10 +270,10 @@ graph TD
 
 ```mermaid
 graph TD
-    Workflow["Level 2<br>Workflow"] --> PB["Update<br>projectbrief.md"]
-    Workflow --> AC["Update<br>activeContext.md"]
-    Workflow --> TM["Maintain<br>tasks.md"]
-    Workflow --> PM["Update<br>progress.md"]
+    Workflow["Level 2<br>Workflow"] --> PB["Update<br>Project page body"]
+    Workflow --> AC["Update<br>Active Context"]
+    Workflow --> TM["Maintain<br>Task page body"]
+    Workflow --> PM["Update<br>Progress"]
     
     PB & AC & TM & PM --> MB["Memory Bank<br>Integration"]
     MB --> NextTask["Transition to<br>Next Task"]

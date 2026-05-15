@@ -428,7 +428,7 @@ flowchart TD
 
 **Key Preparation Steps:**
 1. Load the comprehensive reflection template
-2. Gather project data (tasks.md, documentation, artifacts)
+2. Gather project data (**Task page body**, **Progress** subpage, documentation, artifacts)
 3. Collect performance metrics (timeline, resource utilization, quality)
 4. Gather stakeholder feedback (internal and external)
 5. Schedule reflection session(s) with key participants
@@ -576,12 +576,12 @@ flowchart TD
     classDef memfile fill:#f4b8c4,stroke:#d498a4,color:#000
     classDef process fill:#f9d77e,stroke:#d9b95c,color:#000
     
-    Reflection[Comprehensive<br>Reflection] --> PB[projectbrief.md]
-    Reflection --> PC[productContext.md]
-    Reflection --> AC[activeContext.md]
-    Reflection --> SP[systemPatterns.md]
-    Reflection --> TC[techContext.md]
-    Reflection --> P[progress.md]
+    Reflection[Comprehensive<br>Reflection] --> PB["Project page body"]
+    Reflection --> PC["Product Context<br>subpage"]
+    Reflection --> AC["Active Context<br>subpage"]
+    Reflection --> SP["System Patterns<br>subpage"]
+    Reflection --> TC["Tech Context<br>subpage"]
+    Reflection --> P["Progress<br>subpage"]
     
     PB & PC & AC & SP & TC & P --> MBI[Memory Bank<br>Integration]
     MBI --> Next[Enhanced Future<br>Projects]
@@ -594,34 +594,32 @@ flowchart TD
 
 **Notion backend:** Use `notion-update-page` on resolved **`*PageUrl`** **`https://`…** values from config. projectbrief → Project page body (`projectId`); productContext → `productContextPageUrl`; activeContext → `activeContextPageUrl`; systemPatterns → `systemPatternsPageUrl`; techContext → `techContextPageUrl`; progress → `progressPageUrl`. If a **`*PageUrl`** is null, ensure notion-verification has created the subpage.
 
-Specific updates to make to Memory Bank files:
+Specific updates to make to Notion Memory Bank pages:
 
-1. **projectbrief.md** (Project page body)
+1. **Project page body** (`projectPageUrl` / `projectId`)
    - Update with strategic insights
    - Document key achievements
    - Incorporate lessons learned
 
-2. **productContext.md** (productContextPageUrl)
+2. **Product Context** subpage (`productContextPageUrl`)
    - Update with business insights
    - Document market/user insights
    - Include value delivery insights
 
-3. **activeContext.md** (activeContextPageUrl)
-   - Update with current status
-   - Document action items
-   - Include next steps
+3. **activeContext** (`activeContextPageUrl`)
+   - **Notion:** Update **only** the primary task’s **`## Task <taskId> — …`** block with **brief** lines (current status, action items, next step)—per `Core/memory-bank-paths.mdc` (**Active Context: Notion policy and multi-task**). Do **not** paste the Reflection subpage body into Active Context or `replace_content` the whole page when other parallel **`## Task …`** sections exist.
 
-4. **systemPatterns.md** (systemPatternsPageUrl)
+4. **System Patterns** subpage (`systemPatternsPageUrl`)
    - Update with architectural insights
    - Document successful patterns
    - Include technical knowledge
 
-5. **techContext.md** (techContextPageUrl)
+5. **Tech Context** subpage (`techContextPageUrl`)
    - Update with implementation insights
    - Document technology stack insights
    - Include performance and security insights
 
-6. **progress.md** (progressPageUrl)
+6. **Progress** subpage (`progressPageUrl`)
    - Update with final status
    - Document achievements
    - Include project metrics
@@ -661,12 +659,12 @@ Knowledge Transfer
 - Documentation updates identified? [YES/NO]
 
 Memory Bank Integration
-- projectbrief.md updated with insights? [YES/NO]
-- productContext.md updated with insights? [YES/NO]
-- activeContext.md updated with insights? [YES/NO]
-- systemPatterns.md updated with insights? [YES/NO]
-- techContext.md updated with insights? [YES/NO]
-- progress.md updated with final status? [YES/NO]
+- Project page body updated with insights? [YES/NO]
+- Product Context subpage updated with insights? [YES/NO]
+- Active Context (`activeContextPageUrl`): primary task `## Task …` block reconciled with brief lines when required (per **Active Context: Notion policy and multi-task**; no full-page wipe)? [YES/NO]
+- System Patterns subpage updated with insights? [YES/NO]
+- Tech Context subpage updated with insights? [YES/NO]
+- Progress subpage updated with final status? [YES/NO]
 ```
 
 ## 📋 MINIMAL MODE REFLECTION FORMAT

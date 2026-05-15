@@ -18,7 +18,7 @@ graph TD
     Root --> Level["Complexity Level<br>Rules"]
     
     Core --> Platform["Platform<br>Detection"]
-    Core --> File["File<br>Operations"]
+    Core --> File["Persistence<br>(Notion / files)"]
     Core --> Transition["Mode<br>Transitions"]
     
     Mode --> VAN["VAN Mode<br>Rules"]

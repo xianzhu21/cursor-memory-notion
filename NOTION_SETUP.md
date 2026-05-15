@@ -34,7 +34,7 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 - `tasksDataSourceUrl`, `projectsDataSourceUrl` – **`collection://…`** strings from `notion-fetch` on the databases (see below). Scoped Notion MCP tools need these; they are **not** normal browser links.
 
 **Optional:**
-- `taskId` – numeric task key: JSON **number** or **string** (e.g. `588` or `"588"`) — must match **Task ID** on the Task row. Leave as `null` or empty string `""` to have `/van [task description]` create a new task automatically (same flow as original cursor-memory-bank).
+- `taskId` – numeric task key: JSON **number** or **string** (e.g. `588` or `"588"`) — must match **Task ID** on the Task row. Leave as `null` or empty string `""` to have `/van [task description]` create a new task automatically (same flow as a **file-based Memory Bank**).
 - `issueId`, `issueUrl` – usually left `null`; **`/van`** (notion-verification) fills them from the Task row’s **Issue ID** / **Issue URL** properties when you fetch a task (e.g. Task ID `1430`). Override manually in JSON if needed.
 - `projectPageUrl`, `taskPageUrl` – optional **`https://`…** Notion links to the resolved Project and Task pages; notion-verification fills them on fetch so you can **Ctrl/Cmd+click** the URL inside the JSON file to open Notion in the browser.
 - Subpage fields (`activeContextPageUrl`, `progressPageUrl`, etc.) – usually **`null`** until subpages exist; when set, use full **`https://`…** Notion page URLs (from the browser address bar) so the JSON stays Ctrl/Cmd+clickable. The example file uses **`null`** until agents or you paste links after first fetch.
@@ -47,9 +47,11 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 |--------------------|--------|------------|
 | tasks.md | Task page body (plan, checklist) | taskId |
 | projectbrief.md | Project page body | projectId |
-| activeContext.md | activeContext subpage under Project | activeContextPageUrl |
-| progress.md | progress subpage under Project | progressPageUrl |
-| creative/reflection/archive | Creative, Reflection, Archive subpages under Task | creativePageUrl, reflectionPageUrl, archivePageUrl |
+| activeContext.md | Active Context subpage under Project | activeContextPageUrl |
+| progress.md | Progress subpage under Project | progressPageUrl |
+| productContext.md, systemPatterns.md, techContext.md | Matching Project subpages (Level 3–4 docs) | productContextPageUrl, systemPatternsPageUrl, techContextPageUrl |
+| style-guide.md | Style Guide subpage under Project | styleGuidePageUrl |
+| creative / reflection / archive (paths under Task) | Creative, Reflection, Archive subpages under Task | creativePageUrl, reflectionPageUrl, archivePageUrl |
 
 **Parallel tasks:** Config still has **one** `taskId` (primary task for `/van` and task-scoped logs). The **Active Context** page may list **multiple** in-flight tasks using merge-safe `## Task <taskId> — <taskName>` sections—see `Core/memory-bank-paths.mdc` (**Active Context: multiple in-flight tasks**).
 
@@ -61,7 +63,15 @@ Then edit `.cursor/notion-memory-bank.json` with your values. See `.cursor/notio
 
 ## 6. Command Usage
 
-Same as original cursor-memory-bank: `/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive`
+Workflow matches a **file-based Memory Bank** but is **complexity-dependent** (see [README — Complexity Levels](README.md#complexity-levels)):
+
+| Level | Command chain |
+|-------|-----------------|
+| 1 | `/van` → `/build` → `/reflect` → `/archive` |
+| 2 | `/van` → `/plan` → `/build` → `/reflect` → `/archive` |
+| 3–4 | `/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive` |
+
+The **longest** path (Levels 3–4) is: `/van` → `/plan` → `/creative` → `/build` → `/reflect` → `/archive`.
 
 **First run:** Set `taskId` to `null` in config. Run `/van Add user authentication to the application` – a new task is created in Notion and `taskId` is updated automatically.
 

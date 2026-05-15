@@ -8,12 +8,16 @@ alwaysApply: false
 
 > **TL;DR:** This document outlines a quick documentation approach for Level 1 (Quick Bug Fix) tasks, ensuring that essential information is captured with minimal overhead.
 
+## Notion backend (this repository)
+
+Apply updates on the **Task page body**, and only if relevant the **Active Context** (`activeContextPageUrl`) and **Progress** (`progressPageUrl`) subpages per **`Core/memory-bank-paths.mdc`**.
+
 ## 🔍 QUICK DOCUMENTATION OVERVIEW
 
 ```mermaid
 graph TD
     FixComplete["Bug Fix<br>Complete"] --> Document["Document<br>Solution"]
-    Document --> UpdateTasks["Update<br>tasks.md"]
+    Document --> UpdateTasks["Update<br>Task page body"]
     UpdateTasks --> MinimalUpdates["Make Minimal<br>Memory Bank Updates"]
     MinimalUpdates --> CrossReference["Create Simple<br>Cross-References"]
     CrossReference --> Complete["Documentation<br>Complete"]
@@ -54,9 +58,9 @@ Level 1 tasks require efficient documentation that captures essential informatio
 [Any additional information that might be helpful - optional]
 ```
 
-## 📋 TASKS.MD UPDATES
+## 📋 Task page body updates
 
-For Level 1 tasks, update tasks.md with this format:
+For Level 1 tasks, update the **Task page body** with this format:
 
 ```markdown
 ## Completed Bug Fixes
@@ -80,17 +84,17 @@ For in-progress tasks:
 
 For Level 1 tasks, make these minimal Memory Bank updates:
 
-1. **tasks.md**:
+1. **Task page body**:
    - Update with fix details as shown above
    - Mark task as complete
 
-2. **activeContext.md** (only if relevant):
+2. **Active Context** subpage (`activeContextPageUrl`, only if relevant):
    ```markdown
    ## Recent Fixes
    - [YYYY-MM-DD] Fixed [issue] in [component/file]. [One-line description of fix]
    ```
 
-3. **progress.md** (only if significant):
+3. **Progress** subpage (`progressPageUrl`, only if significant):
    ```markdown
    ## Bug Fixes
    - [YYYY-MM-DD] Fixed [issue] in [component/file].
@@ -127,7 +131,7 @@ Follow these steps for efficient documentation:
    - Be specific about changes made
 
 2. **Update Task Tracking**:
-   - Update tasks.md with fix details
+   - Update the **Task page body** with fix details
    - Use consistent format for easy reference
 
 3. **Minimal Cross-References**:
@@ -176,7 +180,7 @@ Tested login with various special characters in email addresses (test+user@examp
 - Solution explained? [YES/NO]
 - Files changed listed? [YES/NO]
 - Verification method described? [YES/NO]
-- tasks.md updated? [YES/NO]
+- Task page body updated? [YES/NO]
 - Memory Bank minimally updated? [YES/NO]
 
 → If all YES: Documentation complete
@@ -201,7 +205,7 @@ Quick documentation integrates with other systems:
 
 ```mermaid
 graph TD
-    QuickDoc["Quick Fix<br>Documentation"] --> TasksMD["tasks.md<br>Update"]
+    QuickDoc["Quick Fix<br>Documentation"] --> TasksMD["Task page body<br>Update"]
     QuickDoc --> FixDetails["Fix Details<br>Documentation"]
     
     TasksMD --> Tracking["Task<br>Tracking"]

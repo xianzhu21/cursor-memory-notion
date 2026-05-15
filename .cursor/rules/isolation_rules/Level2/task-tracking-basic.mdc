@@ -8,6 +8,10 @@ alwaysApply: false
 
 > **TL;DR:** This document outlines a streamlined task tracking approach for Level 2 (Simple Enhancement) tasks. It provides a balanced framework for managing task progress with minimal overhead.
 
+## Notion backend (this repository)
+
+Track work on the **Task page body** (`taskPageUrl`); mirror milestones on **Progress** (`progressPageUrl`) when useful. See **`Core/memory-bank-paths.mdc`**.
+
 ## 🔍 TASK TRACKING OVERVIEW
 
 Level 2 tasks require a more structured tracking approach than Level 1, but don't need the comprehensive tracking of higher-level tasks. This basic tracking system provides sufficient structure while maintaining efficiency.
@@ -50,9 +54,9 @@ Level 2 tasks require a more structured tracking approach than Level 1, but don'
 [Any additional information or context]
 ```
 
-## 📋 TASKS.MD ORGANIZATION
+## 📋 Task page body organization
 
-Organize tasks.md with these sections for Level 2 tasks:
+Organize the **Task page body** with these sections for Level 2 tasks:
 
 ```markdown
 # Tasks
@@ -75,7 +79,7 @@ Organize tasks.md with these sections for Level 2 tasks:
 
 ## 📋 UPDATING TASK STATUS
 
-Update tasks using this process:
+Update the **Task page body** using this process:
 
 1. **Starting a Task**:
    - Update Status to "In Progress"
@@ -166,22 +170,22 @@ Task tracking integrates with Memory Bank:
 
 ```mermaid
 graph TD
-    TasksFile["tasks.md"] --> Active["activeContext.md"]
-    TasksFile --> Progress["progress.md"]
+    TasksFile["Task page body"] --> Active["Active Context"]
+    TasksFile --> Progress["Progress"]
     
     Active -->|"Current focus"| TasksFile
     Progress -->|"Completion status"| TasksFile
 ```
 
-## 🚨 TASKS.MD PRIMACY PRINCIPLE
+## 🚨 Task page body primacy
 
 Remember:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│ tasks.md is the SINGLE SOURCE OF TRUTH for ALL      │
-│ task tracking. ALL task updates MUST be reflected   │
-│ in tasks.md IMMEDIATELY.                            │
+│ The Task page body is the SINGLE SOURCE OF TRUTH    │
+│ for ALL task tracking. ALL task updates MUST be     │
+│ reflected on the Task page body IMMEDIATELY.        │
 └─────────────────────────────────────────────────────┘
 ```
 

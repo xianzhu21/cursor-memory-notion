@@ -7,6 +7,10 @@ alwaysApply: false
 
 > **TL;DR:** This document outlines a comprehensive workflow for Level 4 (Complex System) tasks, including 7 key phases with rigorous planning, mandatory creative phases, architectural design, phased implementation, and extensive documentation.
 
+## Notion backend (this repository)
+
+When using **Notion** as the Memory Bank, use **Notion pages and subpages** per **`Core/memory-bank-paths.mdc`** (Task / Project bodies; Active Context, Progress, Product Context, System Patterns, Tech Context, style-guide; Task Creative / Reflection / Archive). **Active Context:** follow **`## Active Context: Notion policy and multi-task`** — merge-safe **`## Task …`** sections; **`/archive`** removes **only** the completed task’s block (never `replace_content` the whole Active Context page when other tasks remain).
+
 ## 🔍 LEVEL 4 WORKFLOW OVERVIEW
 
 ```mermaid
@@ -66,7 +70,7 @@ graph TD
 1. Platform detection with comprehensive environment configuration
 2. Critical file verification with in-depth integrity checks
 3. Comprehensive Memory Bank structure loading with full reference mapping
-4. Create detailed task framework in tasks.md with full structure
+4. Create detailed task framework on the **Task page body** with full structure
 5. Establish complete enterprise context and stakeholder requirements
 6. Identify and allocate all necessary resources (technical, human, time)
 7. Perform system readiness assessment
@@ -93,10 +97,10 @@ graph TD
 graph TD
     Start["Begin Documentation<br>Setup"] --> LoadTemplate["Load Comprehensive<br>Documentation Templates"]
     LoadTemplate --> Framework["Establish Documentation<br>Framework"]
-    Framework --> UpdateProject["Update<br>projectbrief.md"]
-    UpdateProject --> UpdateContext["Update<br>activeContext.md"]
-    UpdateContext --> SystemPatterns["Update<br>systemPatterns.md"]
-    SystemPatterns --> TechContext["Update<br>techContext.md"]
+    Framework --> UpdateProject["Update<br>Project page body"]
+    UpdateProject --> UpdateContext["Update<br>Active Context"]
+    UpdateContext --> SystemPatterns["Update<br>System Patterns"]
+    SystemPatterns --> TechContext["Update<br>Tech Context"]
     TechContext --> Standards["Document System<br>Standards"]
     Standards --> Architecture["Document Existing<br>Architecture"]
     Architecture --> SetupComplete["Documentation<br>Setup Complete"]
@@ -105,10 +109,10 @@ graph TD
 **Steps:**
 1. Load comprehensive documentation templates for all aspects
 2. Establish complete documentation framework with structure
-3. Update projectbrief.md with detailed system description and requirements
-4. Update activeContext.md with current focus, dependencies, and stakeholders
-5. Update systemPatterns.md with comprehensive patterns and principles
-6. Update techContext.md with complete technical landscape
+3. Update **Project page body** with detailed system description and requirements
+4. Update **Active Context** subpage (`activeContextPageUrl`) with current focus, dependencies, and stakeholders
+5. Update **System Patterns** subpage (`systemPatternsPageUrl`) with comprehensive patterns and principles
+6. Update **Tech Context** subpage (`techContextPageUrl`) with complete technical landscape
 7. Document system standards, constraints, and conventions
 8. Document existing architecture and integration points
 
@@ -117,10 +121,10 @@ graph TD
 ✓ DOCUMENTATION CHECKPOINT
 - Documentation templates loaded? [YES/NO]
 - Documentation framework established? [YES/NO]
-- projectbrief.md comprehensively updated? [YES/NO]
-- activeContext.md fully updated? [YES/NO]
-- systemPatterns.md comprehensively updated? [YES/NO]
-- techContext.md fully updated? [YES/NO]
+- Project page body comprehensively updated? [YES/NO]
+- Active Context subpage fully updated? [YES/NO]
+- System Patterns subpage comprehensively updated? [YES/NO]
+- Tech Context subpage fully updated? [YES/NO]
 - System standards documented? [YES/NO]
 - Existing architecture documented? [YES/NO]
 
@@ -396,12 +400,12 @@ This workflow integrates comprehensively with Memory Bank:
 
 ```mermaid
 graph TD
-    Workflow["Level 4<br>Workflow"] --> PB["Comprehensive Update<br>projectbrief.md"]
-    Workflow --> AC["Detailed Update<br>activeContext.md"]
-    Workflow --> SP["Strategic Update<br>systemPatterns.md"]
-    Workflow --> TC["Complete Update<br>techContext.md"]
-    Workflow --> TM["Structured Maintenance<br>tasks.md"]
-    Workflow --> PM["Enterprise Update<br>progress.md"]
+    Workflow["Level 4<br>Workflow"] --> PB["Comprehensive Update<br>Project page body"]
+    Workflow --> AC["Detailed Update<br>Active Context"]
+    Workflow --> SP["Strategic Update<br>System Patterns"]
+    Workflow --> TC["Complete Update<br>Tech Context"]
+    Workflow --> TM["Structured Maintenance<br>Task page body"]
+    Workflow --> PM["Enterprise Update<br>Progress"]
     
     PB & AC & SP & TC & TM & PM --> MB["Memory Bank<br>Integration"]
     MB --> KT["Knowledge<br>Transfer"]

@@ -5,9 +5,9 @@ alwaysApply: false
 ---
 # 🔍 OPTIMIZED MEMORY BANK SYSTEM
 
-🚨 CRITICAL RULE: MEMORY BANK CREATION IS MANDATORY 🚨
-Memory Bank MUST be created BEFORE any other operation in ANY mode
-NO process can continue without verifying Memory Bank existence
+🚨 CRITICAL RULE: MEMORY BANK SETUP IS MANDATORY 🚨
+Memory Bank MUST exist and be **verified** before other work in ANY mode: **Notion** — complete `Core/notion-verification.mdc` (config + Task/Project pages); **file-based** — `memory-bank/` and core files per `Core/file-verification.mdc`.
+NO process can continue without verified Memory Bank readiness for the active backend
 
 > **TL;DR:** This system uses optimized context management and adaptive rule loading to maximize token efficiency while preserving the structured development approach.
 
@@ -18,7 +18,7 @@ graph TD
     subgraph "Memory Bank Core"
         Context["Context Manager"]
         Rules["Rule Loader"]
-        FileIO["File Manager"]
+        Persist["Memory persistence<br>(Notion MCP / files)"]
         Transition["Mode Transition"]
     end
     
@@ -33,7 +33,7 @@ graph TD
     
     Context --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
     Rules --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
-    FileIO --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
+    Persist --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
     Transition --> VAN & PLAN & CREATIVE & BUILD & REFLECT & ARCHIVE
     
     VAN --> PLAN
@@ -44,7 +44,7 @@ graph TD
     
     style Context fill:#4da6ff,stroke:#0066cc,color:white
     style Rules fill:#ffa64d,stroke:#cc7a30,color:white
-    style FileIO fill:#4dbb5f,stroke:#36873f,color:white
+    style Persist fill:#4dbb5f,stroke:#36873f,color:white
     style Transition fill:#d94dbb,stroke:#a3378a,color:white
 ```
 
@@ -54,14 +54,14 @@ graph TD
 graph TD
     Task["Task Creation"] --> Complexity{"Complexity<br>Level?"}
     
-    Complexity -->|"Level 1<br>Quick Fix"| L1["3-Phase<br>Streamlined Process"]
-    Complexity -->|"Level 2<br>Enhancement"| L2["4-Phase<br>Balanced Process"]
-    Complexity -->|"Level 3<br>Feature"| L3["5-Phase<br>Comprehensive Process"]
+    Complexity -->|"Level 1<br>Quick Fix"| L1["4-Phase<br>Streamlined Process"]
+    Complexity -->|"Level 2<br>Enhancement"| L2["5-Phase<br>Balanced Process"]
+    Complexity -->|"Level 3<br>Feature"| L3["6-Phase<br>Comprehensive Process"]
     Complexity -->|"Level 4<br>Enterprise"| L4["6-Phase<br>Governance Process"]
     
-    L1 --> L1_Process["VAN → BUILD → REFLECT"]
-    L2 --> L2_Process["VAN → PLAN → BUILD → REFLECT"]
-    L3 --> L3_Process["VAN → PLAN → CREATIVE → BUILD → REFLECT"]
+    L1 --> L1_Process["VAN → BUILD → REFLECT → ARCHIVE"]
+    L2 --> L2_Process["VAN → PLAN → BUILD → REFLECT → ARCHIVE"]
+    L3 --> L3_Process["VAN → PLAN → CREATIVE → BUILD → REFLECT → ARCHIVE"]
     L4 --> L4_Process["VAN → PLAN → CREATIVE → BUILD → REFLECT → ARCHIVE"]
     
     style Complexity fill:#d94dbb,stroke:#a3378a,color:white
@@ -147,19 +147,19 @@ sequenceDiagram
 
 ```mermaid
 graph TD
-    subgraph "Memory Bank Files"
-        tasks["tasks.md<br>Source of Truth"]
-        active["activeContext.md<br>Current Focus"]
-        creative["creative-*.md<br>Design Decisions"]
-        progress["progress.md<br>Implementation Status"]
-        transition["transition.md<br>Mode Transitions"]
+    subgraph "Memory Bank (Notion)"
+        tasks["Task page body<br>Source of Truth"]
+        active["Active Context subpage<br>Current Focus"]
+        creative["Creative subpages<br>Design Decisions"]
+        progress["Progress subpage<br>Implementation Status"]
+        transition["transition.md<br>Mode Transitions (file-based only)"]
     end
     
     Update["Update Request"] --> Diff{"Changed?"}
     Diff -->|"No"| Skip["Skip Update"]
     Diff -->|"Yes"| Section{"Section<br>Change?"}
     Section -->|"Yes"| Partial["Update Changed<br>Sections Only"]
-    Section -->|"No"| Full["Full File<br>Update"]
+    Section -->|"No"| Full["Full page/body<br>update when needed"]
     
     Partial --> tasks
     Full --> tasks

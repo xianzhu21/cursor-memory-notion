@@ -8,6 +8,10 @@ alwaysApply: false
 
 > **TL;DR:** This document outlines a basic archiving approach for Level 2 (Simple Enhancement) tasks, ensuring that completed work is properly documented and knowledge is preserved with minimal overhead.
 
+## Notion backend (this repository)
+
+When using **Notion**, apply the same steps on **Task page**, **Progress** (`progressPageUrl`), and **Active Context** (`activeContextPageUrl`) per **`Core/memory-bank-paths.mdc`**. **Active Context:** follow **`## Active Context: Notion policy and multi-task`** — remove **only** the archived task’s **`## Task …`** block when using that layout; preserve other parallel sections.
+
 ## 🔍 ARCHIVING OVERVIEW
 
 Even for Level 2 tasks, proper archiving ensures that completed work is documented and knowledge is preserved. This basic archiving approach provides sufficient structure while maintaining efficiency.
@@ -85,44 +89,27 @@ Follow these steps to archive a Level 2 task:
    - Include all key implementation details
 
 2. **Cross-Reference Creation**:
-   - Update tasks.md with link to archive
-   - Add reference in progress.md
-   - Update activeContext.md with next focus
+   - Update **Task page body** with link or mention to the archive summary
+   - Add reference on **Progress** subpage (`progressPageUrl`)
+   - On **Active Context** (`activeContextPageUrl`), remove the archived task’s **`## Task <taskId> — …`** section when present; then refresh the **primary** task’s **`## Task …`** / focus lines for the next workstream (merge-safe per **`Core/memory-bank-paths.mdc`**).
 
-3. **File Creation and Storage**:
-   - Create appropriate directory if needed
-   - Save archive file with descriptive name
-   - Ensure file follows naming convention
+3. **Archive location**:
+   - Prefer the **Archive** subpage under Task (`archivePageUrl`); optional project `docs/archive/` exports if your team keeps parallel repo docs
 
 4. **Final Verification**:
    - Check archive for completeness
    - Verify all cross-references
    - Ensure all links are working
 
-## 📋 CROSS-REFERENCE FORMAT
+## 📋 CROSS-REFERENCE FORMAT (Notion)
 
 When creating cross-references:
 
-1. **In tasks.md**:
-   ```markdown
-   ## Completed Enhancements
-   - [X] [Feature Name] (YYYY-MM-DD) - [Archive Link](../docs/archive/enhancements/YYYY-MM/feature-name.md)
-   ```
+1. **Task page body**: Add a completed-enhancement line with `<mention-page url="[Archive subpage URL]">Archive …</mention-page>` or equivalent per your Task template.
 
-2. **In progress.md**:
-   ```markdown
-   ## Completed Milestones
-   - [Feature Name] enhancement completed on YYYY-MM-DD. See [archive entry](../docs/archive/enhancements/YYYY-MM/feature-name.md).
-   ```
+2. **Progress** subpage (`progressPageUrl`): Add a short milestone line with the same link.
 
-3. **In activeContext.md**:
-   ```markdown
-   ## Recently Completed
-   - [Feature Name] enhancement is now complete. Archive: [link](../docs/archive/enhancements/YYYY-MM/feature-name.md)
-   
-   ## Current Focus
-   - Moving to [Next Task Name]
-   ```
+3. **Active Context** (`activeContextPageUrl`): Optional **`## Recently completed`** line; then **`## Task …`** / **Current focus** for the next stream (merge-safe).
 
 ## 📋 ARCHIVING VERIFICATION CHECKLIST
 
@@ -131,9 +118,9 @@ When creating cross-references:
 - Archive content complete? [YES/NO]
 - Archive properly stored? [YES/NO]
 - Cross-references created? [YES/NO]
-- tasks.md updated? [YES/NO]
-- progress.md updated? [YES/NO]
-- activeContext.md updated? [YES/NO]
+- Task page body updated? [YES/NO]
+- Progress subpage updated? [YES/NO]
+- Active Context updated (archived `## Task …` removed / next focus set)? [YES/NO]
 
 → If all YES: Archiving complete
 → If any NO: Complete archiving process
@@ -149,7 +136,7 @@ For minimal mode, use this format:
 ✓ FILES: [Key files changed]
 ✓ SUMMARY: [One-sentence summary]
 ✓ LESSONS: [Key takeaway]
-✓ REFS: [tasks.md, progress.md, activeContext.md]
+✓ REFS: Task page, Progress subpage, Active Context subpage, Archive subpage (Notion `*PageUrl` / `taskPageUrl`)
 ```
 
 ## 🔄 INTEGRATION WITH MEMORY BANK
@@ -158,9 +145,9 @@ Archiving integrates with Memory Bank:
 
 ```mermaid
 graph TD
-    Archive["Enhancement<br>Archive"] --> TasksUpdate["Update<br>tasks.md"]
-    Archive --> ProgressUpdate["Update<br>progress.md"]
-    Archive --> ContextUpdate["Update<br>activeContext.md"]
+    Archive["Enhancement<br>Archive"] --> TasksUpdate["Update<br>Task page body"]
+    Archive --> ProgressUpdate["Update<br>Progress subpage"]
+    Archive --> ContextUpdate["Update<br>Active Context"]
     
     TasksUpdate & ProgressUpdate & ContextUpdate --> CrossLinks["Create<br>Cross-Links"]
     CrossLinks --> Verify["Verify<br>References"]

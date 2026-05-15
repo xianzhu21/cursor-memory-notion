@@ -665,10 +665,10 @@ flowchart TD
     classDef memfile fill:#f4b8c4,stroke:#d498a4,color:#000
     classDef process fill:#f9d77e,stroke:#d9b95c,color:#000
     
-    Architecture[Architectural<br>Planning] --> PB[projectbrief.md]
-    Architecture --> PC[productContext.md]
-    Architecture --> SP[systemPatterns.md]
-    Architecture --> TC[techContext.md]
+    Architecture[Architectural<br>Planning] --> PB["Project page body"]
+    Architecture --> PC["Product Context<br>subpage"]
+    Architecture --> SP["System Patterns<br>subpage"]
+    Architecture --> TC["Tech Context<br>subpage"]
     
     PB & PC & SP & TC --> MBI[Memory Bank<br>Integration]
     MBI --> Next[Implementation<br>Phase]
@@ -681,24 +681,24 @@ flowchart TD
 
 **Notion backend:** Use `notion-update-page` on resolved **`*PageUrl`** **`https://`…** values from `.cursor/notion-memory-bank.json`. projectbrief → Project page body (`projectId`); productContext → `productContextPageUrl`; systemPatterns → `systemPatternsPageUrl`; techContext → `techContextPageUrl`. If a **`*PageUrl`** is null, run `/van` or ensure notion-verification has created the subpage.
 
-Update the following Memory Bank files during architectural planning:
+Update the following Notion Memory Bank pages during architectural planning:
 
-1. **projectbrief.md** (Project page body)
+1. **Project page body** (`projectPageUrl` / `projectId`)
    - Update with architectural vision
    - Document high-level architecture approach
    - Link to architecture documentation
 
-2. **productContext.md** (productContextPageUrl)
+2. **Product Context** subpage (`productContextPageUrl`)
    - Update with business context documentation
    - Document key stakeholder requirements
    - Capture business drivers for architectural decisions
 
-3. **systemPatterns.md** (systemPatternsPageUrl)
+3. **System Patterns** subpage (`systemPatternsPageUrl`)
    - Document architectural patterns and styles chosen
    - Capture key architecture decisions with rationales
    - Document technical patterns to be used
 
-4. **techContext.md** (techContextPageUrl)
+4. **Tech Context** subpage (`techContextPageUrl`)
    - Update with technology stack decisions
    - Document technical constraints and considerations
    - Capture integration approaches
@@ -759,10 +759,10 @@ Architecture Validation
 - Architecture review conducted? [YES/NO]
 
 Memory Bank Integration
-- projectbrief.md updated? [YES/NO]
-- productContext.md updated? [YES/NO]
-- systemPatterns.md updated? [YES/NO]
-- techContext.md updated? [YES/NO]
+- Project page body updated? [YES/NO]
+- Product Context subpage updated? [YES/NO]
+- System Patterns subpage updated? [YES/NO]
+- Tech Context subpage updated? [YES/NO]
 ```
 
 ## 📋 MINIMAL MODE ARCHITECTURE PLANNING FORMAT

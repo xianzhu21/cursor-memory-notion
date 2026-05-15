@@ -6,7 +6,7 @@ alwaysApply: false
 
 # TASK CREATION (NOTION)
 
-Shared workflow for creating a task in the Tasks database. Used by `/van` when `taskId` is null or empty (same entry point as upstream: initialize task context via VAN).
+Shared workflow for creating a task in the Tasks database. Used by `/van` when `taskId` is null or empty to initialize task context via VAN.
 
 ## Prerequisites
 

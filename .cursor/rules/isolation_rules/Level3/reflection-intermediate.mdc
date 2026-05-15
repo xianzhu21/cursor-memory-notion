@@ -9,29 +9,29 @@ alwaysApply: false
 
 ## 🔍 Level 3 Reflection Process
 
-The goal is to create a comprehensive `memory-bank/reflection/reflection-[feature_id].md` document.
+The goal is a comprehensive **Reflection** artifact: on Notion, the Task subpage **`reflectionPageUrl`** (title `Reflection <taskId>`; body holds the structured reflection—see `Core/memory-bank-paths.mdc`). On file-based installs, the same role is `memory-bank/reflection/reflection-[id].md` per **`Core/memory-bank-paths.mdc`** (`[id]` typically matches **Task ID** or a stable feature slug).
 
 ```mermaid
 graph TD
     StartReflect["Start L3 Reflection"] -->
     ReviewDocs["1. Review All Gathered Documentation"] -->
-    AssessOutcome["2. Assess Overall Feature Outcome<br>Did it meet all requirements from tasks.md? Was it successful?"] -->
+    AssessOutcome["2. Assess Overall Feature Outcome<br>Did it meet all requirements on the Task page body? Was it successful?"] -->
     AnalyzePlan["3. Analyze Planning Phase Effectiveness<br>Was planning-comprehensive.mdc guidance effective? Was the plan accurate? Scope creep?"] -->
     AnalyzeCreative["4. Analyze Creative Phase(s) Effectiveness<br>Were design decisions sound? Did they translate well to implementation? Issues?"] -->
     AnalyzeImpl["5. Analyze Implementation Phase<br>What went well? Challenges? Bottlenecks? Adherence to design/style guide?"] -->
     AnalyzeTesting["6. Analyze Testing Phase<br>Were tests adequate? Bugs found post-release (if applicable)? Test coverage feel right?"] -->
     IdentifyLessons["7. Identify Key Lessons Learned<br>(Technical, Process, Teamwork, Estimation)"] -->
     ProposeImprovements["8. Propose Actionable Improvements<br>For future L3 feature development"] -->
-    DraftReflectionDoc["9. Draft `reflection-[feature_id].md`<br>Using structured template"] -->
-    FinalizeReflection["10. Finalize & Save Reflection Document"] -->
-    UpdateTasksStatus["11. Update `tasks.md`<br>Mark L3 Reflection Complete"] -->
+    DraftReflectionDoc["9. Draft Reflection body<br>(Notion reflectionPageUrl or memory-bank/reflection/...)"] -->
+    FinalizeReflection["10. Finalize & save (notion-update-page or file)"] -->
+    UpdateTasksStatus["11. Update Task page body<br>Mark L3 Reflection Complete"] -->
     ReflectionDone["L3 Reflection Complete<br>Ready for ARCHIVE Mode"]
 
     style StartReflect fill:#ba68c8,stroke:#9c27b0
     style ReflectionDone fill:#d1c4e9,stroke:#b39ddb
-````
+```
 
-## 📝 Structure for `memory-bank/reflection-[feature_id].md`
+## 📝 Structure for the Reflection document (Notion **`reflectionPageUrl`** body, or `memory-bank/reflection/reflection-[id].md` when file-based—see **`Core/memory-bank-paths.mdc`**)
 
   * **Feature Name & ID:**
   * **Date of Reflection:**
@@ -42,13 +42,13 @@ graph TD
       * What is the overall assessment of the feature's success?
   * **2. Planning Phase Review:**
       * How effective was the guidance from `Level3/planning-comprehensive.mdc`?
-      * Was the initial plan in `tasks.md` (component breakdown, strategy, risks) accurate and helpful?
+      * Was the initial plan on the **Task page body** (component breakdown, strategy, risks) accurate and helpful?
       * What could have been planned better? Were estimations (if made) accurate?
   * **3. Creative Phase(s) Review (if applicable):**
       * Were the right aspects flagged for CREATIVE mode?
-      * How effective were the design decisions made in `creative-*.md` documents?
+      * How effective were the design decisions recorded on the Task **Creative** subpage (`creativePageUrl`; file-based: `memory-bank/creative/creative-[name].md` per **Core/memory-bank-paths.mdc**)?
       * Did these designs translate well into practical implementation? Any friction points?
-      * Was `memory-bank/style-guide.md` clear and sufficient for UI aspects?
+      * Was the **Style Guide** (`styleGuidePageUrl`; file-based: `memory-bank/style-guide.md`) clear and sufficient for UI aspects?
   * **4. Implementation Phase Review:**
       * What were the major successes during implementation? (e.g., efficient module development, good use of libraries)
       * What were the biggest challenges or roadblocks? How were they overcome?

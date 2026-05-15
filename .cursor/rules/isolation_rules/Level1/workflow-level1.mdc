@@ -7,22 +7,29 @@ alwaysApply: false
 
 > **TL;DR:** This document outlines a streamlined workflow for Level 1 (Quick Bug Fix) tasks, focusing on efficient problem resolution with minimal overhead while maintaining adequate documentation.
 
+## Notion backend (this repository)
+
+Memory Bank **storage** is **Notion**: **Task page body**, **Active Context** subpage (`activeContextPageUrl`), **Progress** subpage (`progressPageUrl`) per **`Core/memory-bank-paths.mdc`**. **Active Context:** keep updates **short**; follow **`## Active Context: Notion policy and multi-task`**.
+
 ## 🔍 LEVEL 1 WORKFLOW OVERVIEW
+
+Command sequence (same as `README.md`): **`/van` → `/build` → `/reflect` → `/archive`**.
 
 ```mermaid
 graph LR
-    Init["1. INITIALIZATION"] --> Impl["2. IMPLEMENTATION"]
-    Impl --> Doc["3. DOCUMENTATION"]
+    Init["1. INITIALIZATION<br>/van"] --> Impl["2. IMPLEMENTATION<br>/build"]
+    Impl --> Reflect["3. REFLECTION<br>/reflect"]
+    Reflect --> Archive["4. ARCHIVE<br>/archive"]
     
-    %% Document connections for each phase
     Init -.-> InitDocs["Quick setup<br>Issue understanding"]
     Impl -.-> ImplDocs["Focused fix<br>Verify resolution"]
-    Doc -.-> DocDocs["Document solution<br>Update tracking"]
+    Reflect -.-> ReflectDocs["Lessons learned<br>brief review"]
+    Archive -.-> ArchiveDocs["Completion record<br>handoff"]
 ```
 
 ## 📋 WORKFLOW PHASES
 
-### Phase 1: INITIALIZATION
+### Phase 1: INITIALIZATION (`/van`)
 
 ```mermaid
 graph TD
@@ -37,7 +44,7 @@ graph TD
 1. Identify the specific issue to fix
 2. Understand the problem and its impact
 3. Set up environment for quick fix
-4. Create minimal task entry in tasks.md
+4. Create minimal task entry on the **Task page body** (resolved `taskPageUrl`)
 
 **Milestone Checkpoint:**
 ```
@@ -51,7 +58,7 @@ graph TD
 → If any NO: Complete initialization steps
 ```
 
-### Phase 2: IMPLEMENTATION
+### Phase 2: IMPLEMENTATION (`/build`)
 
 ```mermaid
 graph TD
@@ -76,42 +83,67 @@ graph TD
 - Solution tested? [YES/NO]
 - Resolution verified? [YES/NO]
 
-→ If all YES: Proceed to Documentation
+→ If all YES: Proceed to Reflection
 → If any NO: Complete implementation steps
 ```
 
-### Phase 3: DOCUMENTATION
+### Phase 3: REFLECTION (`/reflect`)
 
 ```mermaid
 graph TD
-    Start["Begin<br>Documentation"] --> Update["Update<br>tasks.md"]
-    Update --> Solution["Document<br>Solution"]
-    Solution --> References["Create Minimal<br>Cross-References"]
-    References --> NotifyStakeholders["Notify<br>Stakeholders"]
-    NotifyStakeholders --> DocComplete["Documentation<br>Complete"]
+    Start["Begin<br>Reflection"] --> Review["Review fix<br>and process"]
+    Review --> Lessons["Capture lessons<br>learned"]
+    Lessons --> Persist["Write Reflection<br>artifact"]
+    Persist --> ReflectComplete["Reflection<br>Complete"]
 ```
 
 **Steps:**
-1. Update tasks.md with fix details
-2. Document the solution concisely
-3. Create minimal cross-references
-4. Notify stakeholders as needed
+1. Review what changed and whether the fix matches the issue
+2. Capture brief lessons learned (what worked, risks, follow-ups)
+3. Persist the structured reflection on the **Reflection** subpage (`reflectionPageUrl`) per **`Core/memory-bank-paths.mdc`**; file-based: `memory-bank/reflection/reflection-[task_id].md`
+4. Optionally tighten the **Task page body** status lines if the loaded `/reflect` rules call for it
 
 **Milestone Checkpoint:**
 ```
-✓ DOCUMENTATION CHECKPOINT
-- tasks.md updated? [YES/NO]
-- Solution documented? [YES/NO]
-- Cross-references created? [YES/NO]
-- Stakeholders notified? [YES/NO]
+✓ REFLECTION CHECKPOINT
+- Fix and scope reviewed? [YES/NO]
+- Lessons / follow-ups captured? [YES/NO]
+- Reflection artifact written? [YES/NO]
 
-→ If all YES: Task Complete
-→ If any NO: Complete documentation steps
+→ If all YES: Proceed to Archive
+→ If any NO: Complete reflection steps
 ```
 
-## 📋 TASK STRUCTURE IN TASKS.MD
+### Phase 4: ARCHIVE (`/archive`)
 
-For Level 1 tasks, use this minimal structure:
+```mermaid
+graph TD
+    Start["Begin<br>Archive"] --> Record["Create Archive<br>completion record"]
+    Record --> ActiveCtx["Remove this task’s<br>## Task … from Active Context"]
+    ActiveCtx --> Handoff["Handoff /<br>next task ready"]
+    Handoff --> ArchiveComplete["Archive<br>Complete"]
+```
+
+**Steps:**
+1. Run **`/archive`** per loaded archive rules (Level 1 = minimal but complete closure)
+2. Write the **Archive** subpage (`archivePageUrl`) when used; file-based: `memory-bank/archive/archive-[task_id].md`
+3. **Mandatory (Notion):** remove the archived task’s **`## Task <taskId> — …`** block from **Active Context** (`activeContextPageUrl`); see **`Core/memory-bank-paths.mdc`**
+4. Mark the task complete in your tracker / Task properties as required by those rules
+
+**Milestone Checkpoint:**
+```
+✓ ARCHIVE CHECKPOINT
+- Archive artifact created / updated? [YES/NO]
+- Active Context cleaned for this task (Notion)? [YES/N/A]
+- Task ready to close or switch? [YES/NO]
+
+→ If all YES: Level 1 workflow complete
+→ If any NO: Complete archive steps
+```
+
+## 📋 Task page body structure (Level 1)
+
+For Level 1 tasks, use this minimal structure on the **Task page body** (Notion):
 
 ```markdown
 ## Bug Fixes in Progress
@@ -128,9 +160,11 @@ For Level 1 tasks, use this minimal structure:
 
 For Level 1 tasks, make minimal Memory Bank updates:
 
-1. **tasks.md**: Update with fix details
-2. **activeContext.md**: Brief mention of fix if relevant
-3. **progress.md**: Add to list of completed fixes
+1. **Task page body**: Update with fix details (through **/build** and touch-ups in **/reflect** if needed)
+2. **Active Context** subpage (`activeContextPageUrl`): Brief mention during the task if relevant (merge-safe **`## Task …`** block); **/archive** removes that section when done
+3. **Progress** subpage (`progressPageUrl`): Add to list of completed fixes
+4. **Reflection** subpage (`reflectionPageUrl`): Brief structured reflection (**/reflect**)
+5. **Archive** subpage (`archivePageUrl`) or equivalent: completion record (**/archive**)
 
 ## 📋 WORKFLOW VERIFICATION CHECKLIST
 
@@ -138,9 +172,10 @@ For Level 1 tasks, make minimal Memory Bank updates:
 ✓ FINAL WORKFLOW VERIFICATION
 - Issue identified and understood? [YES/NO]
 - Fix implemented and verified? [YES/NO]
-- tasks.md updated? [YES/NO]
-- Solution documented? [YES/NO]
-- Memory Bank minimally updated? [YES/NO]
+- Task page body updated? [YES/NO]
+- Reflection completed (Reflection subpage / file)? [YES/NO]
+- Archive completed (Archive subpage / file; Active Context cleaned on Notion)? [YES/NO]
+- Progress / minimal Memory Bank updates done? [YES/NO]
 
 → If all YES: Level 1 Task Successfully Completed
 → If any NO: Address outstanding items
@@ -169,12 +204,14 @@ Escalation indicators:
 
 ```mermaid
 graph TD
-    Workflow["Level 1<br>Workflow"] --> TM["Update<br>tasks.md"]
-    Workflow --> AC["Minimal Update<br>activeContext.md"]
-    Workflow --> PM["Brief Update<br>progress.md"]
+    Workflow["Level 1<br>Workflow"] --> TM["Update<br>Task page body"]
+    Workflow --> AC["Minimal Update<br>Active Context"]
+    Workflow --> PM["Brief Update<br>Progress"]
+    Workflow --> RF["Reflection<br>subpage"]
+    Workflow --> AR["Archive +<br>Active Context cleanup"]
     
-    TM & AC & PM --> MB["Memory Bank<br>Integration"]
-    MB --> NextTask["Transition to<br>Next Task"]
+    TM & AC & PM & RF & AR --> MB["Memory Bank<br>Integration"]
+    MB --> NextTask["Next task<br>/van or /change-task"]
 ```
 
 ## 🚨 EFFICIENCY PRINCIPLE

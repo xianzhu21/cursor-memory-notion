@@ -166,10 +166,10 @@ graph LR
 
 ```mermaid
 graph TD
-    L3["Level 3<br>Task"] --> PB["Comprehensive<br>projectbrief.md"]
-    L3 --> AC["Detailed<br>activeContext.md"]
-    L3 --> TM["Structured<br>tasks.md"]
-    L3 --> PM["Detailed<br>progress.md"]
+    L3["Level 3<br>Task"] --> PB["Comprehensive<br>Project page body"]
+    L3 --> AC["Detailed<br>Active Context"]
+    L3 --> TM["Structured<br>Task page body"]
+    L3 --> PM["Detailed<br>Progress"]
     
     PB & AC & TM & PM --> MB["Memory Bank<br>Integration"]
     MB --> NextPhase["Proceed to<br>Implementation"]

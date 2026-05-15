@@ -126,8 +126,8 @@ flowchart TD
   - **Dependencies**: [Internal and external dependencies]
   - **Special considerations**: [Important notes]
 
-### Key Files and Components Affected (from tasks.md)
-[Summary or direct copy of file/component checklists from the original tasks.md for this project. This provides a quick reference to the scope of changes at a component/file level.]
+### Key Files and Components Affected (from Task page body)
+[Summary or direct copy of file/component checklists from the **Task page body** for this project. This provides a quick reference to the scope of changes at a component/file level.]
 
 ### Algorithms and Complex Logic
 [Documentation of key algorithms and complex business logic]
@@ -503,12 +503,12 @@ flowchart TD
     classDef memfile fill:#f4b8c4,stroke:#d498a4,color:#000
     classDef process fill:#f9d77e,stroke:#d9b95c,color:#000
     
-    Archiving[Comprehensive<br>Archiving] --> PB[projectbrief.md]
-    Archiving --> PC[productContext.md]
-    Archiving --> AC[activeContext.md]
-    Archiving --> SP[systemPatterns.md]
-    Archiving --> TC[techContext.md]
-    Archiving --> P[progress.md]
+    Archiving[Comprehensive<br>Archiving] --> PB["Project page body"]
+    Archiving --> PC["Product Context<br>subpage"]
+    Archiving --> AC["Active Context<br>subpage"]
+    Archiving --> SP["System Patterns<br>subpage"]
+    Archiving --> TC["Tech Context<br>subpage"]
+    Archiving --> P["Progress<br>subpage"]
     
     PB & PC & AC & SP & TC & P --> MBI[Memory Bank<br>Integration]
     MBI --> Next[Repository of<br>Knowledge]
@@ -521,34 +521,33 @@ flowchart TD
 
 **Notion backend:** Use `notion-update-page` on resolved **`*PageUrl`** **`https://`…** values from config. projectbrief → Project page body (`projectId`); productContext → `productContextPageUrl`; activeContext → `activeContextPageUrl`; systemPatterns → `systemPatternsPageUrl`; techContext → `techContextPageUrl`; progress → `progressPageUrl`. If a **`*PageUrl`** is null, ensure notion-verification has created the subpage.
 
-Specific updates to make to Memory Bank files:
+Specific updates to make to Notion Memory Bank pages:
 
-1. **projectbrief.md** (Project page body)
+1. **Project page body** (`projectPageUrl` / `projectId`)
    - Update with final system description
    - Document completion status
    - Include links to archived documentation
 
-2. **productContext.md** (productContextPageUrl)
+2. **Product Context** subpage (`productContextPageUrl`)
    - Update with final business context
    - Document business value delivered
    - Include links to requirements documentation
 
-3. **activeContext.md** (activeContextPageUrl)
-   - **Remove** the archived task’s `## Task <taskId> — …` section from Active Context (in-flight list only); preserve other parallel `## Task …` sections per `Core/memory-bank-paths.mdc` **Active Context: multiple in-flight tasks**. Optional: one line under `## Recently completed` linking to Archive
-   - Document handover information for the completed task where relevant
-   - Include links to operational documentation
+3. **activeContext** (`activeContextPageUrl`)
+   - **Remove** the archived task’s `## Task <taskId> — …` section from Active Context (in-flight list only); preserve other parallel `## Task …` sections per `Core/memory-bank-paths.mdc` **Active Context: Notion policy and multi-task**. Optional: one line under `## Recently completed` linking to Archive.
+   - Do **not** use Active Context as a second archive or handover log; long narrative belongs on **Progress**, **Task page**, or **Archive** subpage.
 
-4. **systemPatterns.md** (systemPatternsPageUrl)
+4. **System Patterns** subpage (`systemPatternsPageUrl`)
    - Update with final architecture patterns
    - Document successful implementation patterns
    - Include links to architecture documentation
 
-5. **techContext.md** (techContextPageUrl)
+5. **Tech Context** subpage (`techContextPageUrl`)
    - Update with final technology stack
    - Document integration points
    - Include links to technical documentation
 
-6. **progress.md** (progressPageUrl)
+6. **Progress** subpage (`progressPageUrl`)
    - Update with final project status
    - Document completion metrics
    - Include links to project history documentation

@@ -8,6 +8,10 @@ alwaysApply: false
 
 > **TL;DR:** This visual map guides the BUILD mode process, focusing on efficient code implementation based on the planning and creative phases, with proper command execution and progress tracking.
 
+## Notion backend (this repository)
+
+**Task page body** holds plan and status; **Progress** subpage holds build log. Labels below use Notion surfaces per **`Core/memory-bank-paths.mdc`**.
+
 ## 🧭 BUILD MODE PROCESS FLOW
 
 ```mermaid
@@ -15,7 +19,7 @@ graph TD
     Start["START BUILD MODE"] --> ReadDocs["Read Reference Documents<br>Core/command-execution.md"]
     
     %% Initialization
-    ReadDocs --> CheckLevel{"Determine<br>Complexity Level<br>from tasks.md"}
+    ReadDocs --> CheckLevel{"Determine<br>Complexity Level<br>from Task page body"}
     
     %% Level 1 Implementation
     CheckLevel -->|"Level 1<br>Quick Bug Fix"| L1Process["LEVEL 1 PROCESS<br>Level1/quick-bug-workflow.md"]
@@ -23,7 +27,7 @@ graph TD
     L1Review --> L1Examine["Examine<br>Relevant Code"]
     L1Examine --> L1Fix["Implement<br>Targeted Fix"]
     L1Fix --> L1Test["Test<br>Fix"]
-    L1Test --> L1Update["Update<br>tasks.md"]
+    L1Test --> L1Update["Update<br>Task page body"]
     
     %% Level 2 Implementation
     CheckLevel -->|"Level 2<br>Simple Enhancement"| L2Process["LEVEL 2 PROCESS<br>Level2/enhancement-workflow.md"]
@@ -31,7 +35,7 @@ graph TD
     L2Review --> L2Examine["Examine Relevant<br>Code Areas"]
     L2Examine --> L2Implement["Implement Changes<br>Sequentially"]
     L2Implement --> L2Test["Test<br>Changes"]
-    L2Test --> L2Update["Update<br>tasks.md"]
+    L2Test --> L2Update["Update<br>Task page body"]
     
     %% Level 3-4 Implementation
     CheckLevel -->|"Level 3-4<br>Feature/System"| L34Process["LEVEL 3-4 PROCESS<br>Level3/feature-workflow.md<br>Level4/system-workflow.md"]
@@ -53,7 +57,7 @@ graph TD
     
     L34Next1 -->|"No"| L34Integration["Integration<br>Testing"]
     L34Integration --> L34Document["Document<br>Integration Points"]
-    L34Document --> L34Update["Update<br>tasks.md"]
+    L34Document --> L34Update["Update<br>Task page body"]
     
     %% Command Execution
     L1Fix & L2Implement & L34Phase1 --> CommandExec["COMMAND EXECUTION<br>Core/command-execution.md"]
@@ -61,17 +65,17 @@ graph TD
     
     %% Completion & Transition
     L1Update & L2Update & L34Update --> VerifyComplete["Verify Build<br>Complete"]
-    VerifyComplete --> UpdateProgress["Update progress.md"]
+    VerifyComplete --> UpdateProgress["Update Progress<br>subpage"]
     UpdateProgress --> Transition["NEXT MODE:<br>REFLECT MODE"]
 ```
 
-## 📋 REQUIRED FILE STATE VERIFICATION
+## 📋 REQUIRED NOTION PAGE STATE
 
-Before implementation can begin, verify file state:
+Before implementation can begin, verify Notion state:
 
 ```mermaid
 graph TD
-    Start["File State<br>Verification"] --> CheckTasks{"tasks.md has<br>planning complete?"}
+    Start["Notion state<br>verification"] --> CheckTasks{"Task page body shows<br>planning complete?"}
     
     CheckTasks -->|"No"| ErrorPlan["ERROR:<br>Return to PLAN Mode"]
     CheckTasks -->|"Yes"| CheckLevel{"Task<br>Complexity?"}
@@ -121,7 +125,7 @@ Before beginning any file creation:
 3. Verify each directory after creation:
    ls -la /full/path/to/directory     # Linux/Mac
    dir "C:\full\path\to\directory"    # Windows
-4. Document directory structure in progress.md
+4. Document directory structure on **Progress** subpage
 5. Only proceed to file creation AFTER verifying ALL directories exist
 ```
 
@@ -140,7 +144,7 @@ After creating files:
    b. Verify directory exists
    c. Try creating with corrected path
    d. Recheck file exists after correction
-4. Document all file paths in progress.md
+4. Document all file paths on **Progress** subpage
 ```
 
 ## 🔄 COMMAND EXECUTION WORKFLOW
@@ -238,7 +242,7 @@ Document builds with:
 
 ## 📊 TASKS.MD UPDATE FORMAT
 
-During the build process, update tasks.md with progress:
+During the build process, update the **Task page body** with progress:
 
 ```
 ## Build Progress
@@ -263,7 +267,7 @@ During the build process, update tasks.md with progress:
 
 ## 📋 PROGRESS.MD UPDATE FORMAT
 
-Update progress.md with:
+Update the **Progress** subpage with:
 
 ```
 # Build Progress
@@ -295,8 +299,8 @@ Update progress.md with:
 - Code follows project standards? [YES/NO]
 - Edge cases handled appropriately? [YES/NO]
 - Build documented with absolute paths? [YES/NO]
-- tasks.md updated with progress? [YES/NO]
-- progress.md updated with details? [YES/NO]
+- Task page body updated with progress? [YES/NO]
+- Progress subpage updated with details? [YES/NO]
 
 → If all YES: Build complete - ready for REFLECT mode
 → If any NO: Complete missing build elements
@@ -313,8 +317,8 @@ When the build is complete, notify user with:
 ✅ All files created in correct locations
 ✅ All planned changes implemented
 ✅ Testing performed successfully
-✅ tasks.md updated with progress
-✅ progress.md updated with details
+✅ Task page body updated with progress
+✅ Progress subpage updated with details
 
 → NEXT RECOMMENDED MODE: REFLECT MODE
 ``` 

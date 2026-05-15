@@ -13,7 +13,7 @@ Updates (notion-update-page):
 - Task page (`taskId`) - Adds detailed implementation plan
 - **Write in English** (Notion content rule)
 
-Project brief (`projectbrief.md` equivalent): update the Project page body only when loaded level workflow rules (e.g. `workflow-level2.mdc`, `workflow-level3.mdc`, `workflow-level4.mdc`) require it—the same as upstream, where those rules update `memory-bank/projectbrief.md`.
+Project brief (`projectbrief.md` equivalent): update the Project page body only when loaded level workflow rules (e.g. `workflow-level2.mdc`, `workflow-level3.mdc`, `workflow-level4.mdc`) require it—the same as a **file-based Memory Bank**, where those rules update `memory-bank/projectbrief.md`.
 
 ## Progressive Rule Loading
 
@@ -55,7 +55,7 @@ Load: .cursor/rules/isolation_rules/Level4/workflow-level4.mdc
 ## Workflow
 
 0. **Precondition**
-   - If `taskId` is null or empty, ask the user to run `/van [description]` first and stop. The Task page cannot be fetched without a valid `taskId` (same as upstream: need `memory-bank/tasks.md` / task context).
+   - If `taskId` is null or empty, ask the user to run `/van [description]` first and stop. The Task page cannot be fetched without a valid `taskId` (same as a **file-based Memory Bank**: need `tasks.md` / task context).
 
 1. **Read Task Context**
    - notion-fetch Task page for complexity level

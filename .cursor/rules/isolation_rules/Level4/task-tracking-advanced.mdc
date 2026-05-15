@@ -8,6 +8,10 @@ alwaysApply: false
 
 > **TL;DR:** This document outlines a comprehensive task tracking approach for Level 4 (Complex System) tasks, ensuring detailed tracking of complex, multi-phase work with clear dependencies, progress tracking, and architectural alignment.
 
+## Notion backend (this repository)
+
+Use the **Task page body** as the detailed task log; align milestones with **Progress** (`progressPageUrl`) and architecture context with **Project** / **System Patterns** / **Tech Context** subpages per **`Core/memory-bank-paths.mdc`**.
+
 ## 🔍 ADVANCED TASK TRACKING OVERVIEW
 
 Level 4 Complex System tasks require sophisticated task tracking to manage the complexity of system development, coordinate multiple team members, track dependencies, and ensure alignment with architectural principles. This document outlines a comprehensive task tracking approach for such complex endeavors.
@@ -108,7 +112,7 @@ flowchart TD
 
 ## 📋 COMPREHENSIVE TASK STRUCTURE
 
-Each Level 4 task in `tasks.md` follows this comprehensive structure:
+Each Level 4 task on the **Task page body** follows this comprehensive structure:
 
 ```markdown
 ## [SYSTEM-ID]: System Name
@@ -175,7 +179,7 @@ Each Level 4 task in `tasks.md` follows this comprehensive structure:
 
 ## 📋 TASK TRACKING ORGANIZATION IN TASKS.MD
 
-For Level 4 Complex System tasks, organize `tasks.md` as follows:
+For Level 4 Complex System tasks, organize the **Task page body** as follows:
 
 ```markdown
 # TASK TRACKING
@@ -276,7 +280,7 @@ For Level 4 tasks, track milestones explicitly:
 
 ## 📋 PROGRESS VISUALIZATION
 
-Include visual representations of progress in `tasks.md`:
+Include visual representations of progress on the **Task page body**:
 
 ```markdown
 ## Progress Visualization
@@ -400,24 +404,24 @@ Architectural Alignment
 
 Level 4 task tracking is tightly integrated with the Memory Bank:
 
-1. **projectbrief.md**: System-level tasks are derived from and linked to the project brief
-2. **productContext.md**: Tasks are aligned with business context and objectives
-3. **systemPatterns.md**: Tasks respect and implement defined architectural patterns
-4. **techContext.md**: Tasks are aligned with the technology stack and constraints
-5. **activeContext.md**: Current focus and status from `tasks.md` informs the active context
-6. **progress.md**: System progress from `tasks.md` is reflected in overall progress
+1. **Project page body**: System-level tasks are derived from and linked to the project brief
+2. **Product Context** subpage: Tasks are aligned with business context and objectives
+3. **System Patterns** subpage: Tasks respect and implement defined architectural patterns
+4. **Tech Context** subpage: Tasks are aligned with the technology stack and constraints
+5. **Active Context** subpage: Current focus and status from the Task page body informs Active Context (merge-safe **`## Task …`** blocks only)
+6. **Progress** subpage: System progress from the Task page body is reflected in overall progress
 
 ```mermaid
 flowchart TD
     classDef memfile fill:#f4b8c4,stroke:#d498a4,color:#000
     classDef process fill:#f9d77e,stroke:#d9b95c,color:#000
     
-    TaskTracking[Advanced Task<br>Tracking] --> PB[projectbrief.md]
-    TaskTracking --> PC[productContext.md]
-    TaskTracking --> AC[activeContext.md]
-    TaskTracking --> SP[systemPatterns.md]
-    TaskTracking --> TC[techContext.md]
-    TaskTracking --> P[progress.md]
+    TaskTracking[Advanced Task<br>Tracking] --> PB["Project page body"]
+    TaskTracking --> PC["Product Context"]
+    TaskTracking --> AC["Active Context"]
+    TaskTracking --> SP["System Patterns"]
+    TaskTracking --> TC["Tech Context"]
+    TaskTracking --> P["Progress"]
     
     P --> TU[Task<br>Updates]
     TU --> TaskTracking
@@ -459,8 +463,8 @@ For situations requiring a more compact tracking approach:
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│ tasks.md is the SINGLE SOURCE OF TRUTH for all task  │
-│ tracking. All task-related decisions and status      │
-│ updates MUST be reflected in tasks.md.               │
+│ The Task page body is the SINGLE SOURCE OF TRUTH for │
+│ all task tracking. All task-related decisions and   │
+│ status updates MUST be reflected on the Task page.  │
 └─────────────────────────────────────────────────────┘
 ``` 

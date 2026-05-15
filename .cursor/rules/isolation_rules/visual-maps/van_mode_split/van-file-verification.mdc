@@ -3,6 +3,9 @@ description: Visual process map for VAN mode file verification
 globs: van-file-verification.mdc
 alwaysApply: false
 ---
+
+> **Notion backend (this repository):** Skip local directory/`tasks.md` creation. Use **`Core/notion-verification.mdc`**, `.cursor/notion-memory-bank.json`, and Notion MCP per **`Core/memory-bank-paths.mdc`**. **Conceptual map (file → Notion):** `tasks.md` / task context → **Task page body**; `memory-bank/projectbrief.md` → **Project page body**; `memory-bank/activeContext.md` → **Active Context** subpage (`activeContextPageUrl`); `memory-bank/progress.md` → **Progress** (`progressPageUrl`); other `memory-bank/*.md` Level-4 project docs → matching Project subpages (`*PageUrl`). The workflows below target **file-based** Memory Bank layouts only.
+
 # OPTIMIZED FILE VERIFICATION SYSTEM
 
 🚨 CRITICAL: MEMORY BANK VERIFICATION REQUIRED 🚨
@@ -61,44 +64,32 @@ graph TD
 Memory Bank verification MUST be executed first in any file verification process:
 
 ```javascript
+// Flat layout under memory-bank/ (same as Core/file-verification.mdc and shell blocks below).
 function verifyMemoryBank() {
-  // Check if Memory Bank exists
   const memoryBankExists = checkDirectoryExists("memory-bank");
   if (!memoryBankExists) {
-    console.error("⛔ CRITICAL ERROR: Memory Bank does not exist");
+    console.error("⛔ CRITICAL ERROR: Memory Bank directory does not exist");
     createMemoryBankStructure();
     return verifyMemoryBankCreation();
   }
-  
-  // Check required subdirectories
-  const requiredDirs = [
-    "memory-bank/active-context",
-    "memory-bank/system-patterns",
-    "memory-bank/creative-phase",
-    "memory-bank/implementation"
-  ];
-  
-  const missingDirs = requiredDirs.filter(dir => !checkDirectoryExists(dir));
-  if (missingDirs.length > 0) {
-    console.error(`⛔ CRITICAL ERROR: Missing Memory Bank directories: ${missingDirs.join(", ")}`);
-    createMissingDirectories(missingDirs);
-    return verifyMemoryBankCreation();
-  }
-  
-  // Check critical files
+
   const criticalFiles = [
-    "memory-bank/active-context/activeContext.md",
-    "memory-bank/system-patterns/systemPatterns.md"
+    "memory-bank/projectbrief.md",
+    "memory-bank/productContext.md",
+    "memory-bank/systemPatterns.md",
+    "memory-bank/techContext.md",
+    "memory-bank/activeContext.md",
+    "memory-bank/progress.md"
   ];
-  
-  const missingFiles = criticalFiles.filter(file => !checkFileExists(file));
+
+  const missingFiles = criticalFiles.filter((file) => !checkFileExists(file));
   if (missingFiles.length > 0) {
     console.error(`⛔ CRITICAL ERROR: Missing critical files: ${missingFiles.join(", ")}`);
     createMissingFiles(missingFiles);
     return verifyMemoryBankCreation();
   }
-  
-  return true; // Memory Bank verification successful
+
+  return true;
 }
 
 // MANDATORY: This must be called before any other verification
@@ -112,9 +103,9 @@ if (!memoryBankVerified) {
 
 ```
 ✓ MEMORY BANK VERIFICATION CHECKLIST
-- Memory Bank directory exists? [YES/NO]
-- Required subdirectories exist? [YES/NO]
-- Critical files exist? [YES/NO]
+- memory-bank/ directory exists? [YES/NO]
+- Core markdown files exist under memory-bank/? (projectbrief, productContext, systemPatterns, techContext, activeContext, progress) [YES/NO]
+- Root tasks.md (and .cursorrules if used) present? [YES/NO]
 - File content is valid? [YES/NO]
 
 → If ALL YES: Memory Bank verification passed - Continue file verification

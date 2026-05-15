@@ -8,6 +8,10 @@ alwaysApply: false
 
 > **TL;DR:** This visual map guides the PLAN mode process, focusing on creating detailed implementation plans based on the complexity level determined during initialization, with mandatory technology validation before implementation.
 
+## Notion backend (this repository)
+
+Planning is written to the **Task page body** (and Project subpages when rules require). See **`Core/memory-bank-paths.mdc`**.
+
 ## 🧭 PLAN MODE PROCESS FLOW
 
 ```mermaid
@@ -139,7 +143,7 @@ graph TD
 
 ## 📊 REQUIRED FILE STATE VERIFICATION
 
-Before planning can begin, verify the file state. **Notion fork:** Task page = tasks.md; activeContext page = activeContext.md.
+Before planning can begin, verify Notion state: the **Task page** is initialized and the **Active Context** subpage exists (`activeContextPageUrl` set, or discoverable as **Active Context \<projectId\>** under the Project).
 
 ```mermaid
 graph TD

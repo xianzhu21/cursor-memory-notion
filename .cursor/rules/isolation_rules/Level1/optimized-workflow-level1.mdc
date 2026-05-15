@@ -8,20 +8,26 @@ alwaysApply: false
 
 > **TL;DR:** This streamlined workflow for Level 1 tasks (quick bug fixes) optimizes for speed and token efficiency while maintaining quality.
 
+**Notion (this repository):** Apply the same shapes on the **Task page body** via Notion MCP (`taskPageUrl`); local `tasks.md` in snippets below is only a **file-based** analog.
+
 ## 🔧 LEVEL 1 PROCESS FLOW
+
+Aligned with **`/van` → `/build` → `/reflect` → `/archive`** (see `README.md` and `main.mdc`).
 
 ```mermaid
 graph TD
-    Start["START LEVEL 1<br>QUICK FIX"] --> Analyze["1️⃣ ANALYZE<br>Understand issue"]
+    Start["START LEVEL 1<br>QUICK FIX"] --> Analyze["1️⃣ VAN<br>Analyze / init"]
     Analyze --> Build["2️⃣ BUILD<br>Fix the issue"]
     Build --> Verify["3️⃣ VERIFY<br>Test the fix"]
-    Verify --> Document["4️⃣ DOCUMENT<br>Record solution"]
+    Verify --> Reflect["4️⃣ REFLECT<br>Lessons learned"]
+    Reflect --> Archive["5️⃣ ARCHIVE<br>Close task"]
     
     style Start fill:#4da6ff,stroke:#0066cc,color:white
     style Analyze fill:#ffa64d,stroke:#cc7a30,color:white
     style Build fill:#4dbb5f,stroke:#36873f,color:white
     style Verify fill:#d94dbb,stroke:#a3378a,color:white
-    style Document fill:#4dbbbb,stroke:#368787,color:white
+    style Reflect fill:#4dbbbb,stroke:#368787,color:white
+    style Archive fill:#e699d9,stroke:#d94dbb,color:white
 ```
 
 ## 📝 CONSOLIDATED DOCUMENTATION
@@ -63,7 +69,7 @@ Level 1 tasks use a single-file approach to minimize context switching:
 Level 1 tasks use a simplified Memory Bank update with minimal overhead:
 
 ```markdown
-## tasks.md Update (Level 1)
+## Task page body update (Level 1)
 
 ### Task: [Task Name]
 - Status: Complete
@@ -133,7 +139,8 @@ Level 1 tasks use a minimal verification process:
 VERIFICATION:
 [x] Fix implemented and tested
 [x] No regressions introduced
-[x] Documentation updated
+[x] Reflection completed (/reflect)
+[x] Archive completed (/archive); Active Context updated if Notion
 ```
 
 ## 🚀 CONSOLIDATED MEMORY BANK UPDATE
@@ -141,10 +148,9 @@ VERIFICATION:
 Optimize Memory Bank updates for Level 1 tasks by using a single operation:
 
 ```javascript
-// Pseudocode for optimized Level 1 Memory Bank update
+// Pseudocode: with Notion MCP, use notion-fetch / notion-update-page on taskPageUrl instead of local files.
 function updateLevel1MemoryBank(taskInfo) {
-  // Read current tasks.md
-  const tasksContent = readFile("tasks.md");
+  const tasksContent = readTaskPageBody();
   
   // Create minimal update
   const updateBlock = `
@@ -154,11 +160,9 @@ function updateLevel1MemoryBank(taskInfo) {
 - Link to fix: ${taskInfo.fileReference}
 `;
   
-  // Add update to tasks.md
   const updatedContent = appendToSection(tasksContent, "Completed Tasks", updateBlock);
   
-  // Write in single operation
-  writeFile("tasks.md", updatedContent);
+  writeTaskPageBody(updatedContent);
   
   return "Memory Bank updated";
 }
@@ -200,6 +204,6 @@ This optimized Level 1 workflow provides:
 2. Consolidated Memory Bank updates (single operation vs. multiple)
 3. Focused verification process (essential checks only)
 4. Template-based approach for common scenarios
-5. Streamlined workflow with fewer steps
+5. Command-aligned closure: **`/reflect`** then **`/archive`** (see `workflow-level1.mdc`)
 
 The updated approach maintains all critical information while significantly reducing token usage.

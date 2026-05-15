@@ -84,35 +84,56 @@ Notion already shows the page **title** at the top. **Do not** put a level-1 hea
 
 **Bad data source URLs:** If `projectsDataSourceUrl` / `tasksDataSourceUrl` fail, run recovery in `Core/notion-memory-bank-ops.mdc` before relying on scoped search. See `Core/notion-verification.mdc` step 2.
 
-## Mapping: cursor-memory-bank → Notion
+## Mapping: Notion pages and file-based Memory Bank paths
 
-| Memory Bank Concept | Notion Location | Config Key |
-|---------------------|-----------------|------------|
-| tasks.md | Current Task page body | taskId (number or string, e.g. `588`) |
-| projectbrief.md | Project page body | projectId (number or string, e.g. `123`) |
-| activeContext.md | activeContext subpage under Project | activeContextPageUrl |
-| progress.md | progress subpage under Project | progressPageUrl |
-| productContext.md | productContext subpage under Project | productContextPageUrl |
-| systemPatterns.md | systemPatterns subpage under Project | systemPatternsPageUrl |
-| techContext.md | techContext subpage under Project | techContextPageUrl |
-| style-guide.md | style-guide subpage under Project | styleGuidePageUrl |
-| creative/creative-[name].md | Creative subpage under Task | creativePageUrl |
-| reflection/reflection-[id].md | Reflection subpage under Task | reflectionPageUrl |
-| archive/archive-[id].md | Archive subpage under Task | optional `archivePageUrl` if used; otherwise resolve via Task child titled `Archive <taskId>` or Task body `<page>` links |
+**Terminology:** **File-based Memory Bank** means the Markdown-at-repo layout: files under `memory-bank/` plus `tasks.md` at the repo root (no Notion backend for those roles). **This repository** uses Notion as the primary surface; the **File-based path** column names the same *role* on disk when using a file-based Memory Bank.
 
-## Active Context: multiple in-flight tasks
+**Primary surface:** the **Notion** page or body in the first column—resolve via config keys and MCP. **This repository** does not use local `memory-bank/*.md` for those roles.
 
-The **Active Context** page (`Active Context <projectId>`) may record **more than one** parallel task. Config **`taskId`** remains the **primary** Task for single-task resolution (`/van`, task logs, etc.); other streams live **only** on the Notion page body, not as extra config keys.
+| Notion page / body | File-based path (same role) | Config Key |
+|--------------------|---------------------------------------------|------------|
+| Current **Task** page body | tasks.md | taskId (number or string, e.g. `588`) |
+| **Project** page body | projectbrief.md | projectId (number or string, e.g. `123`) |
+| **Active Context** subpage under Project | activeContext.md | activeContextPageUrl |
+| **Progress** subpage under Project | progress.md | progressPageUrl |
+| **Product Context** subpage under Project | productContext.md | productContextPageUrl |
+| **System Patterns** subpage under Project | systemPatterns.md | systemPatternsPageUrl |
+| **Tech Context** subpage under Project | techContext.md | techContextPageUrl |
+| **Style guide** subpage under Project | style-guide.md | styleGuidePageUrl |
+| **Creative** subpage under Task | creative/creative-[name].md | creativePageUrl |
+| **Reflection** subpage under Task | reflection/reflection-[id].md | reflectionPageUrl |
+| **Archive** subpage under Task (or linked child) | archive/archive-[id].md | optional `archivePageUrl` if used; otherwise resolve via Task child titled `Archive <taskId>` or Task body `<page>` links |
 
-**Merge-safe section pattern (English in Notion):**
+## Active Context: Notion policy and multi-task
 
-- Use **one `##` section per task** so updates do not overwrite unrelated work:
-  - `## Task <taskId> — <taskName>` (example: `## Task 588 — Add OAuth callbacks`)
-  - Under it: short bullets (focus, blockers, next step). Include a task link with `<mention-page url="[URL]">[Title]</mention-page>` where helpful.
-- **`/van` Step 6:** After `notion-fetch` of Active Context, **add or update only** the section for the resolved **`taskId`** and **`taskName`**. **Preserve** every other `## Task …` section. Prefer **`update_content`** with targeted `old_str` / `new_str` (or scoped `replace_content_range`)—**do not** `replace_content` the entire page when multiple task sections exist.
-- **Legacy bodies** that only have `## Current focus (YYYY-MM-DD)` (no `## Task …`): **append** `## Task <taskId> — <taskName>` with the current VAN focus rather than clearing the page; optional cleanup later.
-- **`notion-verification.mdc` step 6:** Reconcile wording **only** for the resolved **`taskId`** block—do not retitle the whole page around a single task.
-- **`/archive`:** **Remove** the completed task’s `## Task <taskId> — …` section from Active Context so only **in-flight** work remains. **Do not** delete other tasks’ sections. Optional: add one line under `## Recently completed` with `<mention-page>` to `Archive <taskId>`—that is separate from keeping the old in-flight block.
+The **Active Context** Project subpage (`Active Context <projectId>`, config **`activeContextPageUrl`**) holds **current phase and working focus** per in-flight task—not a substitute for the **Task page body**, the **Progress** subpage, or Task **Creative / Reflection / Archive** subpages. **Several parallel tasks** may appear on this one page; config **`taskId`** still picks the **primary** task for `/van` and task-scoped tools.
+
+### Role and content
+
+- **Purpose:** **Phase and working focus**—what stream of work is active and the immediate direction (e.g. planning vs implementation vs reflection handoff)—**not** an implementation log, checklist, or milestone journal.
+- **Where detail lives:** **Task page body** (plan, checklists, status), **Progress** (milestones, observations, build log), **Creative / Reflection / Archive** (design, retro, completion record). **Do not** copy long plan text, file lists, test output, or milestone tables into Active Context; use **short** bullets and optional `<mention-page url="[URL]">[Title]</mention-page>` when a pointer helps.
+- **Per-task body:** Under each task heading, keep **only** what fits “current focus”: phase label, next step, blockers, optional task link—typically a **small** number of bullets.
+
+### When to write Active Context (commands)
+
+- **`/van`** and **`notion-verification.mdc` step 6** (after Task resolve): set or refresh **`## Task <taskId> — <taskName>`** for the **resolved primary** task—**focus / phase**, same merge rules as below.
+- **`/change-task`:** **add or update only** the **new** primary task’s **`## Task …`** block; **preserve** all other **`## Task …`** sections. **Never** clear the page or `replace_content` the full body for a switch.
+- **`/plan`:** update **only** that task’s **`## Task …`** block when loaded level workflow rules require refreshing **planning focus** for the primary task. Otherwise **read** Active Context for context; **do not** duplicate the plan from the Task page here.
+- **`/reflect`:** when loaded reflection rules require Memory Bank integration (e.g. Level 4), **optionally** reconcile **only** the primary task’s block with **brief** lines (status, action items, next step)—**do not** paste the Reflection subpage body.
+- **`/build`**, **`/creative`:** **do not** use Active Context as the default log; write implementation and design detail to **Task page**, **Progress**, and **Creative**. Touch Active Context only if the **user** asks for a focus change or a loaded rule explicitly requires a **short** focus update for the primary task’s block.
+- **`/archive`:** **MANDATORY:** **remove** the archived task’s **`## Task <taskId> — …`** section (from that heading through the line before the next peer `##`) so completed work does not stay in the in-flight list. **Do not** delete other tasks’ sections. Optional: one line under **`## Recently completed`** with `<mention-page>` to **`Archive <taskId>`**.
+
+### Multi-task invariant and merge-safe pattern
+
+- The **Active Context** page (`Active Context <projectId>`) may list **more than one** parallel in-flight task. Config **`taskId`** is the **primary** Task for `/van`, task logs, and single-task resolution; **other** streams exist **only** as extra **`## Task …`** sections—no extra config keys.
+
+**English in Notion; one `##` section per task:**
+
+- `## Task <taskId> — <taskName>` (example: `## Task 588 — Add OAuth callbacks`)
+- Under it: **short** bullets (focus / phase, blockers, next step). `<mention-page url="[URL]">[Title]</mention-page>` where helpful.
+- **`/van` Step 6:** After `notion-fetch` of Active Context, **add or update only** the section for the resolved **`taskId`** / **`taskName`**. **Preserve** every other **`## Task …`** section. Prefer **`update_content`** with targeted `old_str` / `new_str` (or scoped `replace_content_range`)—**do not** `replace_content` the entire page when multiple task sections exist.
+- **Legacy bodies** with only `## Current focus (YYYY-MM-DD)` and no **`## Task …`:** **append** `## Task <taskId> — <taskName>` with the current focus; **do not** clear unrelated legacy sections in the same edit.
+- **`notion-verification.mdc` step 6:** Reconcile **only** the resolved **`taskId`** block—do not retitle or re-scope the whole page around one task.
 
 Optional: **`Progress <projectId>`** may mirror a project-wide `## In progress` list (task links and one line each). Same merge discipline—update lines for the relevant task without replacing unrelated entries when possible.
 
@@ -134,3 +155,4 @@ Optional: **`Progress <projectId>`** may mirror a project-wide `## In progress` 
 
 - **Read**: Only when user mentions project name, says "continue", "load context", or at command start. Fetch once per session when possible.
 - **Write**: Only when user explicitly triggers (e.g. "update memory bank", "save progress") or at end of /van, /plan, /creative, /build, /reflect, /archive.
+- **Active Context writes:** Not every Memory Bank write command must update **Active Context**; follow **`## Active Context: Notion policy and multi-task`** (**When to write**) so `/build` and `/creative` do not bulk-log there by default.

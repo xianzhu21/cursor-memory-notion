@@ -8,14 +8,18 @@ alwaysApply: false
 
 > **TL;DR:** This guide outlines the archiving process for a completed Level 3 intermediate feature. The aim is to create a self-contained, easily accessible record of the feature's development lifecycle, including its planning, design decisions, implementation summary, and reflection.
 
+## Notion backend (this repository)
+
+All **Memory Bank** artifacts live on **Notion** (Task page body, Creative / Reflection / Archive / Progress subpages, Active Context). Resolve pages via **`Core/memory-bank-paths.mdc`** and **`.cursor/notion-memory-bank.json`**.
+
 ## 🚀 Before You Start Archiving (L3 Pre-Archive Checklist)
 
-1.  **Confirm Reflection Complete:** Verify in `memory-bank/tasks.md` that the reflection phase for this feature is marked as complete and `memory-bank/reflection-[feature_id].md` exists and is finalized.
-2.  **Gather All Feature-Specific Documents:**
-    * The feature plan section from `memory-bank/tasks.md` (or a copy of it).
-    * All `memory-bank/creative/creative-[aspect_name].md` documents related to this feature.
-    * The `memory-bank/reflection/reflection-[feature_id].md` document.
-    * Key diagrams or architectural notes from `memory-bank/progress.md` if not captured elsewhere.
+1.  **Confirm reflection complete:** On the **Task page body**, the reflection phase for this feature is marked complete, and the **Reflection** subpage under Task (`reflectionPageUrl`) exists and is finalized.
+2.  **Gather all feature-specific sources:**
+    * The feature plan section from the **Task page body** (or exported copy if needed).
+    * All **Creative** subpages (`creativePageUrl` and any linked children) for this feature.
+    * The **Reflection** subpage for this feature.
+    * Key diagrams or notes from the **Progress** subpage (`progressPageUrl`) if not captured elsewhere.
     * A link to the primary commit(s) or feature branch merge for the implemented code.
 
 ## 📦 Level 3 Archiving Workflow
@@ -23,56 +27,58 @@ alwaysApply: false
 ```mermaid
 graph TD
     StartArchive["Start L3 Archiving"] -->
-    VerifyReflect["1. Verify Reflection Complete<br>Check `tasks.md` & `reflection-[feature_id].md`"] -->
-    GatherDocs["2. Gather All Feature Documents<br>(Plan, Creative outputs, Reflection, Code links)"] -->
-    CreateArchiveFile["3. Create Feature Archive File<br>e.g., `memory-bank/archive/feature-[FeatureNameOrID]_YYYYMMDD.md`"] -->
-    PopulateArchive["4. Populate Archive File<br>(Using L3 Archive Template below)"] -->
-    VerifyLinks["5. Verify All Internal Links<br>in Archive File are Correct"] -->
-    FinalUpdateTasks["6. Final Update to `tasks.md`<br>(Mark Feature FULLY COMPLETED & ARCHIVED, link to archive file)"] -->
-    UpdateProgressFile["7. Add Final Entry to `progress.md`<br>(Note archiving & link to archive file)"] -->
-    ClearActiveCtx["8. Clear `activeContext.md`<br>Reset for Next Task/Project"] -->
-    ArchiveDone["L3 Archiving Complete<br>Feature successfully documented and closed."]
+    VerifyReflect["1. Verify reflection complete<br>Task page body & Reflection subpage"] -->
+    GatherDocs["2. Gather all feature sources<br>(Plan, Creative, Reflection, code links)"] -->
+    CreateArchiveFile["3. Create / update Archive subpage<br>feature summary under Task"] -->
+    PopulateArchive["4. Populate archive summary<br>(L3 template below)"] -->
+    VerifyLinks["5. Verify internal links<br>and mention-pages"] -->
+    FinalUpdateTasks["6. Final update Task page body<br>COMPLETED & ARCHIVED + link to Archive"] -->
+    UpdateProgressFile["7. Final entry on Progress subpage<br>(archiving note + links)"] -->
+    ClearActiveCtx["8. Active Context: remove<br>archived task `## Task …` block only"] -->
+    ArchiveDone["L3 Archiving Complete<br>Feature documented and closed."]
 
     style StartArchive fill:#90a4ae,stroke:#607d8b
     style ArchiveDone fill:#b0bec5,stroke:#90a4ae
-````
+```
 
-## 📝 Structure for `memory-bank/archive/feature-[FeatureNameOrID]_YYYYMMDD.md`
+## 📝 Structure for **Archive** subpage (feature summary)
 
-  * **Feature Title:** (e.g., "Archive: User Profile Feature - Avatar Upload Enhancement")
-  * **Feature ID (from `tasks.md`):**
+Use the **Archive** subpage under Task (`archivePageUrl`, title e.g. `Archive <taskId>`). Notion already shows the page title—start the body at `##` per **`Core/memory-bank-paths.mdc`**.
+
+  * **Feature Title:** (e.g., "User Profile — Avatar Upload Enhancement")
+  * **Feature ID:** from Task row **Task ID** / config `taskId`
   * **Date Archived:** YYYY-MM-DD
   * **Status:** COMPLETED & ARCHIVED
   * **1. Feature Overview:**
-      * Brief description of the feature and its purpose (can be extracted from `tasks.md` or `projectbrief.md`).
-      * Link to the original task entry/plan in `tasks.md` (if `tasks.md` is versioned or kept historically).
+      * Brief description of the feature and its purpose (from **Task page body** or **Project page body**).
+      * Link to the Task page or plan section (`<mention-page>`).
   * **2. Key Requirements Met:**
-      * List the main functional and non-functional requirements this feature addressed.
+      * Main functional and non-functional requirements addressed.
   * **3. Design Decisions & Creative Outputs:**
       * Summary of key design choices.
-      * Direct links to all relevant `memory-bank/creative/creative-[aspect_name].md` documents.
-      * Link to `memory-bank/style-guide.md` version used (if applicable).
+      * Links to all relevant **Creative** subpages.
+      * Link to **style-guide** subpage (`styleGuidePageUrl`) if applicable.
   * **4. Implementation Summary:**
-      * High-level overview of how the feature was implemented.
-      * List of primary new components/modules created.
-      * Key technologies or libraries utilized specifically for this feature.
-      * Link to the main feature branch merge commit or primary code location/pull request.
+      * High-level overview of implementation.
+      * Primary new components/modules.
+      * Key technologies or libraries.
+      * Link to merge commit, PR, or primary code location.
   * **5. Testing Overview:**
-      * Brief summary of the testing strategy employed for this feature (unit, integration, E2E).
-      * Outcome of the testing.
+      * Testing strategy (unit, integration, E2E) and outcomes.
   * **6. Reflection & Lessons Learned:**
-      * Direct link to `memory-bank/reflection/reflection-[feature_id].md`.
-      * Optionally, copy 1-2 most critical lessons directly into the archive summary.
-  * **7. Known Issues or Future Considerations (Optional, if any remaining from reflection):**
-      * Any minor known issues deferred.
-      * Potential future enhancements related to this feature.
+      * Link to **Reflection** subpage (`reflectionPageUrl`).
+      * Optionally, copy 1–2 critical lessons into the archive summary.
+  * **7. Known Issues or Future Considerations (Optional):**
+      * Deferred minor issues.
+      * Future enhancements.
 
-### Key Files and Components Affected (from tasks.md)
-[Summary or direct copy of file/component checklists from the original tasks.md for this project. This provides a quick reference to the scope of changes at a component/file level.]
+### Key files and components affected (from Task page body)
+
+[Summary or checklist from the **Task page body** for this feature—scope of repo files and components touched.]
 
 ## 📌 What to Emphasize in L3 Archiving
 
-  * **Self-Contained Feature Record:** The goal is to have a go-to document in the archive that summarizes the "story" of this feature.
-  * **Traceability:** Easy navigation from the archive summary to detailed planning, design, and reflection documents.
-  * **Maintainability Focus:** Information that would help a future developer understand, maintain, or build upon this specific feature.
-  * **Not a Full System Archive:** Unlike Level 4, this is not about archiving the entire application state, but rather the lifecycle of one significant feature.
+  * **Self-contained feature record:** One **Archive** subpage (plus links) tells the story of the feature.
+  * **Traceability:** Easy navigation to Task body, Creative, Reflection, and Progress.
+  * **Maintainability:** What a future developer needs to extend or fix this feature.
+  * **Not a full system archive:** Unlike Level 4, this closes one significant feature, not the whole application state.

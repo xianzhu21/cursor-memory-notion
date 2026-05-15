@@ -8,11 +8,15 @@ alwaysApply: false
 
 > **TL;DR:** This visual map guides the ARCHIVE mode process, focusing on creating comprehensive documentation of the completed task, archiving relevant files, and updating the Memory Bank for future reference.
 
+## Notion backend (this repository)
+
+Diagram labels use **Notion** surfaces (Task page body, Reflection / Progress / Archive subpages, Active Context). See **`Core/memory-bank-paths.mdc`** for config keys (`taskPageUrl`, `reflectionPageUrl`, `progressPageUrl`, `archivePageUrl`, `activeContextPageUrl`).
+
 ## 🧭 ARCHIVE MODE PROCESS FLOW
 
 ```mermaid
 graph TD
-    Start["START ARCHIVE MODE"] --> ReadTasks["Read tasks.md<br>reflection.md and<br>progress.md"]
+    Start["START ARCHIVE MODE"] --> ReadTasks["Read Task page body<br>Reflection & Progress"]
     
     %% Initial Assessment
     ReadTasks --> VerifyReflect{"Reflection<br>Complete?"}
@@ -27,14 +31,14 @@ graph TD
     
     %% Level 1 Archiving (Minimal)
     L1Archive --> L1Summary["Create Quick<br>Summary"]
-    L1Summary --> L1Task["Update<br>tasks.md"]
+    L1Summary --> L1Task["Update<br>Task page body"]
     L1Task --> L1Complete["Mark Task<br>Complete"]
     
     %% Level 2 Archiving (Basic)
     L2Archive --> L2Summary["Create Basic<br>Archive Document"]
     L2Summary --> L2Doc["Document<br>Changes"]
-    L2Doc --> L2Task["Update<br>tasks.md"]
-    L2Task --> L2Progress["Update<br>progress.md"]
+    L2Doc --> L2Task["Update<br>Task page body"]
+    L2Task --> L2Progress["Update<br>Progress subpage"]
     L2Progress --> L2Complete["Mark Task<br>Complete"]
     
     %% Level 3-4 Archiving (Comprehensive)
@@ -44,15 +48,15 @@ graph TD
     L34Creative --> L34Code["Document Code<br>Changes"]
     L34Code --> L34Test["Document<br>Testing"]
     L34Test --> L34Lessons["Summarize<br>Lessons Learned"]
-    L34Lessons --> L34Task["Update<br>tasks.md"]
-    L34Task --> L34Progress["Update<br>progress.md"]
+    L34Lessons --> L34Task["Update<br>Task page body"]
+    L34Task --> L34Progress["Update<br>Progress subpage"]
     L34Progress --> L34System["Update System<br>Documentation"]
     L34System --> L34Complete["Mark Task<br>Complete"]
     
     %% Completion
-    L1Complete & L2Complete & L34Complete --> CreateArchive["Create Archive<br>Document in<br>docs/archive/"]
-    CreateArchive --> UpdateActive["Update<br>activeContext.md"]
-    UpdateActive --> Reset["Reset for<br>Next Task"]
+    L1Complete & L2Complete & L34Complete --> CreateArchive["Finalize Archive<br>on Archive subpage / repo docs"]
+    CreateArchive --> UpdateActive["Active Context (Notion)<br>remove archived `## Task …` only"]
+    UpdateActive --> Reset["Next primary task<br>`/van` / `/change-task`"]
 ```
 
 ## 📋 ARCHIVE DOCUMENT STRUCTURE
@@ -75,21 +79,21 @@ graph TD
     Header --> Meta --> Summary --> Requirements --> Implementation --> Testing --> Lessons --> Refs
 ```
 
-## 📊 REQUIRED FILE STATE VERIFICATION
+## 📊 REQUIRED NOTION PAGE STATE
 
-Before archiving can begin, verify file state:
+Before archiving can begin, verify Notion state:
 
 ```mermaid
 graph TD
-    Start["File State<br>Verification"] --> CheckTasks{"tasks.md has<br>reflection<br>complete?"}
+    Start["Notion state<br>verification"] --> CheckTasks{"Task page body shows<br>reflection complete?"}
     
     CheckTasks -->|"No"| ErrorReflect["ERROR:<br>Return to REFLECT Mode"]
-    CheckTasks -->|"Yes"| CheckReflection{"reflection.md<br>exists?"}
+    CheckTasks -->|"Yes"| CheckReflection{"Reflection subpage<br>exists / finalized?"}
     
-    CheckReflection -->|"No"| ErrorCreate["ERROR:<br>Create reflection.md first"]
-    CheckReflection -->|"Yes"| CheckProgress{"progress.md<br>updated?"}
+    CheckReflection -->|"No"| ErrorCreate["ERROR:<br>Create or complete Reflection subpage first"]
+    CheckReflection -->|"Yes"| CheckProgress{"Progress subpage<br>updated?"}
     
-    CheckProgress -->|"No"| ErrorProgress["ERROR:<br>Update progress.md first"]
+    CheckProgress -->|"No"| ErrorProgress["ERROR:<br>Update Progress subpage first"]
     CheckProgress -->|"Yes"| ReadyArchive["Ready for<br>Archiving"]
 ```
 
@@ -225,9 +229,9 @@ When marking task COMPLETE:
 2. **Content**: Replace "## 8. Next Steps" with "Run `/van` for next task."
 3. **Content**: Replace "# Reflection" with "# Reflection & Archive" (heading only; keep child pages with `<page url="...">` to preserve structure – do NOT add `<mention-page>` for Reflection/Archive subpages).
 
-## 📊 TASKS.MD FINAL UPDATE
+## 📊 TASK PAGE FINAL UPDATE (Notion)
 
-When archiving is complete, update tasks.md with:
+When archiving is complete, update the **Task page body** (and Task properties per workflow) with:
 
 ```
 ## Status
@@ -252,9 +256,9 @@ When archiving is complete, update tasks.md with:
 - Reflection document reviewed? [YES/NO]
 - Archive document created with all sections? [YES/NO]
 - Archive document placed in correct location? [YES/NO]
-- tasks.md marked as completed? [YES/NO]
-- progress.md updated with archive reference? [YES/NO]
-- activeContext.md updated for next task? [YES/NO]
+- Task page body marked as completed? [YES/NO]
+- Progress subpage updated with archive reference? [YES/NO]
+- Active Context (Notion): archived task’s `## Task …` section removed; other in-flight sections preserved (`Core/memory-bank-paths.mdc` **Active Context: Notion policy and multi-task**)? [YES/NO]
 - Creative phase documents archived (Level 3-4)? [YES/NO/NA]
 
 → If all YES: Archiving complete - Memory Bank reset for next task
@@ -268,7 +272,7 @@ When archiving is complete, notify user with:
 ```
 ## Task Archived
 
-✅ Archive document created in docs/archive/
+✅ Archive summary recorded (Archive subpage and/or project docs)
 ✅ All task documentation preserved
 ✅ Memory Bank updated with references
 ✅ Task marked as COMPLETED

@@ -472,9 +472,9 @@ flowchart TD
 - [ ] Project management approval
 ```
 
-## 📋 IMPLEMENTATION TRACKING IN TASKS.MD
+## 📋 IMPLEMENTATION TRACKING ON TASK PAGE (Notion)
 
-Update `tasks.md` to track phased implementation progress:
+Update the **Task page body** to track phased implementation progress:
 
 ```markdown
 ## [SYSTEM-ID]: System Name
@@ -520,12 +520,12 @@ flowchart TD
     classDef memfile fill:#f4b8c4,stroke:#d498a4,color:#000
     classDef process fill:#f9d77e,stroke:#d9b95c,color:#000
     
-    Implementation[Phased<br>Implementation] --> PB[projectbrief.md]
-    Implementation --> PC[productContext.md]
-    Implementation --> AC[activeContext.md]
-    Implementation --> SP[systemPatterns.md]
-    Implementation --> TC[techContext.md]
-    Implementation --> P[progress.md]
+    Implementation[Phased<br>Implementation] --> PB["Project page body"]
+    Implementation --> PC["Product Context<br>subpage"]
+    Implementation --> AC["Active Context<br>subpage"]
+    Implementation --> SP["System Patterns<br>subpage"]
+    Implementation --> TC["Tech Context<br>subpage"]
+    Implementation --> P["Progress<br>subpage"]
     
     PB & PC & AC & SP & TC & P --> MBI[Memory Bank<br>Integration]
     MBI --> Implementation
@@ -538,29 +538,29 @@ flowchart TD
 
 **Notion backend:** Use `notion-update-page` on resolved **`*PageUrl`** **`https://`…** values from config. projectbrief → Project page body (`projectId`); activeContext → `activeContextPageUrl`; systemPatterns → `systemPatternsPageUrl`; techContext → `techContextPageUrl`; progress → `progressPageUrl`. If a **`*PageUrl`** is null, ensure notion-verification has created the subpage.
 
-Update the following Memory Bank files during phased implementation:
+Update the following Notion Memory Bank pages during phased implementation:
 
-1. **projectbrief.md** (Project page body)
+1. **Project page body** (`projectPageUrl` / `projectId`)
    - Update implementation approach
    - Document phase-specific objectives
    - Link to phase plans
 
-2. **activeContext.md** (activeContextPageUrl)
+2. **activeContext** (`activeContextPageUrl`)
    - Update with current implementation phase
    - Document active implementation tasks
    - Highlight current focus areas
 
-3. **systemPatterns.md** (systemPatternsPageUrl)
+3. **System Patterns** subpage (`systemPatternsPageUrl`)
    - Document implementation patterns used
    - Update with architectural decisions made during implementation
    - Record any pattern adaptations
 
-4. **techContext.md** (techContextPageUrl)
+4. **Tech Context** subpage (`techContextPageUrl`)
    - Update with implementation technologies
    - Document technical constraints encountered
    - Record technical decisions made
 
-5. **progress.md** (progressPageUrl)
+5. **Progress** subpage (`progressPageUrl`)
    - Update implementation progress by phase
    - Document completed components
    - Track overall implementation status

@@ -8,11 +8,15 @@ alwaysApply: false
 
 > **TL;DR:** This visual map guides the CREATIVE mode process, focusing on structured design decision-making for components that require deeper exploration before implementation.
 
+## Notion backend (this repository)
+
+Creative requirements come from the **Task page body**; decisions live on the **Creative** subpage under Task (`creativePageUrl`). See **`Core/memory-bank-paths.mdc`**.
+
 ## 🧭 CREATIVE MODE PROCESS FLOW
 
 ```mermaid
 graph TD
-    Start["START CREATIVE MODE"] --> ReadTasks["Read tasks.md<br>For Creative Requirements"]
+    Start["START CREATIVE MODE"] --> ReadTasks["Read Task page body<br>For Creative Requirements"]
     
     %% Initial Assessment
     ReadTasks --> VerifyPlan{"Plan Complete<br>& Creative Phases<br>Identified?"}
@@ -60,8 +64,8 @@ graph TD
     Algo_Decision --> Algo_Document["Document<br>Algorithm"]
     
     %% Documentation & Completion
-    UI_Document & Arch_Diagram & Data_Document & Algo_Document --> CreateDoc["Create Creative<br>Phase Document"]
-    CreateDoc --> UpdateTasks["Update tasks.md<br>with Decision"]
+    UI_Document & Arch_Diagram & Data_Document & Algo_Document --> CreateDoc["Create / update Creative<br>subpage content"]
+    CreateDoc --> UpdateTasks["Update Task page body<br>with Decision"]
     UpdateTasks --> MorePhases{"More Creative<br>Phases?"}
     MorePhases -->|"Yes"| SelectPhase
     MorePhases -->|"No"| VerifyComplete["Verify All<br>Phases Complete"]
@@ -120,13 +124,13 @@ graph TD
     end
 ```
 
-## 📊 REQUIRED FILE STATE VERIFICATION
+## 📊 REQUIRED NOTION PAGE STATE
 
-Before creative phase work can begin, verify file state:
+Before creative phase work can begin, verify Notion state:
 
 ```mermaid
 graph TD
-    Start["File State<br>Verification"] --> CheckTasks{"tasks.md has<br>planning complete?"}
+    Start["Notion state<br>verification"] --> CheckTasks{"Task page body shows<br>planning complete?"}
     
     CheckTasks -->|"No"| ErrorPlan["ERROR:<br>Return to PLAN Mode"]
     CheckTasks -->|"Yes"| CheckCreative{"Creative phases<br>identified?"}
@@ -202,7 +206,7 @@ Use these visual markers for creative phases:
 - Decision made with clear rationale? [YES/NO]
 - Implementation plan included? [YES/NO]
 - Visualization/diagrams created? [YES/NO]
-- tasks.md updated with decision? [YES/NO]
+- Task page body updated with decision? [YES/NO]
 
 → If all YES: Creative phase complete
 → If any NO: Complete missing elements
@@ -217,7 +221,7 @@ When all creative phases are complete, notify user with:
 
 ✅ All required design decisions made
 ✅ Creative phase documents created
-✅ tasks.md updated with decisions
+✅ Task page body updated with decisions
 ✅ Implementation plan updated
 
 → NEXT RECOMMENDED MODE: BUILD MODE

@@ -68,8 +68,8 @@ Create a standardized transition document when switching modes:
 
 ```markdown
 ### VAN → PLAN
-- Context preserved: Complexity level, platform detection, file structure
-- Files transferred: tasks.md (initialized), activeContext.md (initialized)
+- Context preserved: Complexity level, platform detection, Notion page structure
+- **Notion:** Task page body initialized; Active Context subpage ready for planning focus
 - Rule optimization: Pre-load planning rules based on complexity level
 ```
 
@@ -78,7 +78,7 @@ Create a standardized transition document when switching modes:
 ```markdown
 ### PLAN → CREATIVE
 - Context preserved: Task requirements, component list, creative phase flags
-- Files transferred: tasks.md (updated with plan), creative phase components list
+- **Notion:** Task page body updated with plan; Creative subpages to be filled
 - Rule optimization: Only load creative templates for identified components
 ```
 
@@ -87,7 +87,7 @@ Create a standardized transition document when switching modes:
 ```markdown
 ### CREATIVE → BUILD
 - Context preserved: Design decisions, implementation guidelines, requirements
-- Files transferred: tasks.md, design documents, implementation checklist
+- **Notion:** Task page body + Creative subpages; implementation checklist on Task or Progress as needed
 - Rule optimization: Pre-load implementation templates based on design decisions
 ```
 
@@ -96,7 +96,7 @@ Create a standardized transition document when switching modes:
 ```markdown
 ### BUILD → REFLECT
 - Context preserved: Implementation status, challenges encountered, decisions
-- Files transferred: tasks.md, progress.md, implementation notes
+- **Notion:** Task page body, Progress subpage, implementation notes
 - Rule optimization: Load reflection templates based on completion status
 ```
 
@@ -309,8 +309,8 @@ When transitioning from PLAN to CREATIVE mode:
 3. Document implementation guidelines
 
 ## Resource Pointers
-- Planning document: tasks.md (section 3)
-- Requirements: activeContext.md
+- Planning: **Task page body** (Plan section)
+- Requirements / focus: **Active Context** subpage (`activeContextPageUrl`)
 - Reference architecture: docs/system-architecture.md
 ```
 
